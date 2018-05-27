@@ -36,24 +36,44 @@ typedef enum {//定义座位情况枚举类型
 typedef enum {
 	TICKET_available=0,//代售
 	TICKET_sold = 1,//已售
-	TICKET_reserve = 3,//预留
+	TICKET_reserve = 2,//预留
 }ticket_statuses;
+
+typedef enum {
+	SALE_sold=1,//卖票
+	SALE_return=2,//退票
+}sale_types;
+
+//////////////////////////////////////结构定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+typedef struct {
+	int year;
+	int month;
+	int day;
+}date_status;//日期结构体
+
+typedef struct {
+	int hour;
+	int minute;
+}time_status;//时间结构体
 
 //////////////////////////////////////实体数据域定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef struct em{//剧目数据域
 	int program_ID;//  剧目编号
 	char program_name[NAME * 2 + 1];//15汉字    剧目名称
-	program_types type;//剧目类型  参见enum program_types枚举定义
-	program_ratings rating;//剧目等级 参见program_ratings枚举定义
-	char director[NAME * 2 + 1];//15汉字     导演
-	char start_date[PASSWORD-1]; //上映日期   格式2018-05-12  正确输入长度为10
-	char end_date[PASSWORD - 1]; //结束日期   格式2018-05-12  正确输入长度为10
+	program_types program_type;//剧目类型  参见enum program_types枚举定义
+	program_ratings program_rating;//剧目等级 参见program_ratings枚举定义
+	char director[NAME * 2 + 1];//15个汉字     导演
+	char performer[2][NAME];//7个汉字      主演   两名
+	date_status start_date; //上映日期   参见date_status结构体定义
+	date_status end_date; //结束日期   参见date_status结构体定义
 	int duration;//剧目时长       minute
-	char  label[3][5];//剧目标签   喜剧  动作   惊悚 最多三个
+	char  label[5];//剧目标签   比如  喜剧  动作   惊悚 
+	char area[5];//地区   2个汉字
 	char language[NAME];//语言
 	int price;//票价
-	int cost;//放映成本
+	int cost;//放映成本    （万元)
 }data_program;
 
 typedef struct emm {
@@ -67,8 +87,8 @@ typedef struct emmm {//演出计划数据域
 	int plan_ID;//演出计划编号
 	int play_ID;//剧目编号
 	int studio_ID;//放映厅编号
-	char date[PASSWORD - 1]; //演出日期   格式2018-05-12  正确输入长度为10
-	char time[PASSWORD];//起止时间    20:00-21:30   正确输入长度11
+	date_status date; //演出日期   参见date_status结构体定义
+	time_status time;//起止时间    参见time_status结构体定义  24小时制
 }data_plan;
 
 typedef struct emmmm {//账号数据域
@@ -122,12 +142,24 @@ typedef struct linklist_ticket {
 	struct linklist_ticket *pre, *next;
 }Ticket;
 
+typedef struct linklist_record{//销售记录
+	long record_ID;//销售记录ID
+	int conductor_ID;//售票员ID      会员账户
+	int ticket_ID;//票ID
+	date_status date;//处理日期
+	time_status time;//处理时间
+	int price;//票价
+	sale_types sale_type;//交易类型
+	struct linklist_record *pre, *next;
+}Record;
+
 typedef struct ctrl {//链表类型
 	Program *program_head,*program_tail;
 	Studio *studio_head,*studio_tail;
 	Seat *seat_head,*seat_tail;
 	Ticket *ticket_head, *ticket_tail;
 	Plan *plan_head,*plan_tail;
+	Record *record_head, *record_tail;
 	Account *account_head,*account_tail;
 }List;
 
@@ -184,6 +216,8 @@ char *password_get(int judge);//用户密码的获取
 
 
 void import_account();//读入账号信息
+void import_program();//读入剧目信息
+void import_studio_and_seat();//读入放映厅及座位信息
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表

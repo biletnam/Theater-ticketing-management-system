@@ -3,6 +3,7 @@
 
 void import_all() {//导入所有信息
 	import_account();
+	import_program();
 }
 
 void initialize() {//全部初始化

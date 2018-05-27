@@ -89,5 +89,20 @@
     <Text Include="account.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="program.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="studio.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="plan.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="ticket.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="record.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>

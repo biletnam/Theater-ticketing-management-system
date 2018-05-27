@@ -53,7 +53,7 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 									   ²ÎÊýchange±í¸Ä±äÁ¿  order±íÊ¾½çÃæµÄÑ¡Ôñ  º¯Êý·µ»Øµ±Ç°Ñ¡Ïî±àºÅ*/
 	i += change;
 	if (order == 1) {//Ö÷½çÃæ
-		i == 0 ? i = 3 : i = i;
+		i == 0 ? i = 3 : i = i;//¸ßÁÁ¿ØÖÆ
 		i > 3 ? i = 1 : i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(40, 8); printf("µÇÂ¼");
