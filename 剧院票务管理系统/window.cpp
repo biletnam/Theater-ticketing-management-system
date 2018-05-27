@@ -15,8 +15,8 @@
 	ScrollConsoleScreenBuffer(handle_move, &move, NULL, position, &c_fill);
 }*/
 
-int choice_judge() {//∂¡»°º¸≈Ã ¬º˛
-	int highlight=1;
+int choice_judge(int i) {//∂¡»°º¸≈Ã ¬º˛          i  // ΩÁ√Ê—°‘Ò   ≤Œº˚screen_clearΩÁ√Ê
+	int highlight=1;                         
 	HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD event;//∂®“Â ‰»Î ¬º˛Ω·ππÃÂ
 	DWORD res;//∂®“Â∑µªÿº«¬º
@@ -26,13 +26,13 @@ int choice_judge() {//∂¡»°º¸≈Ã ¬º˛
 		{
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_UP&& event.Event.KeyEvent.bKeyDown == (BOOL)true) //∞¥œ¬°¸  
 			{
-				//screen_clear(highlight==1?highlight=3:--highlight);//i øÿ÷∆∏ﬂ¡¡
-				highlight = screen_clear(1, highlight, -1);
+				//screen_clear(highlight==1?highlight=3:--highlight);
+				highlight = screen_clear(i, highlight, -1);
 			}
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_DOWN && event.Event.KeyEvent.bKeyDown == (BOOL)true) //∞¥œ¬°˝ 
 			{
-				//screen_clear(highlight == 3 ? highlight = 1:++highlight);//i øÿ÷∆∏ﬂ¡¡
-				highlight = screen_clear(1, highlight, 1);
+				//screen_clear(highlight == 3 ? highlight = 1:++highlight);
+				highlight = screen_clear(i, highlight, 1);
 			}
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true) //∞¥œ¬ESC  
 			{
@@ -43,7 +43,7 @@ int choice_judge() {//∂¡»°º¸≈Ã ¬º˛
 			}
 			if (event.Event.KeyEvent.uChar.AsciiChar ==13 && event.Event.KeyEvent.bKeyDown == (BOOL)true) //∞¥œ¬ªÿ≥µ  
 			{
-				return highlight;//i øÿ÷∆∏ﬂ¡¡
+				return highlight;
 			}
 		}
 	}
@@ -63,6 +63,16 @@ int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—
 		set_position(40, 12); printf("¿Îø™");
 	}
 	else if (order==2) {
+		i == 0 ? i = 3 : i = i;//∏ﬂ¡¡øÿ÷∆
+		i > 3 ? i = 1 : i = i;
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(35, 6); printf("”∞∆¨≤È—Øº∞π‹¿Ì");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 8); printf("∑≈”≥Ã¸≤È—Øº∞π‹¿Ì");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(35, 10); printf(" €∆±‘±“µº®≤È—Ø");
+	}
+	else if (order == 3) {
 
 	}
 	return i;

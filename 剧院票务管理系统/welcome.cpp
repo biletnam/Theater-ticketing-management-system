@@ -23,7 +23,7 @@
 	puts(str);
 }*/
 
-void show_welcome() {
+void show_welcome() {//欢迎界面
 	initgraph(1070, 600);//默认窗口大小
 	setbkcolor(WHITE);
 	cleardevice();
@@ -61,7 +61,7 @@ void show_main() {//主界面
 	system("cls");
 	set_position(32, 5);
 	SetColor(14, 0);
-	printf("嘉 禾 天 橙 大 影 院");
+	printf("嘉 禾 天 橙 大 剧 院");
 	set_position(40, 8);
 	SetColor(11, 0);
 	printf("登录");
@@ -83,7 +83,7 @@ void show_sign() {//登录界面
 	catch_cursor();//显示光标
 }
 
-void show_customer() {
+void show_customer() {//顾客主界面
 	system("cls");
 
 }
@@ -112,3 +112,18 @@ void abandon() {//弃用
 	system("color f8");
 }
 
+void show_manager() {//剧院经理主界面
+	system("cls");
+	hide_cursor();
+	set_position(37,4);
+	SetColor(10,0);
+	printf("查询&管理");
+	SetColor(11, 0);
+	set_position(35,6);
+	printf("影片查询及管理");
+	SetColor(7, 0);
+	set_position(34, 8);
+	printf("放映厅查询及管理");
+	set_position(35,10);
+	printf("售票员业绩查询");
+}

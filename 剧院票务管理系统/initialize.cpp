@@ -4,6 +4,7 @@
 void import_all() {//导入所有信息
 	import_account();
 	import_program();
+	import_studio_and_seat();
 }
 
 void initialize() {//全部初始化

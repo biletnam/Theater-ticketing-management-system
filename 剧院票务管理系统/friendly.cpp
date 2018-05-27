@@ -7,7 +7,7 @@ void print_re() {//请求bug反馈
 }
 
 void print_examinput() {//非法输入报错
-	printf("\n输入不符合要求，请重新输入\n");
+	printf("输入不符合要求，请重新输入\n");
 	rewind(stdin);
 }
 

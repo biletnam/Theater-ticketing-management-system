@@ -18,7 +18,7 @@ void import_account() {//读入账号信息
 			exit(1);
 		}
 		p->element = tem;//每成功读取一组数据做一个结点，连接到链表上
-		p->next = list.account_tail->next;//插入有误
+		p->next = list.account_tail->next;
 		p->pre = list.account_tail;
 		list.account_tail->next = p;
 		list.account_tail = p;
@@ -32,13 +32,11 @@ void import_program() {//从文件读入剧目信息存储为链表
 		print_re();
 		exit(1);
 	}
-	data_program tem;
+	data_program tem = {0};
 	int type,rating;
-	while (fscanf(fp, "%d %s %d %d %s %s %d-%d-%d %d-%d-%d %d %s %s %s %d %d", \
-		&tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0],\
-		tem.performer[1], &tem.start_date.year, &tem.start_date.month, &tem.start_date.day, \
-		&tem.end_date.year, &tem.end_date.month, &tem.end_date.day, tem.label, tem.area, \
-		tem.language, tem.price, tem.cost) != EOF) {
+	while (fscanf(fp, "%d %s %d %d %s %s %s",&tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0], tem.performer[1])==7&&\
+		fscanf(fp,"%d-%d-%d %d-%d-%d", &tem.start_date.year, &tem.start_date.month, &tem.start_date.day, &tem.end_date.year, &tem.end_date.month, &tem.end_date.day)== 6\
+		&&fscanf(fp,"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
 		tem.program_type = (program_types)type,tem.program_rating=(program_ratings)rating;
 		Program *p = (Program *)malloc(sizeof(Program));
 		if (p == NULL) {
@@ -56,7 +54,7 @@ void import_program() {//从文件读入剧目信息存储为链表
 }
 
 void import_studio_and_seat() {//导入放映厅及座位信息
-	FILE *fp = fopen(".\\studio.h", "r");
+	FILE *fp = fopen(".\\studio.txt", "r");
 	if (fp == NULL) {
 		print_re();
 			exit(1);

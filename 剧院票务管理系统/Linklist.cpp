@@ -20,8 +20,28 @@ void initialize_linklist() {//初始化链表
 	list.program_tail = list.program_head;
 	list.studio_tail = list.studio_head;
 	list.plan_tail = list.plan_head;
-	list.seat_head = list.seat_head;
-	list.ticket_head = list.ticket_head;
-	list.record_head = list.record_head;
+	list.seat_tail = list.seat_head;
+	list.ticket_tail = list.ticket_head;
+	list.record_tail = list.record_head;
 }
+
+////////////////////////////////////////program
+
+void add_program() {//增加剧目
+	data_program tem;
+	char str[100];
+	printf("请输入剧目编号(6位数字)：");
+	strcpy(str,string_exam(6, 6, 1));
+	tem.program_ID = atoi(str);
+	printf("请输入剧目名称(15个汉字以内)：");
+	strcpy(tem.program_name, string_exam(1, 30, 0));
+}
+
+void kill_program() {
+
+}
+
+
+/////////////////////////////////////studio
+
 

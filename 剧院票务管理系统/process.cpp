@@ -3,7 +3,7 @@
 
 void process_all() {//登录过程
 	show_main();
-	int choice=choice_judge(),exam=0,cnt;
+	int choice=choice_judge(1),exam=0;
 	switch (choice) {
 	case 1:if (exam == 0) { process_sign(); exam = 1; }
 	case 2:if(exam==0){}
@@ -20,7 +20,7 @@ void process_all() {//登录过程
 //USER_customer = 4,
 //USER_unkown = 5,
 
-void process_sign() {
+void process_sign() {//登录过程
 	int re = 0, cnt = 0;
 	re = sign_judge();
 	while ((re <= 0 || re > 4) && cnt < 3) {
@@ -43,8 +43,13 @@ void process_admin() {
 
 }
 
-void process_manager() {
-
+void process_manager() {//管理员过程
+	show_manager();
+	int choice = choice_judge(2);
+	switch (choice) {
+	case 1:
+	case 2:
+	}
 }
 
 void process_conducter() {

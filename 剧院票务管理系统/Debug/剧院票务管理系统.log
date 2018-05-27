@@ -1,16 +1,2 @@
-﻿  Linklist.cpp
-  filefunction.cpp
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(37): warning C4477: “fscanf”: 格式字符串“%d”需要类型“int *”的参数，但可变参数 7 拥有了类型“char *”
-  c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(37): note: 请考虑在格式字符串中使用“%hhd”
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(37): warning C4477: “fscanf”: 格式字符串“%d”需要类型“int *”的参数，但可变参数 17 拥有了类型“int”
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(37): warning C4477: “fscanf”: 格式字符串“%d”需要类型“int *”的参数，但可变参数 18 拥有了类型“int”
-  friendly.cpp
-  initialize.cpp
-  process.cpp
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\process.cpp(6): warning C4101: “cnt”: 未引用的局部变量
-  sonfunction.cpp
-  welcome.cpp
-  window.cpp
-  剧院票务管理系统.cpp
-  正在生成代码...
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(41): error C4700: 使用了未初始化的局部变量“tem”
+﻿  welcome.cpp
+  剧院票务管理系统.vcxproj -> C:\Users\HP\source\repos\剧院票务管理系统\Debug\剧院票务管理系统.exe

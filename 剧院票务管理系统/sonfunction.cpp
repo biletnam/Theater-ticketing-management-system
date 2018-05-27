@@ -74,3 +74,21 @@ char *password_get(int judge) {//密码输入的获取        judge!=0时进行输入检查
 	strcpy(password,str);
 	return password;
 }
+
+char *string_exam(int down,int up ,int judge) {//字符串获取检查函数    down~up   字符串字节数限制
+	char *str = (char *)malloc(sizeof(char)*100);// judge 开关   是否开启数字检查、字母检查、汉字检查  
+	scanf("%s", str);
+	int flag = 1, i;
+	if (judge) {//进行检查检查
+			for (i = 0; i < strlen(str); i++) {
+				switch (judge) {
+					case 1:if (isdigit(str[i]) == 0) {flag = 0; break;}
+				}
+			}
+		} while ((flag == 0) && (flag = 1));
+	while (flag && (strlen(str) < down || strlen(str) > up)) {
+		print_examinput();
+		scanf("%s", str);
+	}
+	return str;
+}

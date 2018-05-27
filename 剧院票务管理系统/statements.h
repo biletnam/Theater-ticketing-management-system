@@ -171,7 +171,7 @@ extern data_account PRESENT;
 
 /////////////////////////////////////////函数\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-int choice_judge();//读取键盘事件  判断选择
+int choice_judge(int i);//读取键盘事件  判断选择
 void set_position(short x, short y);//设置光标位置
 void SetColor(short foreColor, short backColor);//设置字体颜色
 void hide_cursor();//隐藏光标
@@ -188,6 +188,7 @@ int screen_clear(int order,int i,int change);/*主界面的高亮控制  i表示当前高亮选
 void show_sign();//登录界面
 void show_bye();//再见界面
 void show_customer();//顾客主界面
+void show_manager();//剧院经理主界面
 
 //welcom.cpp
 
@@ -211,6 +212,7 @@ void process_accountAppeal();//账号申诉过程
 char *username_get(int judge);//用户名的获取
 int sign_judge();//登陆成功及账户类型的判断
 char *password_get(int judge);//用户密码的获取
+char *string_exam(int down, int up,int judge);//字符串检查函数    down~up   字符串字节数限制
 
 //sonfunction.cpp
 
