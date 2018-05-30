@@ -28,14 +28,36 @@ void initialize_linklist() {//初始化链表
 ////////////////////////////////////////program
 
 void add_program() {//增加剧目
-	data_program tem;
-	char str[100];
-	printf("请输入剧目编号(6位数字)：");
-	strcpy(str,string_exam(6, 6, 1));
-	tem.program_ID = atoi(str);
-	printf("请输入剧目名称(15个汉字以内)：");
-	strcpy(tem.program_name, string_exam(1, 30, 0));
+	Program *p = (Program *)malloc(sizeof(Program));
+	p->element = get_program_infomation();//剧目信息获取
+	if (enquiry()) {
+		p->next = list.program_tail->next;
+		p->pre = list.program_tail;
+		list.program_tail->next = p;
+		list.program_tail = p;
+		save_program();
+		print_ok();
+	}
+	else {
+		free(p);
+	}
 }
+
+Program *search_program(char *obj) {//按ID或名称查找剧目
+	int flag = 0;
+	Program *p = list.program_head->next;
+	for (p; p; p = p->next) {
+		if (strcmp(p->element.program_ID, obj) == 0 || strcmp(p->element.program_name, obj) == 0) {
+			flag = 1;//找到
+			break;
+		}
+	}
+	if (flag)
+		return p;
+	else
+		return NULL;
+}
+
 
 void kill_program() {
 

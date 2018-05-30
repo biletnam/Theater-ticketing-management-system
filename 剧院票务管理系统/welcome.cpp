@@ -115,15 +115,41 @@ void abandon() {//弃用
 void show_manager() {//剧院经理主界面
 	system("cls");
 	hide_cursor();
-	set_position(37,4);
+	set_position(38,4);
 	SetColor(10,0);
 	printf("查询&管理");
 	SetColor(11, 0);
-	set_position(35,6);
-	printf("影片查询及管理");
+	set_position(34,6);
+	printf("剧目查询及管理");
 	SetColor(7, 0);
 	set_position(34, 8);
 	printf("放映厅查询及管理");
-	set_position(35,10);
+	set_position(34,10);
 	printf("售票员业绩查询");
 }
+
+void show_program() {//剧目查询及管理界面
+	system("cls");
+	set_position(35, 4);
+	SetColor(10, 0);
+	printf("剧目查询及管理");
+	SetColor(11, 0);
+	set_position(36, 6);
+	printf("查询剧目信息");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("新增剧目信息");
+	set_position(36, 10);
+	printf("删除剧目信息");
+	set_position(36, 12);
+	printf("修改剧目信息");
+}
+
+//弃用
+/*void show_program_types() {//显示剧目类型   配合choice_judege进行选择
+//	printf("请选择剧目类型\n");
+//	int x = get_positionx(), y = get_positiony();
+//	SetColor(11, 0);
+//	printf("电影");
+//	set_position(x + 5, y);
+//}*/

@@ -9,7 +9,7 @@ void process_all() {//登录过程
 	case 2:if(exam==0){}
 	case 3:if (exam == 0) { show_bye(); exit(0); exam = 3; }
 	default:
-		if(exam==0)print_re();
+		process_all();
 		break;
 	}
 }
@@ -28,7 +28,7 @@ void process_sign() {//登录过程
 		re = sign_judge();
 	}
 	switch (re) {
-	case 0:process_accountAppeal();//账号申诉
+	case 0:account_appeal();//账号申诉
 	case 1:process_admin(); break;
 	case 2:process_manager(); break;
 	case 3:process_conducter(); break;
@@ -39,18 +39,33 @@ void process_sign() {//登录过程
 	}
 }
 
-void process_admin() {
+void process_admin() {//管理员过程
 
 }
 
-void process_manager() {//管理员过程
+///////////////////////////////////////剧院经理
+
+void process_manager() {//剧院经理过程
 	show_manager();
-	int choice = choice_judge(2);
+	int choice = choice_judge(2),exam=0;
 	switch (choice) {
-	case 1:
+	case 1:process_program(); exam = 1;
 	case 2:
+	default:
+		break;
 	}
 }
+
+void process_program() {//剧目查询及管理过程
+	show_program();
+	int choice = choice_judge(3);
+	switch (choice) {
+	case 1:
+	case 2:add_program();
+	}
+}
+
+///////////////////////////////////////////售票员
 
 void process_conducter() {
 
@@ -60,6 +75,3 @@ void process_customer() {
 	show_customer();
 }
 
-void process_accountAppeal() {
-
-}

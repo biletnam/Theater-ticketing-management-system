@@ -60,11 +60,11 @@ typedef struct {
 //////////////////////////////////////实体数据域定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef struct em{//剧目数据域
-	int program_ID;//  剧目编号
+	char program_ID[NAME/2];//六位数字  剧目编号
 	char program_name[NAME * 2 + 1];//15汉字    剧目名称
 	program_types program_type;//剧目类型  参见enum program_types枚举定义
 	program_ratings program_rating;//剧目等级 参见program_ratings枚举定义
-	char director[NAME * 2 + 1];//15个汉字     导演
+	char director[NAME];//7个汉字     导演   音乐会为指挥
 	char performer[2][NAME];//7个汉字      主演   两名
 	date_status start_date; //上映日期   参见date_status结构体定义
 	date_status end_date; //结束日期   参见date_status结构体定义
@@ -77,7 +77,7 @@ typedef struct em{//剧目数据域
 }data_program;
 
 typedef struct emm {
-	int studio_ID;//   放映厅编号
+	char studio_ID[NAME/2];//六位数字   放映厅编号
 	char studio_name[NAME];//七个汉字    放映厅名称
 	int seatx;
 	int seaty;//放映厅座位 的行和列    固有属性   用来设置二维数组
@@ -92,7 +92,7 @@ typedef struct emmm {//演出计划数据域
 }data_plan;
 
 typedef struct emmmm {//账号数据域
-	int UID;//账号编号   用于修改密码或找回密码
+	char UID[NAME / 2];//账号编号   用于修改密码或找回密码
 	char username[NAME];//用户名   4~14个字符/2~7个汉字
 	char password[PASSWORD+1];//登录口令  6~12
 	user_types user_type;//账号类型     参见enum user_types枚举定义
@@ -176,19 +176,21 @@ void set_position(short x, short y);//设置光标位置
 void SetColor(short foreColor, short backColor);//设置字体颜色
 void hide_cursor();//隐藏光标
 void catch_cursor();//显示光标
+int get_positionx();//得到当前光标x坐标
+int get_positiony();//得到当前光标y坐标
+int screen_clear(int order, int i, int change);/*主界面的高亮控制  i表示当前高亮选项 默认为1
+										参数change表改变量  order表示界面的选择  函数返回当前选项编号*/
+
 
 //window.cpp
 
 void show_welcome();//欢迎界面
 void show_main();//主界面
-
-int screen_clear(int order,int i,int change);/*主界面的高亮控制  i表示当前高亮选项 默认为1
-									   参数change表改变量  order表示界面的选择  函数返回当前选项编号*/
-
 void show_sign();//登录界面
 void show_bye();//再见界面
 void show_customer();//顾客主界面
 void show_manager();//剧院经理主界面
+void show_program();//剧目查询及管理界面
 
 //welcom.cpp
 
@@ -196,6 +198,8 @@ void print_re();
 void print_examinput();//非法输入报错
 void go_on();//按任意键继续
 void print_mallocX();//malloc报错
+int enquiry();//判断是否进行本次操作
+void print_ok(); //提示操作成功
 
 //friendly.cpp
 
@@ -203,16 +207,21 @@ void process_all();//程序入口
 void process_sign();//登录过程
 void process_admin();//管理员过程
 void process_manager();//剧院经理过程
+void process_program();//剧目查询及管理过程
+
 void process_conducter();//售票员过程
 void process_customer();//顾客过程
 
-void process_accountAppeal();//账号申诉过程
+void account_appeal();//账号申诉过程
 //process.cpp
 
 char *username_get(int judge);//用户名的获取
 int sign_judge();//登陆成功及账户类型的判断
 char *password_get(int judge);//用户密码的获取
-char *string_exam(int down, int up,int judge);//字符串检查函数    down~up   字符串字节数限制
+char *get_string(int down, int up,int judge);//字符串检查函数    down~up   字符串字节数限制
+date_status get_date();//日期的获取及判断
+time_status get_time();//时间的获取及判断
+data_program get_program_infomation();//获取剧目主要信息  并进行初始化
 
 //sonfunction.cpp
 
@@ -223,6 +232,10 @@ void import_studio_and_seat();//读入放映厅及座位信息
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
+Program *search_program(char *obj);//按ID或名称查找剧目
+void add_program();//增加剧目
+void save_program();//保存剧目信息到文件
+
 //Linklist.cpp
 
 void import_all();//导入账户信息

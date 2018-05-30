@@ -1,5 +1,6 @@
 #include"stdafx.h"
 #include"statements.h"
+///////////////////////////////////////////import
 
 void import_account() {//读入账号信息
 	FILE *fp = fopen(".\\account.txt","r");
@@ -9,7 +10,7 @@ void import_account() {//读入账号信息
 	}
 	int t;
 	data_account tem;
-	while (fscanf(fp,"%d %s %s %d",&tem.UID,tem.username,tem.password,&t)!=EOF) {
+	while (fscanf(fp,"%s %s %s %d",tem.UID,tem.username,tem.password,&t)!=EOF) {
 		tem.user_type = user_types(t);
 		Account *p = (Account *)malloc(sizeof(Account));
 		if (p == NULL) {
@@ -34,7 +35,7 @@ void import_program() {//从文件读入剧目信息存储为链表
 	}
 	data_program tem = {0};
 	int type,rating;
-	while (fscanf(fp, "%d %s %d %d %s %s %s",&tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0], tem.performer[1])==7&&\
+	while (fscanf(fp, "%s %s %d %d %s %s %s",tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0], tem.performer[1])==7&&\
 		fscanf(fp,"%d-%d-%d %d-%d-%d", &tem.start_date.year, &tem.start_date.month, &tem.start_date.day, &tem.end_date.year, &tem.end_date.month, &tem.end_date.day)== 6\
 		&&fscanf(fp,"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
 		tem.program_type = (program_types)type,tem.program_rating=(program_ratings)rating;
@@ -61,7 +62,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 	}
 	data_studio tem;
 	int i, j,t,cnt=1;//cnt用来计算seat_ID
-	while (fscanf(fp, "%d %s %d %d", &tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
+	while (fscanf(fp, "%s %s %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
 		Studio *p = (Studio *)malloc(sizeof(Studio));
 		if (p == NULL) {
 			print_mallocX();
@@ -80,7 +81,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 					print_mallocX();
 					exit(1);
 				}
-				k->seatx = i, k->seaty = j,k->seat_ID=cnt++,k->stduio_ID=p->element.studio_ID;
+				k->seatx = i, k->seaty = j,k->seat_ID=cnt++,k->stduio_ID=atoi(p->element.studio_ID);
 				fscanf(fp, "%d", &t);
 				k->seat_condition = (seat_conditions)t;
 				k->next = list.seat_tail->next;
@@ -90,4 +91,26 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 			}
 		}
 	}
+}
+
+//////////////////////////////////////////save
+
+void save_program() {//保存剧目信息到文件
+	FILE *fp = fopen(".\\program.txt","w+");
+	if (fp == NULL) {
+		print_re();
+		exit(1);
+	}
+	Program *p = list.program_head->next;
+	for (p; p; p = p->next) {
+		fprintf(fp, "%s %s %d %d %s %s %s %d-%d-%d \
+		%d-%d-%d %d %s %s %s %d %d\n", p->element.program_ID\
+		,p->element.program_name, p->element.program_type\
+		, p->element.program_rating, p->element.director, p->element.performer[0]\
+		, p->element.performer[1],p->element.start_date.year, p->element.start_date\
+		.month, p->element.start_date.day, p->element.end_date.year, p->element.end_date.\
+		month, p->element.end_date.day, p->element.duration, p->element.label, \
+		p->element.area, p->element.language, p->element.price, p->element.cost);
+	}
+	fclose(fp);
 }

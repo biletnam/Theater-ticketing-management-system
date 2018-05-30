@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "statements.h"
 
-//void 
+
 /*void choice() {//ÎÄ±¾ÒÆ¶¯º¯Êı
 	HANDLE handle_move = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO screen_info;
@@ -34,12 +34,17 @@ int choice_judge(int i) {//¶ÁÈ¡¼üÅÌÊÂ¼ş          i  // ½çÃæÑ¡Ôñ   ²Î¼ûscreen_cle
 				//screen_clear(highlight == 3 ? highlight = 1:++highlight);
 				highlight = screen_clear(i, highlight, 1);
 			}
-			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂESC  
+			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true ) //°´ÏÂESC  
 			{
-				show_bye();
-				system("cls");
-				system("color ff");
-				system("taskkill /im cmd.exe /T /F");
+				if (i == 1) {//Ö÷½çÃæESCÖ±½ÓÍË³ö
+					show_bye();
+					system("cls");
+					system("color ff");
+					system("taskkill /im cmd.exe /T /F");
+				}
+				else {
+					return 0;//×îÎª·µ»ØÉÏÒ»²ã
+				}
 			}
 			if (event.Event.KeyEvent.uChar.AsciiChar ==13 && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ»Ø³µ  
 			{
@@ -66,14 +71,23 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		i == 0 ? i = 3 : i = i;//¸ßÁÁ¿ØÖÆ
 		i > 3 ? i = 1 : i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(35, 6); printf("Ó°Æ¬²éÑ¯¼°¹ÜÀí");
+		set_position(34, 6); printf("¾çÄ¿²éÑ¯¼°¹ÜÀí");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 8); printf("·ÅÓ³Ìü²éÑ¯¼°¹ÜÀí");
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(35, 10); printf("ÊÛÆ±Ô±Òµ¼¨²éÑ¯");
+		set_position(34, 10); printf("ÊÛÆ±Ô±Òµ¼¨²éÑ¯");
 	}
 	else if (order == 3) {
-
+		i == 0 ? i = 4 : i = i;
+		i > 4 ? i = 1 : i = i;
+		i==1?SetColor(11, 0): SetColor(7, 0);
+		set_position(36, 6);printf("²éÑ¯¾çÄ¿ĞÅÏ¢");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8);printf("ĞÂÔö¾çÄ¿ĞÅÏ¢");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10);printf("É¾³ı¾çÄ¿ĞÅÏ¢");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("ĞŞ¸Ä¾çÄ¿ĞÅÏ¢");
 	}
 	return i;
 }
@@ -86,6 +100,17 @@ void SetColor(short foreColor, short backColor){
 	SetConsoleTextAttribute(winHandle, foreColor + backColor * 0x10);     //ÉèÖÃ¿ØÖÆÌ¨ÎÄ±¾µÄÊôĞÔ
 }
 
+int get_positionx() {//µÃµ½µ±Ç°¹â±êx×ø±ê
+	POINT point;
+	GetCursorPos(&point);
+	return (int)point.x;
+}
+
+int get_positiony() {//µÃµ½µ±Ç°¹â±êy×ø±ê
+	POINT point;
+	GetCursorPos(&point);
+	return (int)point.y;
+}
 
 void set_position(short x, short y){//ÉèÖÃ¹â±êÎ»ÖÃ
 	HANDLE winHandle;                  
