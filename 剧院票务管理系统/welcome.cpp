@@ -153,3 +153,27 @@ void show_program() {//剧目查询及管理界面
 //	printf("电影");
 //	set_position(x + 5, y);
 //}*/
+
+
+void show_program_information(Program *p) {
+	system("cls");
+	char rating[8];
+	switch (p->element.program_rating) {
+	case 1:strcpy(rating, "Child"); break;
+	case 2:strcpy(rating, "Teen"); break;
+	case 3:strcpy(rating, "Adult"); break;
+	default:
+		print_re();
+	}
+	printf("\n\n"); 
+	printf("	==================================================================\n");
+	printf("	||								||\n");
+	printf("	||电影名称:%-8s	        导演:%-15s		||\n", p->element.program_name, p->element.director);
+	printf("	||								||\n");
+	printf("	||主演:%-10s    %-10s			时长:%dmin	||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
+	printf("	||								||\n");
+	printf("	||电影标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area,p->element.price);
+	printf("	||								||\n");
+	printf("	||放映等级:%-8s		语言:%-10s			||\n", rating, p->element.language);
+	printf("	==================================================================\n");
+}

@@ -68,11 +68,11 @@ typedef struct em{//剧目数据域
 	char performer[2][NAME];//7个汉字      主演   两名
 	date_status start_date; //上映日期   参见date_status结构体定义
 	date_status end_date; //结束日期   参见date_status结构体定义
-	int duration;//剧目时长       minute
+	int duration;//剧目时长       minute   [1,600]
 	char  label[5];//剧目标签   比如  喜剧  动作   惊悚 
 	char area[5];//地区   2个汉字
 	char language[NAME];//语言
-	int price;//票价
+	int price;//票价   [5,100]
 	int cost;//放映成本    （万元)
 }data_program;
 
@@ -191,7 +191,7 @@ void show_bye();//再见界面
 void show_customer();//顾客主界面
 void show_manager();//剧院经理主界面
 void show_program();//剧目查询及管理界面
-
+void show_program_information(Program *p);//输出电影信息
 //welcom.cpp
 
 void print_re();
@@ -219,6 +219,7 @@ char *username_get(int judge);//用户名的获取
 int sign_judge();//登陆成功及账户类型的判断
 char *password_get(int judge);//用户密码的获取
 char *get_string(int down, int up,int judge);//字符串检查函数    down~up   字符串字节数限制
+int get_num(int down, int up, int ndown, int nup);//读取数字    并检查输入   范围[down,up]   位数n[ndown,nup]
 date_status get_date();//日期的获取及判断
 time_status get_time();//时间的获取及判断
 data_program get_program_infomation();//获取剧目主要信息  并进行初始化
@@ -229,13 +230,18 @@ data_program get_program_infomation();//获取剧目主要信息  并进行初始化
 void import_account();//读入账号信息
 void import_program();//读入剧目信息
 void import_studio_and_seat();//读入放映厅及座位信息
+
+
+void save_program();//保存剧目信息到文件
+
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
-Program *search_program(char *obj);//按ID或名称查找剧目
+Program *search_program(char *obj);//按ID或名称查找剧目    相似反馈
 void add_program();//增加剧目
-void save_program();//保存剧目信息到文件
-
+void kill_program(Program *p);//按照ID或名字删除剧目
+void print_program(Program *p);////按ID/名称输出单个影片信息
+void modify_program(Program *p);//修改影片信息
 //Linklist.cpp
 
 void import_all();//导入账户信息

@@ -104,7 +104,7 @@ void save_program() {//保存剧目信息到文件
 	Program *p = list.program_head->next;
 	for (p; p; p = p->next) {
 		fprintf(fp, "%s %s %d %d %s %s %s %d-%d-%d \
-		%d-%d-%d %d %s %s %s %d %d\n", p->element.program_ID\
+%d-%d-%d %d %s %s %s %d %d\n", p->element.program_ID\
 		,p->element.program_name, p->element.program_type\
 		, p->element.program_rating, p->element.director, p->element.performer[0]\
 		, p->element.performer[1],p->element.start_date.year, p->element.start_date\

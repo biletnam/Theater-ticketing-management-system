@@ -37,3 +37,5 @@ void print_ok() {//提示操作成功
 	printf("操作成功了的说!\n");
 	rewind(stdin);
 }
+
+

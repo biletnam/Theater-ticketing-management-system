@@ -76,7 +76,7 @@ char *password_get(int judge) {//密码输入的获取        judge!=0时进行输入检查
 	return password;
 }
 
-char *get_string(int down,int up ,int judge) {//字符串获取及检查函数    down~up   字符串字节数限制
+char *get_string(int down,int up ,int judge) {//字符串获取及检查函数    长度[down,up]   字符串字节数限制
 	char *str = (char *)malloc(sizeof(char)*100);// judge 开关   是否开启数字检查、汉字检查  
 	scanf("%s", str);
 	unsigned int flag = 1, i;
@@ -102,6 +102,20 @@ char *get_string(int down,int up ,int judge) {//字符串获取及检查函数    down~up 
 		}
 	} while ((flag == 0) && (flag = 1));
 	return str;
+}
+
+int get_num(int down, int up, int ndown, int nup) {//读取数字    并检查输入   范围[down,up]   位数n[ndown,nup]
+	int num,flag=1;
+	do {
+		scanf("%d", &num);
+		char str[25];
+		sprintf(str, "%d", num);
+		if (num<down||num>up||(strlen(str)<=nup&&strlen(str)>=ndown)) {//检查大小及位数
+			print_examinput();
+			flag = 0;
+		}
+	} while (flag == 0 && (flag = 1));
+	return num;
 }
 
 date_status get_date() {//日期的获得与判断
@@ -154,22 +168,16 @@ time_status get_time() {//时间的获得及判断
 data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	catch_cursor();
 	data_program tem = { 0 };
-	strcpy(tem.area, "未知");
-	strcpy(tem.performer[0], "未知");
-	strcpy(tem.performer[1], "未知");
+	strcpy(tem.area, "——");
+	strcpy(tem.performer[0], "——");
+	strcpy(tem.performer[1], "——");
 	strcpy(tem.language, "中文");
-	strcpy(tem.label, "未知");
+	strcpy(tem.label, "——");
 	tem.program_rating = (program_ratings)1;
 	char *str; int flag = 1, choice;
 	printf("\n1.电影   2.歌剧   3.音乐会\n");
 	printf("请选择剧目类型:");
-	do {
-		scanf("%d", &choice);
-		if (choice < 1 || choice>3) {
-			flag = 0;
-			print_examinput();
-		}
-	} while (flag == 0 && (flag = 1));
+	choice = get_num(1, 3, 1, 1);
 	tem.program_type = (program_types)choice;
 	printf("请输入剧目编号(6位数字):");
 	str = get_string(6, 6, 1);
@@ -196,29 +204,22 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	do {
 		tem.start_date = get_date();
 		tem.end_date = get_date();
-		char date1[15], date2[15];
-		sprintf(date1, "%d-%d-%d", tem.start_date.year, tem.start_date.month, tem.start_date.day);
-		sprintf(date2, "%d-%d-%d", tem.end_date.year, tem.end_date.month, tem.end_date.day);
-		if (strcmp(date2, date1) <= 0) {
+		//char date1[15], date2[15];
+		//sprintf(date1, "%d-%d-%d", tem.start_date.year, tem.start_date.month, tem.start_date.day);
+		//sprintf(date2, "%d-%d-%d", tem.end_date.year, tem.end_date.month, tem.end_date.day);
+		if (tem.start_date.year>tem.end_date.year||(tem.start_date.year==tem.end_date.year&&\
+			tem.start_date.month>tem.end_date.month)||(tem.start_date.year == tem.end_date.year\
+			&&tem.start_date.month==tem.end_date.month&&tem.start_date.day>tem.end_date.day)) {
 			flag = 0;
 			print_examinput();
 		}
 	} while (flag == 0 && (flag = 1));
 	printf("请输入剧目时长(min):");
-	do {
-		scanf("%d", &choice);
-		if (choice <= 0) {
-			print_examinput();
-		}
-	} while (choice <= 0);
+	choice = get_num(1,600,1,3);
 	tem.duration = choice;
 	printf("请输入票价(元):");
-	do {
-		scanf("%d", &choice);
-		if (choice <= 0) {
-			print_examinput();
-		}
-	} while (choice <= 0);
+	choice = get_num(5, 100, 1, 3);
+	p->element.price = choice;
 	printf("具体信息已置为默认值\n");
 	return tem;
 }
