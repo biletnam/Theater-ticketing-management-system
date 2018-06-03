@@ -40,7 +40,25 @@ void process_sign() {//登录过程
 }
 
 void process_admin() {//管理员过程
+	show_admin();
+	int choice = choice_judge(7), exam = 0;
+	switch (choice) {
+	case 0:break;
+	case 1:process_acount(); exam = 1;
+	default:
+		process_admin(); break;
+	}
+}
 
+void process_acount() {//账户管理过程        //在这里调用你写的链表操作
+	show_account();
+	int choice = choice_judge(5), exam = 0;
+	switch (choice) {
+	case 0:break;
+	case 1:
+	default:
+		process_acount(); break;
+	}
 }
 
 ///////////////////////////////////////剧院经理
@@ -77,11 +95,13 @@ void process_program() {//剧目查询及管理过程
 void process_studio() {//影厅查询及管理过程
 	show_studio();
 	int choice = choice_judge(4),exam=0;
-	switch (choice)
+	switch (catch_cursor(),choice)
 	{
 	case 0:break;
-	case 1:
-	case 2:if (exam == 0) { exam = 2; }
+	case 1:printf("\n请输入你想查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(get_string(4, 6, 0))), go_on();
+	case 2:if (exam == 0) { exam = 2; go_on(); }
+	case 3:if (exam == 0) { add_studio();; exam = 3; }
+	case 4:if(exam == 0){}
 	default:
 		process_studio(); break;
 	}

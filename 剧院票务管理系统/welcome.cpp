@@ -117,9 +117,9 @@ void show_manager() {//剧院经理主界面
 	system("cls");
 	rewind(stdin);
 	hide_cursor();
-	set_position(37,4);
+	set_position(36,4);
 	SetColor(10,0);
-	printf("查询&管理");
+	printf("查询与管理");
 	SetColor(11, 0);
 	set_position(34,6);
 	printf("剧目查询及管理");
@@ -170,6 +170,44 @@ void show_studio(){//影厅查询及管理界面
 	printf("新增影厅信息");
 	set_position(36, 12);
 	printf("删除影厅信息");
+	set_position(36, 14);
+	printf("浏览影厅信息");
+}
+
+void show_admin() {//系统管理员主界面
+	system("cls");
+	rewind(stdin);
+	hide_cursor();
+	set_position(35, 4);
+	SetColor(10, 0);
+	printf("查询与管理");
+	SetColor(11, 0);
+	set_position(34, 6);
+	printf("系统用户管理");
+	SetColor(7, 0);
+	set_position(34, 8);
+	printf("登录记录查询");
+}
+
+void show_account() {//账户查询及管理界面
+	rewind(stdin);
+	hide_cursor();
+	system("cls");
+	set_position(38, 4);
+	SetColor(10, 0);
+	printf("用户管理");
+	SetColor(11, 0);
+	set_position(36, 6);
+	printf("查询用户信息");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("修改用户信息");
+	set_position(36, 10);
+	printf("新增用户信息");
+	set_position(36, 12);
+	printf("删除用户信息");
+	set_position(36, 14);
+	printf("浏览用户信息");
 }
 
 //弃用

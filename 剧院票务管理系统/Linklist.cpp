@@ -66,7 +66,7 @@ Program *search_program(char *obj) {//按ID或名字查找剧目
 				printf("%s  %s\n", p->element.program_ID, p->element.program_name);
 			}
 		}
-		printf("请确认后重新查找\n");
+		if(flag==1)printf("请确认后重新查找\n");
 		return NULL;
 	}
 }
@@ -111,7 +111,7 @@ void print_program(Program *p , int i) {//输出某个剧目信息    i  控制是否清屏
 		printf("	||								||\n");
 		printf("	||%s名称:%-15s		%s:%-8s		||\n",type, p->element.program_name,person, p->element.director);
 		printf("	||								||\n");
-		printf("	||主演:%-8s    %-8s			时长:%dmin	||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
+		printf("	||主演:%-14s	%-14s	时长:%dmin		||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
 		printf("	||								||\n");
 		printf("	||电影标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area, p->element.price);
 		printf("	||								||\n");
@@ -209,6 +209,14 @@ Studio *search_studio(char *obj) {//按ID或名称查找放映厅    模糊查询
 		return p;
 	}
 	else {
+		printf("该放映厅不存在哦");
+		for (p = list.studio_head->next; p; p = p->next) {
+			if (strstr(p->element.studio_ID, obj) != NULL || strstr(p->element.studio_name, obj) != NULL) {
+				if (flag == 0) {
+					Sleep(500); printf("嗯  "); Sleep(1000); printf("也许你要找的是\n"); rewind(stdin); flag = 1;
+				}printf("%s    %s\n",p->element.studio_ID,p->element.studio_name);
+			}
+		}
 		return NULL;
 	}
 }
@@ -226,18 +234,51 @@ void kill_studio(Studio *p) {//删除指定放映厅
 			printf("删除已取消\n"); rewind(stdin);
 		}
 	}
-	else {
-		printf("该放映厅不存在\n");
-	}
 }
 
-void print_studio(Studio *p) {
-	
+void print_studio(Studio *p) {//打印放映厅及座位信息
+	if (p) {
+		int i, j;
+		system("cls");
+		Seat *k = search_seat(atoi(p->element.studio_ID));
+		printf("\n\n");
+		printf("	==================================================================\n");
+		printf("			放映厅编号：%s	名称：%s\n\n",p->element.studio_ID,p->element.studio_name);
+		printf("			○表示可用座位  ●表示损坏座位\n\n");
+		printf("				╭——————————╮\n");
+		printf("					↑荧幕\n\n");
+		for (i = 1; i <= p->element.seatx; i++) {
+			printf("			");
+			for (j = 1; j <= p->element.seaty; j++) {
+				switch (k->seat_condition) {
+				case 0:printf("  "); break;
+				case 1:printf("○"); break;
+				case 9:printf("●"); break;
+				default:
+					print_re(); break;
+				}
+				k = k->next;
+			}printf("\n");
+		}
+	}
 }
 
 
 ////////////////////////////////////////seat
 
-void add_seat(Studio *H) {//根据
+void insert_seat(Studio *H) {//插入座位到特定链表位置及放映厅位置
 
+}
+
+Seat *search_seat(int obj) {//根据放映厅编号查找座位
+	int flag = 0;
+	Seat *p = list.seat_head->next;
+	for (p; p; p = p->next) {
+		if (p->stduio_ID == obj) {
+			flag = 1;
+			return p;
+		}
+	}
+	printf("");
+	return NULL;
 }

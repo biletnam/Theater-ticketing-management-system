@@ -125,25 +125,25 @@ typedef struct linklist_account {//账号
 
 
 typedef struct linklist_seat {
-	int seat_ID;//座位编号
 	int stduio_ID;//座位所在放映厅编号
 	int seatx;//座位所在行
 	int seaty;//座位所在列
-	seat_conditions seat_condition;//座位状况   参见enum seat_conditions
+	seat_conditions seat_condition;//位置状态   参见enum seat_conditions
 	struct linklist_seat *pre, *next;
 }Seat;
 
 typedef struct linklist_ticket {
 	int ticket_ID;//入场券编号
 	int plan_ID;//演出计划编号
-	int seat_ID;//座位编号
+	int seatx;//座位所在行
+	int seaty;//座位所在列
 	int price;//票价    剧目决定
-	ticket_statuses ticket_status;//票的状况     参见enum tickets_statuses
+	ticket_statuses ticket_status;//票的状态     参见enum tickets_statuses
 	struct linklist_ticket *pre, *next;
 }Ticket;
 
-typedef struct linklist_record{//销售记录
-	long record_ID;//销售记录ID
+typedef struct linklist_record{//交易记录
+	long record_ID;//交易记录ID
 	int conductor_ID;//售票员ID      会员账户
 	int ticket_ID;//票ID
 	date_status date;//处理日期
@@ -194,6 +194,8 @@ void show_manager();//剧院经理主界面
 void show_program();//剧目查询及管理界面
 void show_studio();//影厅查询及管理界面
 
+void show_admin();//系统管理员主界面
+void show_account();//账户管理界面
 //welcom.cpp
 
 void print_re();
@@ -207,6 +209,7 @@ void print_ok(); //提示操作成功
 void process_all();//程序入口
 void process_sign();//登录过程
 void process_admin();//管理员过程
+void process_acount();//账户管理过程
 
 void process_manager();//剧院经理过程
 void process_program();//剧目查询及管理过程
@@ -249,7 +252,11 @@ void modify_program(Program *p);//修改影片信息
 
 Studio *search_studio(char *obj);//按ID或名称查找放映厅    模糊查询
 void add_studio();//增加放映厅
-void print_studio(Studio *p);//输出某个放映厅信息
+void print_studio(Studio *p);////打印放映厅及座位信息
+
+void insert_seat(Studio *H);//插入座位到特定链表位置及放映厅位置
+Seat *search_seat(int obj);//根据放映厅编号查找座位
+
 //Linklist.cpp
 
 void import_all();//导入账户信息

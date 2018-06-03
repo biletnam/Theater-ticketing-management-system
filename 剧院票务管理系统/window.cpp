@@ -80,31 +80,36 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 12); printf("Æ±Îñ²éÑ¯¼°¹ÜÀí");
 	}
-	else if (order == 3) {
+	else if (order >= 3 && order <= 6) {
+		char obj[5];
+		switch (order) {
+		case 3:strcpy(obj, "¾çÄ¿"); break;
+		case 4:strcpy(obj, "Ó°Ìü"); break;
+		case 5:strcpy(obj, "ÓÃ»§"); break;
+		case 6:strcpy(obj, ""); break;
+		default:
+			print_re(); break;
+		}
 		i == 0 ? i = 5 : i = i;
 		i > 5 ? i = 1 : i = i;
-		i==1?SetColor(11, 0): SetColor(7, 0);
-		set_position(36, 6);printf("²éÑ¯¾çÄ¿ÐÅÏ¢");
-		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 8);printf("ÐÞ¸Ä¾çÄ¿ÐÅÏ¢");
-		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 10);printf("ÐÂÔö¾çÄ¿ÐÅÏ¢");
-		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 12); printf("É¾³ý¾çÄ¿ÐÅÏ¢");
-		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 14);printf("ä¯ÀÀËùÓÐ¾çÄ¿");
-	}
-	else if (order == 4) {
-		i == 0 ? i = 4 : i = i;
-		i > 4 ? i = 1 : i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 6); printf("²éÑ¯Ó°ÌüÐÅÏ¢");
+		set_position(36, 6); printf("²éÑ¯%sÐÅÏ¢",obj);
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 8); printf("ÐÞ¸ÄÓ°ÌüÐÅÏ¢");
+		set_position(36, 8); printf("ÐÞ¸Ä%sÐÅÏ¢",obj);
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 10); printf("ÐÂÔöÓ°ÌüÐÅÏ¢");
+		set_position(36, 10); printf("ÐÂÔö%sÐÅÏ¢",obj);
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 12); printf("É¾³ýÓ°ÌüÐÅÏ¢");
+		set_position(36, 12); printf("É¾³ý%sÐÅÏ¢",obj);
+		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 14); printf("ä¯ÀÀ%sÐÅÏ¢",obj);
+	}
+	else if (order == 7) {
+		i == 0 ? i = 2 : i = i;
+		i > 2 ? i = 1: i = i;
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 6); printf("ÏµÍ³ÓÃ»§¹ÜÀí");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 8); printf("µÇÂ¼¼ÇÂ¼²éÑ¯");
 	}
 	else {
 		print_re();

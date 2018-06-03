@@ -61,7 +61,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 			exit(1);
 	}
 	data_studio tem;
-	int i, j,t,cnt=1;//cnt用来计算seat_ID
+	int i, j, t;
 	while (fscanf(fp, "%s %s %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
 		Studio *p = (Studio *)malloc(sizeof(Studio));
 		if (p == NULL) {
@@ -81,7 +81,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 					print_mallocX();
 					exit(1);
 				}
-				k->seatx = i, k->seaty = j,k->seat_ID=cnt++,k->stduio_ID=atoi(p->element.studio_ID);
+				k->seatx = i, k->seaty = j,k->stduio_ID=atoi(p->element.studio_ID);
 				fscanf(fp, "%d", &t);
 				k->seat_condition = (seat_conditions)t;
 				k->next = list.seat_tail->next;
