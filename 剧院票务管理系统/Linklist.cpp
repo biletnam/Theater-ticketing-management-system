@@ -6,21 +6,21 @@ void initialize_linklist() {//初始化链表
 	list.program_head = (Program *)malloc(sizeof(Program));
 	list.studio_head = (Studio *)malloc(sizeof(Studio));
 	list.plan_head = (Plan *)malloc(sizeof(Plan));
-	list.seat_head = (Seat *)malloc(sizeof(Seat));
+	//list.seat_head = (Seat *)malloc(sizeof(Seat));
 	list.ticket_head = (Ticket *)malloc(sizeof(Ticket));
 	list.record_head = (Record *)malloc(sizeof(Record));
 	list.account_head->next = list.account_head->pre = NULL;
 	list.program_head->next = list.program_head->pre =  NULL;
 	list.studio_head->next =list.studio_head->pre = NULL;
 	list.plan_head->next = list.plan_head->pre = NULL;
-	list.seat_head->next = list.seat_head->pre = NULL;
+	//list.seat_head->next = list.seat_head->pre = NULL;
 	list.ticket_head->next = list.ticket_head->pre = NULL;
 	list.record_head->next = list.record_head->pre = NULL;
 	list.account_tail = list.account_head;
 	list.program_tail = list.program_head;
 	list.studio_tail = list.studio_head;
 	list.plan_tail = list.plan_head;
-	list.seat_tail = list.seat_head;
+	//list.seat_tail = list.seat_head;
 	list.ticket_tail = list.ticket_head;
 	list.record_tail = list.record_head;
 }
@@ -29,6 +29,7 @@ void initialize_linklist() {//初始化链表
 
 void add_program() {//增加剧目
 	Program *p = (Program *)malloc(sizeof(Program));
+	exam_mallocX(p);
 	p->element = get_program_infomation();//剧目信息获取
 	if (enquiry(1)) {
 		p->next = list.program_tail->next;
@@ -164,6 +165,7 @@ void modify_program(Program *p) {//修改电影信息
 
 void add_studio() {//增加放映厅
 	Studio *p = (Studio *)malloc(sizeof(Studio));
+	exam_mallocX(p);
 	printf("\n请输入新的放映厅编号(4~6位数字):\n"); rewind(stdin);
 	char *str = get_string(4, 6, 1);
 	while (search_studio(str)) {
@@ -187,13 +189,15 @@ void add_studio() {//增加放映厅
 	if (enquiry(1)) {
 		p->next = list.studio_tail->next;
 		list.studio_tail->next = p;
+		initialize_seat(p);
 		//save_studio_and_seat();
-		//import_studio_and_seat();
+		////import_studio_and_seat();
 		printf("所有座位已置为可用状态\n如有需要请记得修改\n");
 		print_ok();
 	}
 	else {
-		import_studio_and_seat();
+		//import_studio_and_seat();
+		printf("放映厅新增已取消\n");
 	}
 }
 
@@ -227,6 +231,7 @@ void kill_studio(Studio *p) {//删除指定放映厅
 			p->pre->next = p->next;
 			if (p->next)
 				p->next->pre = p->pre;
+			delete_seat(p);//删除该放映厅所有座位
 			free(p);
 			//save_studio_and_seat();
 		}
@@ -238,47 +243,83 @@ void kill_studio(Studio *p) {//删除指定放映厅
 
 void print_studio(Studio *p) {//打印放映厅及座位信息
 	if (p) {
-		int i, j;
+		int i, j, cnt = 0;//cnt 计算可用座位数
 		system("cls");
-		Seat *k = search_seat(atoi(p->element.studio_ID));
+		Seat *k = p->element.seat_head->next;
 		printf("\n\n");
-		printf("	==================================================================\n");
+		printf("	====================================================================\n");
 		printf("			放映厅编号：%s	名称：%s\n\n",p->element.studio_ID,p->element.studio_name);
-		printf("			○表示可用座位  ●表示损坏座位\n\n");
-		printf("				╭——————————╮\n");
+		printf("			○表示可用座位  ●表示损坏座位   座位 %d x %d\n\n",p->element.seatx,p->element.seaty);
+		printf("			╭——————————————————╮\n");
 		printf("					↑荧幕\n\n");
 		for (i = 1; i <= p->element.seatx; i++) {
-			printf("			");
+			if(p->element.seaty>15)
+				printf("			");
+			else
+				printf("			    ");
 			for (j = 1; j <= p->element.seaty; j++) {
 				switch (k->seat_condition) {
 				case 0:printf("  "); break;
-				case 1:printf("○"); break;
+				case 1:printf("○"); cnt++; break;
 				case 9:printf("●"); break;
 				default:
 					print_re(); break;
 				}
 				k = k->next;
 			}printf("\n");
-		}
+		}printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
 	}
 }
 
 
 ////////////////////////////////////////seat
 
-void insert_seat(Studio *H) {//插入座位到特定链表位置及放映厅位置
+void initialize_seat(Studio *p) {//为新放映厅初始化座位
+	p->element.seat_head->pre = p->element.seat_head->next = NULL;//次链表初始化
+	p->element.seat_tail = p->element.seat_head;
+	int i, j;
+	for (i = 1; i <= p->element.seatx; i++) {
+		for (j = 1; j <= p->element.seaty; j++) {
+			Seat *k = (Seat *)malloc(sizeof(Seat));
+			exam_mallocX(k);
+			k->seatx = i, k->seaty = j, k->stduio_ID = atoi(p->element.studio_ID);
+			k->seat_condition = (seat_conditions)1;
+			k->next = p->element.seat_tail->next;
+			k->pre = p->element.seat_tail;
+			p->element.seat_tail->next = k;
+			p->element.seat_tail = k;
+		}
+	}
+}
+
+Seat *search_seat(char *obj) {//根据放映厅ID/名称及行列查找座位
+	int flag = 0;
+	Studio *k = search_studio(obj);
+	if (k) {
+		Seat *p = k->element.seat_head->next;
+		for (p; p; p = p->next) {
+			if (p->stduio_ID == atoi(obj)) {
+				flag = 1;
+				return p;
+			}
+		}
+		printf("");
+		return NULL;
+	}
+}
+
+void modify_seat() {
 
 }
 
-Seat *search_seat(int obj) {//根据放映厅编号查找座位
-	int flag = 0;
-	Seat *p = list.seat_head->next;
-	for (p; p; p = p->next) {
-		if (p->stduio_ID == obj) {
-			flag = 1;
-			return p;
-		}
+void delete_seat(Studio *k) {//删除放映厅时删除其座位
+	if (k) {
+		Seat *dead = k->element.seat_head;
+		Seat *p = dead->next;
+		while (p) {
+			free(dead);
+			dead = p;
+			p = p->next;
+		}free(dead);
 	}
-	printf("");
-	return NULL;
 }

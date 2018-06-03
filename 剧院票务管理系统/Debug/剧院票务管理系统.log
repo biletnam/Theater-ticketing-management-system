@@ -1,2 +1,23 @@
-﻿  process.cpp
-  剧院票务管理系统.vcxproj -> C:\Users\HP\source\repos\剧院票务管理系统\Debug\剧院票务管理系统.exe
+﻿  Linklist.cpp
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\linklist.cpp(33): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\linklist.cpp(172): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\linklist.cpp(291): error C3861: “print_mallocX”: 找不到标识符
+  filefunction.cpp
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(17): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(44): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(68): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(74): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\filefunction.cpp(88): error C3861: “print_mallocX”: 找不到标识符
+  friendly.cpp
+  initialize.cpp
+  process.cpp
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\process.cpp(104): error C2065: “kill”: 未声明的标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\process.cpp(104): error C2143: 语法错误: 缺少“;”(在“}”的前面)
+  sonfunction.cpp
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(45): error C3861: “print_mallocX”: 找不到标识符
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(123): warning C4018: “>”: 有符号/无符号不匹配
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(123): warning C4018: “<”: 有符号/无符号不匹配
+  welcome.cpp
+  window.cpp
+  剧院票务管理系统.cpp
+  正在生成代码...

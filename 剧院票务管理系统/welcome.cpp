@@ -127,7 +127,7 @@ void show_manager() {//剧院经理主界面
 	set_position(34, 8);
 	printf("影厅查询及管理");
 	set_position(34, 10);
-	printf("计划查询及管理");
+	printf("演出查询及管理");
 	set_position(34,12);
 	printf("票务查询及管理");
 }

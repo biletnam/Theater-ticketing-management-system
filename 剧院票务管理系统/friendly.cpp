@@ -19,8 +19,12 @@ void go_on() {//按任意键继续
 	getch();
 }
 
-void print_mallocX() {//malloc报错
-	printf("不能分配更多内存了\n");
+void exam_mallocX(void *p) {//malloc报错
+	if (p == NULL) {
+		printf("不能分配更多内存了\n");
+		go_on();
+		exit(1);
+	}
 }
 
 int enquiry(int i) {//判断是否进行本次操作   i==1   enquiry   i==2 warnning

@@ -13,11 +13,7 @@ void import_account() {//读入账号信息
 	while (fscanf(fp,"%s %s %s %d",tem.UID,tem.username,tem.password,&t)!=EOF) {
 		tem.user_type = user_types(t);
 		Account *p = (Account *)malloc(sizeof(Account));
-		if (p == NULL) {
-			print_mallocX();
-			go_on();
-			exit(1);
-		}
+		exam_mallocX(p);
 		p->element = tem;//每成功读取一组数据做一个结点，连接到链表上
 		p->next = list.account_tail->next;
 		p->pre = list.account_tail;
@@ -40,11 +36,7 @@ void import_program() {//从文件读入剧目信息存储为链表
 		&&fscanf(fp,"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
 		tem.program_type = (program_types)type,tem.program_rating=(program_ratings)rating;
 		Program *p = (Program *)malloc(sizeof(Program));
-		if (p == NULL) {
-			print_mallocX();
-			go_on();
-			exit(1);
-		}
+		exam_mallocX(p);
 		p->element = tem;
 		p->next = list.program_tail->next;
 		p->pre = list.program_tail;
@@ -64,11 +56,12 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 	int i, j, t;
 	while (fscanf(fp, "%s %s %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
 		Studio *p = (Studio *)malloc(sizeof(Studio));
-		if (p == NULL) {
-			print_mallocX();
-			exit(1);
-		}
+		exam_mallocX(p);
 		p->element = tem;
+		p->element.seat_head = (Seat *)malloc(sizeof(Seat));
+		exam_mallocX(p->element.seat_head);
+		p->element.seat_head->pre = p->element.seat_head->next = NULL;//次链表初始化
+		p->element.seat_tail = p->element.seat_head;
 		p->next = list.studio_tail->next;
 		p->pre = list.studio_tail;
 		list.studio_tail->next = p;
@@ -77,17 +70,14 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 		for (i = 1; i <= p->element.seatx; i++) {
 			for (j = 1; j <= p->element.seaty; j++) {
 				Seat *k = (Seat *)malloc(sizeof(Seat));
-				if (k == NULL) {
-					print_mallocX();
-					exit(1);
-				}
+				exam_mallocX(k);
 				k->seatx = i, k->seaty = j,k->stduio_ID=atoi(p->element.studio_ID);
 				fscanf(fp, "%d", &t);
 				k->seat_condition = (seat_conditions)t;
-				k->next = list.seat_tail->next;
-				k->pre = list.seat_tail;
-				list.seat_tail->next = k;
-				list.seat_tail = k;
+				k->next = p->element.seat_tail->next;
+				k->pre = p->element.seat_tail;
+				p->element.seat_tail->next = k;
+				p->element.seat_tail = k;
 			}
 		}
 	}
@@ -113,4 +103,11 @@ void save_program() {//保存剧目信息到文件
 		p->element.area, p->element.language, p->element.price, p->element.cost);
 	}
 	fclose(fp);
+}
+
+void save_studio_and_seat() {//保存放映厅及其座位数据
+	FILE *fp = fopen(".\\studio.txt", "w+");
+	if (fp == NULL) {
+		
+	}
 }

@@ -41,6 +41,7 @@ int sign_judge() {//登陆判断及获取账户信息   return flag   flag表示账户类型
 
 char *username_get(int judge) {//用户名的获取    judge!=0时进行输入检查 
 	char *str=(char *)malloc(NAME*5);
+	exam_mallocX(str);
 	str[0] = '\0';
 	scanf("%s", str);
 	if(judge)

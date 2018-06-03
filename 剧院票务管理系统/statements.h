@@ -57,6 +57,15 @@ typedef struct {
 	int minute;
 }time_status;//时间结构体
 
+////////////////////////////////////////先行定义
+typedef struct linklist_seat {
+	int stduio_ID;//座位所在放映厅编号
+	int seatx;//座位所在行
+	int seaty;//座位所在列
+	seat_conditions seat_condition;//位置状态   参见enum seat_conditions
+	struct linklist_seat *pre, *next;
+}Seat;
+
 //////////////////////////////////////实体数据域定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef struct em{//剧目数据域
@@ -81,6 +90,7 @@ typedef struct emm {
 	char studio_name[NAME];//最多七个汉字    放映厅名称
 	int seatx;
 	int seaty;//放映厅座位 的行和列    固有属性   用来设置二维数组
+	Seat *seat_head, *seat_tail;//次链表
 }data_studio;
 
 typedef struct emmm {//演出计划数据域
@@ -123,15 +133,6 @@ typedef struct linklist_account {//账号
 	struct linklist_account *pre, *next;
 }Account;
 
-
-typedef struct linklist_seat {
-	int stduio_ID;//座位所在放映厅编号
-	int seatx;//座位所在行
-	int seaty;//座位所在列
-	seat_conditions seat_condition;//位置状态   参见enum seat_conditions
-	struct linklist_seat *pre, *next;
-}Seat;
-
 typedef struct linklist_ticket {
 	int ticket_ID;//入场券编号
 	int plan_ID;//演出计划编号
@@ -156,7 +157,6 @@ typedef struct linklist_record{//交易记录
 typedef struct ctrl {//链表类型
 	Program *program_head,*program_tail;
 	Studio *studio_head,*studio_tail;
-	Seat *seat_head,*seat_tail;
 	Ticket *ticket_head, *ticket_tail;
 	Plan *plan_head,*plan_tail;
 	Record *record_head, *record_tail;
@@ -201,7 +201,7 @@ void show_account();//账户管理界面
 void print_re();
 void print_examinput();//非法输入报错
 void go_on();//按任意键继续
-void print_mallocX();//malloc报错
+void exam_mallocX(void *p);//malloc报错
 int enquiry(int i);//判断是否进行本次操作   i==1   enquiry   i==2 warnning
 void print_ok(); //提示操作成功
 //friendly.cpp
@@ -254,8 +254,9 @@ Studio *search_studio(char *obj);//按ID或名称查找放映厅    模糊查询
 void add_studio();//增加放映厅
 void print_studio(Studio *p);////打印放映厅及座位信息
 
-void insert_seat(Studio *H);//插入座位到特定链表位置及放映厅位置
-Seat *search_seat(int obj);//根据放映厅编号查找座位
+void initialize_seat(Studio *p);//为新放映厅初始化座位
+Seat *search_seat(char *obj);//根据放映厅编号查找座位
+void delete_seat(Studio *k);//删除放映厅时删除其座位
 
 //Linklist.cpp
 

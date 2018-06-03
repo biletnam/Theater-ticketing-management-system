@@ -9,7 +9,7 @@ int main()
 {
 	initialize();
 	//show_welcome();
-	//print_studio(list.studio_head->next); go_on();
+	//print_studio(list.studio_head->next->next); go_on();
 	process_all();
     return 0;
 }
