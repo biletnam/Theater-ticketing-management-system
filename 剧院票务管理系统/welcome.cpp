@@ -73,6 +73,7 @@ void show_main() {//主界面
 }
 
 void show_sign() {//登录界面
+	rewind(stdin);
 	system("cls");
 	SetColor(10, 0);
 	set_position(30,8);
@@ -114,8 +115,9 @@ void abandon() {//弃用
 
 void show_manager() {//剧院经理主界面
 	system("cls");
+	rewind(stdin);
 	hide_cursor();
-	set_position(38,4);
+	set_position(37,4);
 	SetColor(10,0);
 	printf("查询&管理");
 	SetColor(11, 0);
@@ -123,12 +125,16 @@ void show_manager() {//剧院经理主界面
 	printf("剧目查询及管理");
 	SetColor(7, 0);
 	set_position(34, 8);
-	printf("放映厅查询及管理");
-	set_position(34,10);
-	printf("售票员业绩查询");
+	printf("影厅查询及管理");
+	set_position(34, 10);
+	printf("计划查询及管理");
+	set_position(34,12);
+	printf("票务查询及管理");
 }
 
 void show_program() {//剧目查询及管理界面
+	rewind(stdin);
+	hide_cursor();
 	system("cls");
 	set_position(35, 4);
 	SetColor(10, 0);
@@ -138,11 +144,32 @@ void show_program() {//剧目查询及管理界面
 	printf("查询剧目信息");
 	SetColor(7, 0);
 	set_position(36, 8);
-	printf("新增剧目信息");
-	set_position(36, 10);
-	printf("删除剧目信息");
-	set_position(36, 12);
 	printf("修改剧目信息");
+	set_position(36, 10);
+	printf("新增剧目信息");
+	set_position(36, 12);
+	printf("删除剧目信息");
+	set_position(36, 14);
+	printf("浏览所有剧目");
+}
+
+void show_studio(){//影厅查询及管理界面
+	rewind(stdin);
+	hide_cursor();
+	system("cls");
+	set_position(35, 4);
+	SetColor(10, 0);
+	printf("影厅查询及管理");
+	SetColor(11, 0);
+	set_position(36, 6);
+	printf("查询影厅信息");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("修改影厅信息");
+	set_position(36, 10);
+	printf("新增影厅信息");
+	set_position(36, 12);
+	printf("删除影厅信息");
 }
 
 //弃用
@@ -155,25 +182,3 @@ void show_program() {//剧目查询及管理界面
 //}*/
 
 
-void show_program_information(Program *p) {
-	system("cls");
-	char rating[8];
-	switch (p->element.program_rating) {
-	case 1:strcpy(rating, "Child"); break;
-	case 2:strcpy(rating, "Teen"); break;
-	case 3:strcpy(rating, "Adult"); break;
-	default:
-		print_re();
-	}
-	printf("\n\n"); 
-	printf("	==================================================================\n");
-	printf("	||								||\n");
-	printf("	||电影名称:%-8s	        导演:%-15s		||\n", p->element.program_name, p->element.director);
-	printf("	||								||\n");
-	printf("	||主演:%-10s    %-10s			时长:%dmin	||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
-	printf("	||								||\n");
-	printf("	||电影标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area,p->element.price);
-	printf("	||								||\n");
-	printf("	||放映等级:%-8s		语言:%-10s			||\n", rating, p->element.language);
-	printf("	==================================================================\n");
-}

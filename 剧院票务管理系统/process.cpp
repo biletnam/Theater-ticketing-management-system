@@ -49,10 +49,11 @@ void process_manager() {//剧院经理过程
 	show_manager();
 	int choice = choice_judge(2),exam=0;
 	switch (choice) {
+	case 0:break;
 	case 1:process_program(); exam = 1;
-	case 2:
-
-	case 5:break;
+	case 2:if (exam == 0) { process_studio(); exam = 2; }
+	case 3:if(exam==0){}
+	case 4:if(exam==0){}
 	default:
 		process_manager(); break;
 	}
@@ -62,12 +63,27 @@ void process_program() {//剧目查询及管理过程
 	show_program();
 	int choice = choice_judge(3),exam=0;
 	switch (catch_cursor(),choice) {
-	case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(get_string(1, 30, 0))); exam = 1; go_on();
-	case 2:if (exam == 0) { add_program(); exam = 2; }
-	case 3:if (exam == 0) { printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(get_string(1,30,0))); exam = 3; go_on();}
-	case 4:if (exam == 0) { printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(get_string(1, 30, 0))); exam = 4; go_on();}
+	case 0:break;
+	case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(get_string(1, 30, 0)),1); exam = 1; go_on();
+	case 2:if (exam == 0) { printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(get_string(1, 30, 0))); exam = 2; go_on();}
+	case 3:if (exam == 0) { add_program(); exam = 3; }
+	case 4:if (exam == 0) { printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(get_string(1,30,0))); exam = 4; go_on();}
+	case 5:if (exam == 0) { hide_cursor(); program_viewer(); exam = 5; }
 	default:
 		process_program(); break;
+	}
+}
+
+void process_studio() {//影厅查询及管理过程
+	show_studio();
+	int choice = choice_judge(4),exam=0;
+	switch (choice)
+	{
+	case 0:break;
+	case 1:
+	case 2:if (exam == 0) { exam = 2; }
+	default:
+		process_studio(); break;
 	}
 }
 

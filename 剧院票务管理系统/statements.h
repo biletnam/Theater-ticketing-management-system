@@ -77,8 +77,8 @@ typedef struct em{//¾çÄ¿Êı¾İÓò
 }data_program;
 
 typedef struct emm {
-	char studio_ID[NAME/2];//ÁùÎ»Êı×Ö   ·ÅÓ³Ìü±àºÅ
-	char studio_name[NAME];//Æß¸öºº×Ö    ·ÅÓ³ÌüÃû³Æ
+	char studio_ID[NAME/2];//×î¶àÁùÎ»Êı×Ö   ·ÅÓ³Ìü±àºÅ
+	char studio_name[NAME];//×î¶àÆß¸öºº×Ö    ·ÅÓ³ÌüÃû³Æ
 	int seatx;
 	int seaty;//·ÅÓ³Ìü×ùÎ» µÄĞĞºÍÁĞ    ¹ÌÓĞÊôĞÔ   ÓÃÀ´ÉèÖÃ¶şÎ¬Êı×é
 }data_studio;
@@ -180,6 +180,7 @@ int get_positionx();//µÃµ½µ±Ç°¹â±êx×ø±ê
 int get_positiony();//µÃµ½µ±Ç°¹â±êy×ø±ê
 int screen_clear(int order, int i, int change);/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ¡Ïî Ä¬ÈÏÎª1
 										²ÎÊıchange±í¸Ä±äÁ¿  order±íÊ¾½çÃæµÄÑ¡Ôñ  º¯Êı·µ»Øµ±Ç°Ñ¡Ïî±àºÅ*/
+int turn_page();//·­Ò³Æ÷
 
 
 //window.cpp
@@ -191,23 +192,25 @@ void show_bye();//ÔÙ¼û½çÃæ
 void show_customer();//¹Ë¿ÍÖ÷½çÃæ
 void show_manager();//¾çÔº¾­ÀíÖ÷½çÃæ
 void show_program();//¾çÄ¿²éÑ¯¼°¹ÜÀí½çÃæ
-void show_program_information(Program *p);//Êä³öµçÓ°ĞÅÏ¢
+void show_studio();//Ó°Ìü²éÑ¯¼°¹ÜÀí½çÃæ
+
 //welcom.cpp
 
 void print_re();
 void print_examinput();//·Ç·¨ÊäÈë±¨´í
 void go_on();//°´ÈÎÒâ¼ü¼ÌĞø
 void print_mallocX();//malloc±¨´í
-int enquiry();//ÅĞ¶ÏÊÇ·ñ½øĞĞ±¾´Î²Ù×÷
+int enquiry(int i);//ÅĞ¶ÏÊÇ·ñ½øĞĞ±¾´Î²Ù×÷   i==1   enquiry   i==2 warnning
 void print_ok(); //ÌáÊ¾²Ù×÷³É¹¦
-
 //friendly.cpp
 
 void process_all();//³ÌĞòÈë¿Ú
 void process_sign();//µÇÂ¼¹ı³Ì
 void process_admin();//¹ÜÀíÔ±¹ı³Ì
+
 void process_manager();//¾çÔº¾­Àí¹ı³Ì
 void process_program();//¾çÄ¿²éÑ¯¼°¹ÜÀí¹ı³Ì
+void process_studio();//Ó°Ìü²éÑ¯¼°¹ÜÀí¹ı³Ì
 
 void process_conducter();//ÊÛÆ±Ô±¹ı³Ì
 void process_customer();//¹Ë¿Í¹ı³Ì
@@ -223,7 +226,7 @@ int get_num(int down, int up, int ndown, int nup);//¶ÁÈ¡Êı×Ö    ²¢¼ì²éÊäÈë   ·¶Î
 date_status get_date();//ÈÕÆÚµÄ»ñÈ¡¼°ÅĞ¶Ï
 time_status get_time();//Ê±¼äµÄ»ñÈ¡¼°ÅĞ¶Ï
 data_program get_program_infomation();//»ñÈ¡¾çÄ¿Ö÷ÒªĞÅÏ¢  ²¢½øĞĞ³õÊ¼»¯
-
+void program_viewer();//¾çÄ¿ä¯ÀÀÆ÷
 //sonfunction.cpp
 
 
@@ -237,11 +240,16 @@ void save_program();//±£´æ¾çÄ¿ĞÅÏ¢µ½ÎÄ¼ş
 //filefunction.cpp
 
 void initialize_linklist();//³õÊ¼»¯Á´±í
+
 Program *search_program(char *obj);//°´ID»òÃû³Æ²éÕÒ¾çÄ¿    ÏàËÆ·´À¡
 void add_program();//Ôö¼Ó¾çÄ¿
 void kill_program(Program *p);//°´ÕÕID»òÃû×ÖÉ¾³ı¾çÄ¿
-void print_program(Program *p);////°´ID/Ãû³ÆÊä³öµ¥¸öÓ°Æ¬ĞÅÏ¢
+void print_program(Program *p , int i);////Êä³öÄ³¸öÓ°Æ¬ĞÅÏ¢
 void modify_program(Program *p);//ĞŞ¸ÄÓ°Æ¬ĞÅÏ¢
+
+Studio *search_studio(char *obj);//°´ID»òÃû³Æ²éÕÒ·ÅÓ³Ìü    Ä£ºı²éÑ¯
+void add_studio();//Ôö¼Ó·ÅÓ³Ìü
+void print_studio(Studio *p);//Êä³öÄ³¸ö·ÅÓ³ÌüĞÅÏ¢
 //Linklist.cpp
 
 void import_all();//µ¼ÈëÕË»§ĞÅÏ¢

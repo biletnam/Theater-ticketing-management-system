@@ -48,6 +48,7 @@ int choice_judge(int i) {//¶ÁÈ¡¼üÅÌÊÂ¼ş          i  // ½çÃæÑ¡Ôñ   ²Î¼ûscreen_cle
 			}
 			if (event.Event.KeyEvent.uChar.AsciiChar ==13 && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ»Ø³µ  
 			{
+				SetColor(7, 0);
 				return highlight;
 			}
 		}
@@ -68,28 +69,72 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(40, 12); printf("Àë¿ª");
 	}
 	else if (order==2) {
-		i == 0 ? i = 3 : i = i;//¸ßÁÁ¿ØÖÆ
-		i > 3 ? i = 1 : i = i;
+		i == 0 ? i = 4 : i = i;//¸ßÁÁ¿ØÖÆ
+		i > 4 ? i = 1 : i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 6); printf("¾çÄ¿²éÑ¯¼°¹ÜÀí");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 8); printf("·ÅÓ³Ìü²éÑ¯¼°¹ÜÀí");
+		set_position(34, 8); printf("Ó°Ìü²éÑ¯¼°¹ÜÀí");
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 10); printf("ÊÛÆ±Ô±Òµ¼¨²éÑ¯");
+		set_position(34, 10); printf("¼Æ»®²éÑ¯¼°¹ÜÀí");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 12); printf("Æ±Îñ²éÑ¯¼°¹ÜÀí");
 	}
 	else if (order == 3) {
-		i == 0 ? i = 4 : i = i;
-		i > 4 ? i = 1 : i = i;
+		i == 0 ? i = 5 : i = i;
+		i > 5 ? i = 1 : i = i;
 		i==1?SetColor(11, 0): SetColor(7, 0);
 		set_position(36, 6);printf("²éÑ¯¾çÄ¿ĞÅÏ¢");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 8);printf("ĞÂÔö¾çÄ¿ĞÅÏ¢");
+		set_position(36, 8);printf("ĞŞ¸Ä¾çÄ¿ĞÅÏ¢");
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 10);printf("É¾³ı¾çÄ¿ĞÅÏ¢");
+		set_position(36, 10);printf("ĞÂÔö¾çÄ¿ĞÅÏ¢");
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 12); printf("ĞŞ¸Ä¾çÄ¿ĞÅÏ¢");
+		set_position(36, 12); printf("É¾³ı¾çÄ¿ĞÅÏ¢");
+		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 14);printf("ä¯ÀÀËùÓĞ¾çÄ¿");
+	}
+	else if (order == 4) {
+		i == 0 ? i = 4 : i = i;
+		i > 4 ? i = 1 : i = i;
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 6); printf("²éÑ¯Ó°ÌüĞÅÏ¢");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("ĞŞ¸ÄÓ°ÌüĞÅÏ¢");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10); printf("ĞÂÔöÓ°ÌüĞÅÏ¢");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("É¾³ıÓ°ÌüĞÅÏ¢");
+	}
+	else {
+		print_re();
 	}
 	return i;
+}
+
+int turn_page() {//·­Ò³Æ÷
+	int highlight = 1;
+	HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
+	INPUT_RECORD event;//¶¨ÒåÊäÈëÊÂ¼ş½á¹¹Ìå
+	DWORD res;//¶¨Òå·µ»Ø¼ÇÂ¼
+	while (true) {
+		ReadConsoleInput(handle, &event, 1, &res);      //¶ÁÈ¡ÊäÈëÊÂ¼ş  
+		if (event.EventType == KEY_EVENT)      //Èç¹ûµ±Ç°ÊÂ¼şÊÇ¼üÅÌÊÂ¼ş  
+		{
+			if ((event.Event.KeyEvent.wVirtualKeyCode == VK_UP || event.Event.KeyEvent.wVirtualKeyCode == VK_LEFT) && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ü  
+			{
+				return -1;
+			}
+			if ((event.Event.KeyEvent.wVirtualKeyCode == VK_DOWN || event.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT) && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ı 
+			{
+				return 1;
+			}
+			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂESC  
+			{
+				return 0;
+			}
+		}
+	}
 }
 
 //0-ºÚÉ«, 1-À¶É«,   2-ÂÌÉ«,      3-Ç³ÂÌÉ«,     4-ºìÉ«,   5-×ÏÉ«,   6-»ÆÉ«,   7-°×É«,

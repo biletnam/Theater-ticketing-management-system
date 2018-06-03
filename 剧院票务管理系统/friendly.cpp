@@ -13,6 +13,9 @@ void print_examinput() {//非法输入报错
 
 void go_on() {//按任意键继续
 	rewind(stdin);
+	printf("按任意键继续\n");
+	rewind(stdin);
+	getch();
 	getch();
 }
 
@@ -20,16 +23,16 @@ void print_mallocX() {//malloc报错
 	printf("不能分配更多内存了\n");
 }
 
-int enquiry() {//判断是否进行本次操作
-	printf("是否确认本次操作？(0/1)\n");
+int enquiry(int i) {//判断是否进行本次操作   i==1   enquiry   i==2 warnning
+	if (i == 1)
+		printf("是否确认本次操作?(0/1):");
+	else if (i == 2)
+		printf("该操作不可恢复，是否继续?(0/1):");
+	else
+		print_re();
 	rewind(stdin);
 	int judge = 0;
-	do {
-		scanf("%d", &judge);
-		if (judge != 0 && judge != 1) {
-			print_examinput();
-		}
-	} while (judge != 0 && judge != 1);
+	judge = get_num(0,1,1,1);
 	return judge;
 }
 
@@ -39,3 +42,13 @@ void print_ok() {//提示操作成功
 }
 
 
+//弃用
+
+//void print_label(int i) {//打印标签列表     i  = 1 电影       2 歌剧        3音乐会
+//	if (i == 1)
+//	printf("喜剧 动作 惊悚 爱情 悬疑 恐怖\n\
+//纪录 科幻 艺术 青春 耽美 动画\n");
+//	else if (i == 2) 
+//	printf("请选择标签:");
+//	rewind(stdin);
+//}
