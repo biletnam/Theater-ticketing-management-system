@@ -69,8 +69,8 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(40, 12); printf("Àë¿ª");
 	}
 	else if (order==2) {
-		i == 0 ? i = 4 : i = i;//¸ßÁÁ¿ØÖÆ
-		i > 4 ? i = 1 : i = i;
+		i == 0 ? i = 5 : i = i;//¸ßÁÁ¿ØÖÆ
+		i > 5 ? i = 1 : i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 6); printf("¾çÄ¿²éÑ¯¼°¹ÜÀí");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
@@ -79,6 +79,8 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(34, 10); printf("Ñİ³ö²éÑ¯¼°¹ÜÀí");
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 12); printf("Æ±Îñ²éÑ¯¼°¹ÜÀí");
+		i == 5?SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 14); printf("ÎÒµÄÕËºÅ¼°ÃÜÂë");
 	}
 	else if (order >= 3 && order <= 10) {
 		char obj[5];
@@ -101,7 +103,7 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(36, 12); printf("É¾³ı%sĞÅÏ¢",obj);
 		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 14); printf("ä¯ÀÀ%sĞÅÏ¢",obj);
+		set_position(36, 14); printf("ä¯ÀÀËùÓĞ%s",obj);
 	}
 	else if (order == 11) {
 		i == 0 ? i = 2 : i = i;
@@ -110,6 +112,8 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(34, 6); printf("ÏµÍ³ÓÃ»§¹ÜÀí");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 8); printf("µÇÂ¼¼ÇÂ¼²éÑ¯");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 10); printf("¹ÜÀíÎÒµÄĞÅÏ¢");
 	}
 	else {
 		print_re();

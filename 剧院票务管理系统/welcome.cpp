@@ -130,6 +130,8 @@ void show_manager() {//剧院经理主界面
 	printf("演出查询及管理");
 	set_position(34,12);
 	printf("票务查询及管理");
+	set_position(34, 14);
+	printf("我的账号及密码");
 }
 
 void show_program() {//剧目查询及管理界面
@@ -171,7 +173,7 @@ void show_studio(){//影厅查询及管理界面
 	set_position(36, 12);
 	printf("删除影厅信息");
 	set_position(36, 14);
-	printf("浏览影厅信息");
+	printf("浏览所有影厅");
 }
 
 void show_admin() {//系统管理员主界面

@@ -194,7 +194,7 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	str = get_string(6, 6, 1);
 	Program *p;//ID查重
 	do {
-		p = search_program(str);
+		p = search_program(str, 0);
 		if (p) {
 			free(str);
 			printf("该编号已被使用，推荐编号%d\n请重新输入:",atoi(list.program_tail->element.program_ID)+1);
@@ -264,19 +264,19 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 void program_viewer() {//剧目浏览器
 	Program *p1 = list.program_head->next;
 	Program *p2=NULL;
-	print_program(p1,1);
+	int choice, cnt = 1, pages = (list.program_head->element.cost + 1) / 2;
+	print_program(p1, 1); printf("				当前第%d页，共%d页", cnt, pages);
 	if (p1) {
 		p2 = p1->next;
 		print_program(p2,0);
 	}
-	int choice;
 	while (choice=turn_page()) {
 		if (choice == 1) {
 			if(p1!=list.program_tail&&p2!=list.program_tail)
 			if (p2) {
 				p1 = p2->next;
 				if (p1) {
-					p2 = p1->next;
+					p2 = p1->next; cnt++;
 				}
 				//else {//不重复输出
 				//	p2 = NULL;
@@ -285,14 +285,14 @@ void program_viewer() {//剧目浏览器
 			/*else {
 				p1 = NULL;
 			}*/
-			print_program(p1,1); print_program(p2,0);
+			print_program(p1,1); printf("				当前第%d页，共%d页", cnt, pages); print_program(p2,0);
 		}
 		else if (choice == -1) {
 			if(p1!=list.program_head&&p2!=list.program_head)
 				if (p1&&p1->pre!=list.program_head) {
 					p2 = p1->pre;
 					if (p2&&p2->pre!=list.program_head) {
-						p1 = p2->pre;
+						p1 = p2->pre; cnt--;
 				}
 			//	else {//不重复输出
 			//		p2 = NULL;
@@ -302,19 +302,37 @@ void program_viewer() {//剧目浏览器
 			//	p1 = NULL;
 			//}
 			if (p1&&p2) {
-				if(p1!=list.program_head)print_program(p1, 1); if(p2!=list.program_head)print_program(p2, 0);
+				if (p1 != list.program_head)print_program(p1, 1); printf("				当前第%d页，共%d页",cnt,pages); if (p2 != list.program_head)print_program(p2, 0);
 			}
-			else {
+			/*else {
 				if (p1 != list.program_head)print_program(p1, 1); if (p2 != list.program_head) print_program(p2, 0);
-			}
+			}*/
 		}else {
 			print_re();
 		}
-		if (choice==1&&(p1 == list.program_tail || p2 == list.program_tail)) {
+		/*if (choice==1&&(p1 == list.program_tail || p2 == list.program_tail)) {
 			printf("已经是最后一页了\n");
 		}
 		else if (choice == -1 && (p1 == list.program_head->next || p2 == list.program_head->next)) {
 			printf("已经是第一页了\n");
+		}*/
+	}
+}
+
+void studio_viewer() {//放映厅查看器
+	int choice, cnt = 1, pages = list.studio_head->element.seatx;
+	Studio *p = list.studio_head->next;
+	if (p) print_studio(p);
+	while (choice=turn_page()) {
+		if (choice == 1) {
+			if (p->next) { p = p->next; cnt++; }
+			if (p) print_studio(p);
+			printf("			当前第%d个放映厅，共%d个", cnt, pages);
+		}
+		else if (choice == -1) {
+			if (p != list.studio_head->next) { p = p->pre; cnt--; }
+			print_studio(p);
+			printf("			当前第%d个放映厅，共%d个", cnt, pages);
 		}
 	}
 }

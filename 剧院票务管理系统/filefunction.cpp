@@ -3,6 +3,7 @@
 ///////////////////////////////////////////import
 
 void import_account() {//读入账号信息
+	int cnt = 0;
 	FILE *fp = fopen(".\\account.txt","r");
 	if (fp == NULL) {
 		print_re();
@@ -19,7 +20,9 @@ void import_account() {//读入账号信息
 		p->pre = list.account_tail;
 		list.account_tail->next = p;
 		list.account_tail = p;
+		cnt++;//计数
 	}
+	list.account_head->element.contributions = cnt;
 	fclose(fp);
 }
 
@@ -30,7 +33,7 @@ void import_program() {//从文件读入剧目信息存储为链表
 		exit(1);
 	}
 	data_program tem = {0};
-	int type,rating;
+	int type, rating, cnt = 0;
 	while (fscanf(fp, "%s %s %d %d %s %s %s",tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0], tem.performer[1])==7&&\
 		fscanf(fp,"%d-%d-%d %d-%d-%d", &tem.start_date.year, &tem.start_date.month, &tem.start_date.day, &tem.end_date.year, &tem.end_date.month, &tem.end_date.day)== 6\
 		&&fscanf(fp,"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
@@ -42,11 +45,14 @@ void import_program() {//从文件读入剧目信息存储为链表
 		p->pre = list.program_tail;
 		list.program_tail->next = p;
 		list.program_tail = p;
+		cnt++;
 	}
+	list.program_head->element.cost = cnt;//头结点计数
 	fclose(fp);
 }
 
 void import_studio_and_seat() {//导入放映厅及座位信息
+	int cnt = 0;
 	FILE *fp = fopen(".\\studio.txt", "r");
 	if (fp == NULL) {
 		print_re();
@@ -66,6 +72,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 		p->pre = list.studio_tail;
 		list.studio_tail->next = p;
 		list.studio_tail = p;
+		cnt++;//计数
 		//座位的读取与处理
 		for (i = 1; i <= p->element.seatx; i++) {
 			for (j = 1; j <= p->element.seaty; j++) {
@@ -81,6 +88,8 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 			}
 		}
 	}
+	list.studio_head->element.seatx = cnt;//计数
+	fclose(fp);
 }
 
 //////////////////////////////////////////save
@@ -106,8 +115,23 @@ void save_program() {//保存剧目信息到文件
 }
 
 void save_studio_and_seat() {//保存放映厅及其座位数据
+	int i, j;
 	FILE *fp = fopen(".\\studio.txt", "w+");
 	if (fp == NULL) {
-		
+		print_re();
+		exit(1);
 	}
+	Studio *p = list.studio_head->next;
+	Seat *k = NULL;
+	for (p; p; p = p->next) {
+		fprintf(fp, "%s %s %d %d\n", p->element.studio_ID, p->element.studio_name, p->element.seatx, p->element.seaty);
+		k = p->element.seat_head->next;
+		for (i = 0; i < p->element.seatx; i++) {
+			for (j = 0; j < p->element.seaty; j++) {
+				fprintf(fp, "%d ", k->seat_condition);
+				k = k->next;
+			}fprintf(fp, "\n");
+		}
+	}
+	fclose(fp);
 }

@@ -22,7 +22,6 @@ void go_on() {//按任意键继续
 void exam_mallocX(void *p) {//malloc报错
 	if (p == NULL) {
 		printf("不能分配更多内存了\n");
-		go_on();
 		exit(1);
 	}
 }

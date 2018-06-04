@@ -230,6 +230,7 @@ date_status get_date();//日期的获取及判断
 time_status get_time();//时间的获取及判断
 data_program get_program_infomation();//获取剧目主要信息  并进行初始化
 void program_viewer();//剧目浏览器
+void studio_viewer();//放映厅查看器
 //sonfunction.cpp
 
 
@@ -239,24 +240,26 @@ void import_studio_and_seat();//读入放映厅及座位信息
 
 
 void save_program();//保存剧目信息到文件
-
+void save_studio_and_seat();//保存放映厅及座位到文件
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
 
-Program *search_program(char *obj);//按ID或名称查找剧目    相似反馈
+Program *search_program(char *obj, int judge);//按ID或名称查找剧目 judge 控制是否进行相似反馈
 void add_program();//增加剧目
 void kill_program(Program *p);//按照ID或名字删除剧目
 void print_program(Program *p , int i);////输出某个影片信息
 void modify_program(Program *p);//修改影片信息
 
-Studio *search_studio(char *obj);//按ID或名称查找放映厅    模糊查询
+Studio *search_studio(char *obj, int judge);//按ID或名称查找放映厅    judge 控制是否进行相似反馈
 void add_studio();//增加放映厅
 void print_studio(Studio *p);////打印放映厅及座位信息
 
-void initialize_seat(Studio *p);//为新放映厅初始化座位
-Seat *search_seat(char *obj);//根据放映厅编号查找座位
+//Seat *search_seat(char *obj);//根据放映厅编号查找座位
 void delete_seat(Studio *k);//删除放映厅时删除其座位
+void kill_studio(Studio *p);//删除指定放映厅
+
+void initialize_seat(Studio *p);//为新放映厅初始化座位
 
 //Linklist.cpp
 
