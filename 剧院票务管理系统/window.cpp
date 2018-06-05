@@ -121,26 +121,73 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 	return i;
 }
 
-int turn_page() {//·­Ò³Æ÷
+void select_seat(Studio *p) {//ÅĞ±ğÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3
+	set_position(0, 0);
+	int choice, i = 0, j = 0;//  i µ±Ç°ĞĞÊı   j  µ±Ç°ÁĞÊı
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO info;
+	GetConsoleScreenBufferInfo(handle, &info);
+	COORD position;
+	position = info.dwCursorPosition;//¾­ÑéÖ¤COORD´æ´¢µÄ×ø±êÎ»ÖÃXÎª×Ö½ÚÊı  YÎªĞĞÊı
+	while (choice = turn_page()) {
+		if (choice == -1 && i != 0) {
+			position.Y--;
+		}
+		else if (choice == -2 && j != 0) {//¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3
+			position.X -= 2;
+		}
+		else if (choice == 1 && i != p->element.seatx) {
+			position.Y++;
+		}
+		else if (choice == 2 && j != p->element.seaty) {
+			position.X += 2;
+		}
+		else if (choice == 0) {
+			return;
+		}
+		else if (choice == 3) {
+			
+		}
+	}
+	//return position;
+}
+
+void clear_seat(COORD position,int status) {//COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
+	set_position(position);
+	SetColor(7, 12);
+	switch (status) {//¿ÕÎ»0   ¿ÉÓÃ1    Ëğ»µ9
+	case 0:printf("¡ğ"); break;
+	case 1:printf("¡ñ"); break;
+	case 9:printf("  "); break;
+	}
+}
+
+int turn_page() {//·­Ò³Æ÷     ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3
 	int highlight = 1;
 	HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD event;//¶¨ÒåÊäÈëÊÂ¼ş½á¹¹Ìå
 	DWORD res;//¶¨Òå·µ»Ø¼ÇÂ¼
 	while (true) {
 		ReadConsoleInput(handle, &event, 1, &res);      //¶ÁÈ¡ÊäÈëÊÂ¼ş  
-		if (event.EventType == KEY_EVENT)      //Èç¹ûµ±Ç°ÊÂ¼şÊÇ¼üÅÌÊÂ¼ş  
-		{
-			if ((event.Event.KeyEvent.wVirtualKeyCode == VK_UP || event.Event.KeyEvent.wVirtualKeyCode == VK_LEFT) && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ü  
-			{
+		if (event.EventType == KEY_EVENT){      //Èç¹ûµ±Ç°ÊÂ¼şÊÇ¼üÅÌÊÂ¼ş  
+			if (event.Event.KeyEvent.wVirtualKeyCode == VK_UP && event.Event.KeyEvent.bKeyDown == (BOOL)true) {//°´ÏÂ¡ü  
 				return -1;
 			}
-			if ((event.Event.KeyEvent.wVirtualKeyCode == VK_DOWN || event.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT) && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ı 
-			{
+			else if (event.Event.KeyEvent.wVirtualKeyCode == VK_LEFT && event.Event.KeyEvent.bKeyDown == (BOOL)true) {
+				return -2;
+			}
+			else if (event.Event.KeyEvent.wVirtualKeyCode == VK_DOWN && event.Event.KeyEvent.bKeyDown == (BOOL)true) {//°´ÏÂ¡ı 
 				return 1;
 			}
-			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂESC  
+			else if (event.Event.KeyEvent.wVirtualKeyCode == VK_RIGHT && event.Event.KeyEvent.bKeyDown == (BOOL)true) {//°´ÏÂ¡ı 
+				return 2;
+			}
+			else if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂESC  
 			{
 				return 0;
+			}
+			else if (event.Event.KeyEvent.uChar.AsciiChar == 13 && event.Event.KeyEvent.bKeyDown == (BOOL)true) {//°´ÏÂ»Ø³µ  
+				return 3;
 			}
 		}
 	}
@@ -154,21 +201,21 @@ void SetColor(short foreColor, short backColor){
 	SetConsoleTextAttribute(winHandle, foreColor + backColor * 0x10);     //ÉèÖÃ¿ØÖÆÌ¨ÎÄ±¾µÄÊôĞÔ
 }
 
-int get_positionx() {//µÃµ½µ±Ç°¹â±êx×ø±ê
+POINT get_position() {//µÃµ½µ±Ç°¹â±ê×ø±ê
 	POINT point;
 	GetCursorPos(&point);
-	return (int)point.x;
-}
-
-int get_positiony() {//µÃµ½µ±Ç°¹â±êy×ø±ê
-	POINT point;
-	GetCursorPos(&point);
-	return (int)point.y;
+	return point;
 }
 
 void set_position(short x, short y){//ÉèÖÃ¹â±êÎ»ÖÃ
 	HANDLE winHandle;                  
 	COORD position = { x,y };
+	winHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(winHandle, position);
+}
+
+void set_position(COORD position) {//ÉèÖÃ¹â±êÎ»ÖÃ
+	HANDLE winHandle;
 	winHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(winHandle, position);
 }

@@ -21,6 +21,9 @@ void initialize_present() {//初始化当前账户
 	PRESENT.user_type = USER_unkown;
 }
 
-void initialize_window() {//初始化窗口大小
+void initialize_window() {//初始化窗口大小//与字体大小
 	system("mode 88, 25");
+	HANDLE handle=GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD font = { 12,24 };
+	//GetConsoleScreenBufferInfo;
 }

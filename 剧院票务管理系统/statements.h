@@ -17,7 +17,7 @@ typedef enum {//定义账户枚举类型
 	USER_manager = 2,
 	USER_conductor = 3,
 	USER_customer = 4,
-	USER_unkown = 5,
+	USER_frozen = 5,//冻结状态
 }user_types;
 
 typedef enum {//定义电影分级枚举类型
@@ -176,8 +176,7 @@ void set_position(short x, short y);//设置光标位置
 void SetColor(short foreColor, short backColor);//设置字体颜色
 void hide_cursor();//隐藏光标
 void catch_cursor();//显示光标
-int get_positionx();//得到当前光标x坐标
-int get_positiony();//得到当前光标y坐标
+POINT get_position();//得到当前光标y坐标
 int screen_clear(int order, int i, int change);/*主界面的高亮控制  i表示当前高亮选项 默认为1
 										参数change表改变量  order表示界面的选择  函数返回当前选项编号*/
 int turn_page();//翻页器

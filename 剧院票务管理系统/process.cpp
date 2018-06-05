@@ -38,7 +38,7 @@ void process_sign() {//登录过程
 
 void process_admin() {//管理员过程
 	int choice;
-	while (true) {
+	while (1) {
 		show_admin();
 		choice = choice_judge(7);
 		switch (choice) {
@@ -50,7 +50,7 @@ void process_admin() {//管理员过程
 
 void process_acount() {//账户管理过程        //在这里调用你写的链表操作
 	int choice; //char *str;
-	while (true) {
+	while (1) {
 		show_account();
 		choice = choice_judge(5);
 		switch (choice) {
@@ -65,7 +65,7 @@ void process_acount() {//账户管理过程        //在这里调用你写的链表操作
 
 void process_manager() {//剧院经理过程
 	int choice;
-	while (true) {
+	while (1) {
 		show_manager();
 		choice = choice_judge(2);
 		switch (choice) {
@@ -83,7 +83,7 @@ void process_manager() {//剧院经理过程
 
 void process_program() {//剧目查询及管理过程
 	int choice; char *str;
-	while (true) {
+	while (1) {
 		show_program();
 		choice = choice_judge(3);
 		if (choice != 0)catch_cursor();
@@ -100,7 +100,7 @@ void process_program() {//剧目查询及管理过程
 
 void process_studio() {//影厅查询及管理过程
 	int choice; char *str = NULL;
-	while (true) {
+	while (1) {
 		show_studio();
 		choice = choice_judge(4); 
 		if(choice != 0)catch_cursor();

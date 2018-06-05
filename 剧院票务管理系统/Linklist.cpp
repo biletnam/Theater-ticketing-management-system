@@ -113,7 +113,7 @@ void print_program(Program *p , int i) {//输出某个剧目信息    i  控制是否清屏
 		printf("	||								||\n");
 		printf("	||%s名称:%-15s		%s:%-8s		||\n",type, p->element.program_name,person, p->element.director);
 		printf("	||								||\n");
-		printf("	||主演:%-14s	%-14s	时长:%dmin		||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
+		printf("	||主演:%12s	%-14s	时长:%dmin		||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
 		printf("	||								||\n");
 		printf("	||电影标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area, p->element.price);
 		printf("	||								||\n");
@@ -276,6 +276,12 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 	}
 }
 
+void modeify_studio(Studio *p) {//修改影厅信息及座位情况
+	print_studio(p);
+	printf("请选择要修改的：\n");
+	printf("1.名称 2.座位行数 3.座位列数 4.座位状态\n");
+	int choice=get_num(1, 4, 1, 1);
+}
 
 ////////////////////////////////////////seat
 

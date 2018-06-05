@@ -271,7 +271,7 @@ void program_viewer() {//剧目浏览器
 		print_program(p2,0);
 	}
 	while (choice=turn_page()) {
-		if (choice == 1) {
+		if (choice == 1 || choice == 2) {
 			if(p1!=list.program_tail&&p2!=list.program_tail)
 			if (p2) {
 				p1 = p2->next;
@@ -287,7 +287,7 @@ void program_viewer() {//剧目浏览器
 			}*/
 			print_program(p1,1); printf("				当前第%d页，共%d页", cnt, pages); print_program(p2,0);
 		}
-		else if (choice == -1) {
+		else if (choice == -1 || choice == -2) {
 			if(p1!=list.program_head&&p2!=list.program_head)
 				if (p1&&p1->pre!=list.program_head) {
 					p2 = p1->pre;
@@ -324,15 +324,32 @@ void studio_viewer() {//放映厅查看器
 	Studio *p = list.studio_head->next;
 	if (p) print_studio(p);
 	while (choice=turn_page()) {
-		if (choice == 1) {
+		if (choice == 1 || choice == 2) {
 			if (p->next) { p = p->next; cnt++; }
 			if (p) print_studio(p);
 			printf("			当前第%d个放映厅，共%d个", cnt, pages);
 		}
-		else if (choice == -1) {
+		else if (choice == -1 || choice == -2) {
 			if (p != list.studio_head->next) { p = p->pre; cnt--; }
 			print_studio(p);
 			printf("			当前第%d个放映厅，共%d个", cnt, pages);
+		}
+	}
+}
+
+void seat_changer(Studio *p) {//可视化座位修改器
+	system("cls"); hide_cursor();
+	Seat *k = p->element.seat_head->next;
+	if (k == NULL) { printf("这个放映厅没有座位哟\n"); go_on(); return; }
+	int i = p->element.seatx, j = p->element.seaty;
+	for (i ; i >0 ; i--) {
+		for (j ; j >0 ; j--) {
+			switch (k->seat_condition)
+			{
+			case 0:printf("  "); break;
+			case 1:printf("○");  break;
+			case 9:printf("●"); break;
+			}
 		}
 	}
 }
