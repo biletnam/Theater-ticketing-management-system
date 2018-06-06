@@ -322,7 +322,7 @@ void program_viewer() {//剧目浏览器
 void studio_viewer() {//放映厅查看器
 	int choice, cnt = 1, pages = list.studio_head->element.seatx;
 	Studio *p = list.studio_head->next;
-	if (p) print_studio(p);
+	if (p) { print_studio(p); printf("			当前第%d个放映厅，共%d个", cnt, pages); }
 	while (choice=turn_page()) {
 		if (choice == 1 || choice == 2) {
 			if (p->next) { p = p->next; cnt++; }
@@ -338,19 +338,27 @@ void studio_viewer() {//放映厅查看器
 }
 
 void seat_changer(Studio *p) {//可视化座位修改器
-	system("cls"); hide_cursor();
+	system("cls");
+	if(p==NULL){ return;}
 	Seat *k = p->element.seat_head->next;
 	if (k == NULL) { printf("这个放映厅没有座位哟\n"); go_on(); return; }
-	int i = p->element.seatx, j = p->element.seaty;
-	for (i ; i >0 ; i--) {
-		for (j ; j >0 ; j--) {
+	int i, j;
+	for (i=1 ; i <=p->element.seatx ; i++) {
+		for (j=1 ; j <= p->element.seaty; j++) {
 			switch (k->seat_condition)
 			{
 			case 0:printf("  "); break;
 			case 1:printf("○");  break;
 			case 9:printf("●"); break;
-			}
-		}
+			}k = k->next;
+		}printf("\n");
+	}
+	if (select_seat(p)) {
+		save_studio_and_seat();
+	}
+	else {
+		printf("修改已取消\n");
+		go_on();
 	}
 }
 

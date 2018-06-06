@@ -121,48 +121,81 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 	return i;
 }
 
-void select_seat(Studio *p) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3
-	set_position(0, 0);
-	int choice, i = 0, j = 0;//  i µ±Ç°ÐÐÊý   j  µ±Ç°ÁÐÊý
+int select_seat(Studio *p) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾ÊÇ·ñ±£´æ
+	char num[100][100] = { 0 }; int choice, i, j, flag = 0;
+	if (p == NULL) { return flag; }
+	Seat *k = p->element.seat_head->next;
+	for (i = 1; i <= p->element.seatx; i++) {
+		for (j = 1; j <= p->element.seaty; j++) {
+			num[i][j] = k->seat_condition; k = k->next;
+		}
+	}
+	set_position(0, 0); catch_cursor();
+	i = 1, j = 1;//  i µ±Ç°ÐÐÊý   j  µ±Ç°ÁÐÊý
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO info;
 	GetConsoleScreenBufferInfo(handle, &info);
 	COORD position;
 	position = info.dwCursorPosition;//¾­ÑéÖ¤COORD´æ´¢µÄ×ø±êÎ»ÖÃXÎª×Ö½ÚÊý  YÎªÐÐÊý
-	while (choice = turn_page()) {
+	while ((choice = turn_page(),1)) {
+		hide_cursor();
 		if (choice == -1 && i != 0) {
-			position.Y--;
+			position.Y--; i--; set_position(position);
 		}
 		else if (choice == -2 && j != 0) {//¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3
-			position.X -= 2;
+			position.X -= 2; j--; set_position(position);
 		}
 		else if (choice == 1 && i != p->element.seatx) {
-			position.Y++;
+			position.Y++; i++; set_position(position);
 		}
 		else if (choice == 2 && j != p->element.seaty) {
-			position.X += 2;
+			position.X += 2; j++; set_position(position);
 		}
 		else if (choice == 0) {
-			return;
+			position.Y = p->element.seatx + 1; position.X = 0;
+			set_position(position);
+			if (enquiry(1)) {//ÊÇ·ñ±£´æÊý¾Ý
+				flag = 1;
+				k = p->element.seat_head->next;
+				/*for (i = 1; i <= p->element.seatx; i++) {
+					for (j = 1; j <= p->element.seaty; j++) {
+						printf("%2d", num[i][j]);
+					}printf("\n");
+				}*///µ÷ÊÔ
+				for (i = 1; i <= p->element.seatx; i++) {
+					for (j = 1; j <= p->element.seaty; j++) {
+						k->seat_condition = (seat_conditions)num[i][j]; 
+						k = k->next;
+					}
+				}
+			}
+			else {
+				printf("ÐÞ¸ÄÒÑÈ¡Ïû");
+			}
+			return flag;
 		}
 		else if (choice == 3) {
-			
+			clear_seat(position, num[i][j]);
+			switch (num[i][j]) {
+			case 0:num[i][j] = 1; break;
+			case 1:num[i][j] = 9; break;
+			case 9:num[i][j] = 0; break;
+			}
 		}
+		Sleep(100); catch_cursor();
 	}
-	//return position;
 }
 
-void clear_seat(COORD position,int status) {//COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
-	set_position(position);
-	SetColor(7, 12);
+inline  void clear_seat(COORD position, char status) {//COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
 	switch (status) {//¿ÕÎ»0   ¿ÉÓÃ1    Ëð»µ9
 	case 0:printf("¡ð"); break;
 	case 1:printf("¡ñ"); break;
 	case 9:printf("  "); break;
 	}
+	set_position(position);
 }
 
-int turn_page() {//·­Ò³Æ÷     ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3
+inline int turn_page() {//·­Ò³Æ÷     ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3
 	int highlight = 1;
 	HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
 	INPUT_RECORD event;//¶¨ÒåÊäÈëÊÂ¼þ½á¹¹Ìå
@@ -212,12 +245,14 @@ void set_position(short x, short y){//ÉèÖÃ¹â±êÎ»ÖÃ
 	COORD position = { x,y };
 	winHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(winHandle, position);
+	//CloseHandle(winHandle);
 }
 
-void set_position(COORD position) {//ÉèÖÃ¹â±êÎ»ÖÃ
+inline void set_position(COORD position) {//ÉèÖÃ¹â±êÎ»ÖÃ
 	HANDLE winHandle;
 	winHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(winHandle, position);
+	//CloseHandle(winHandle);
 }
 
 void hide_cursor() {//Òþ²Ø¹â±ê
@@ -226,6 +261,7 @@ void hide_cursor() {//Òþ²Ø¹â±ê
 	GetConsoleCursorInfo(hOut, &cci);
 	cci.bVisible = FALSE;
 	SetConsoleCursorInfo(hOut, &cci);
+	//CloseHandle(hOut);
 }
 
 void catch_cursor() {//ÏÔÊ¾¹â±ê
@@ -234,6 +270,7 @@ void catch_cursor() {//ÏÔÊ¾¹â±ê
 	GetConsoleCursorInfo(hOut, &cci);
 	cci.bVisible = TRUE;
 	SetConsoleCursorInfo(hOut, &cci);
+	//CloseHandle(hOut);
 }
 /*
 void Clear(int x, int y, int rowCount)

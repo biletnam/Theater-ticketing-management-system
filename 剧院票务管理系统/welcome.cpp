@@ -212,6 +212,7 @@ void show_account() {//账户查询及管理界面
 	printf("浏览用户信息");
 }
 
+
 //弃用
 /*void show_program_types() {//显示剧目类型   配合choice_judege进行选择
 //	printf("请选择剧目类型\n");

@@ -44,6 +44,16 @@ void print_ok() {//提示操作成功
 	rewind(stdin);
 }
 
+void print_instruction(int i) {//显示说明
+	if (i == 1) {
+		system("cls");
+		set_position(20, 6);
+		printf("操作说明");
+		printf("\n\n		方向键↑、↓、←、→操纵光标选择座位   ESC退出\n\n		\
+○表示可用座位  ●表示座位损坏   回车键改变座位状态   \n\n		");
+		go_on();
+	}
+}
 
 //弃用
 

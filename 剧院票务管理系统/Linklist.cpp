@@ -189,16 +189,17 @@ void add_studio() {//增加放映厅
 	p->element.seaty = choice;
 	if (enquiry(1)) {
 		p->next = list.studio_tail->next;
+		p->pre = list.studio_tail;
 		list.studio_tail->next = p;
+		list.studio_tail = p;
 		initialize_seat(p);
 		save_studio_and_seat();
-		////import_studio_and_seat();
+		print_ok();
 		printf("所有座位已置为可用状态\n如有需要请记得修改\n");
 		list.studio_head->element.seatx++;
-		print_ok();
 	}
 	else {
-		//import_studio_and_seat();
+		free(p);
 		printf("放映厅新增已取消\n");
 	}
 }
@@ -237,6 +238,7 @@ void kill_studio(Studio *p) {//删除指定放映厅
 			free(p);
 			list.studio_head->element.seatx--;
 			save_studio_and_seat();
+			print_ok();
 		}
 		else {
 			printf("删除已取消\n"); rewind(stdin);
@@ -249,14 +251,16 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 		int i, j, cnt = 0;//cnt 计算可用座位数
 		system("cls");
 		Seat *k = p->element.seat_head->next;
-		printf("\n\n");
+		printf("\n");
 		printf("	====================================================================\n");
 		printf("			放映厅编号：%s	名称：%s\n\n",p->element.studio_ID,p->element.studio_name);
 		printf("			○表示可用座位  ●表示损坏座位   座位 %d x %d\n\n",p->element.seatx,p->element.seaty);
 		printf("			╭——————————————————╮\n");
 		printf("					↑荧幕\n\n");
 		for (i = 1; i <= p->element.seatx; i++) {
-			if(p->element.seaty>20)
+			if(p->element.seaty>30)
+				printf("		");
+			else if(p->element.seaty>20)
 				printf("		   ");
 			else if(p->element.seaty>15)
 				printf("			");
@@ -272,15 +276,22 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 				}
 				k = k->next;
 			}printf("\n");
-		}printf("\n\n			本放映厅共有%d张可用座位\n\n", cnt);
+		}printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
 	}
 }
 
-void modeify_studio(Studio *p) {//修改影厅信息及座位情况
-	print_studio(p);
-	printf("请选择要修改的：\n");
-	printf("1.名称 2.座位行数 3.座位列数 4.座位状态\n");
-	int choice=get_num(1, 4, 1, 1);
+void modify_studio(Studio *p) {//修改影厅信息及座位情况
+	if (p) {
+		print_studio(p);
+		printf("请选择要修改的：\n");
+		printf("1.放映厅名称 2.座位\n");//2.座位行数 3.座位列数
+		int choice = get_num(1, 2, 1, 1); char *str = NULL;
+		switch (choice) {
+		case 1:printf("请输入新的放映厅名称"); str = get_string(1, 14, 0); if (enquiry(1)) { strcpy(p->element.studio_name, str); save_studio_and_seat(); }
+			   else { printf("修改已取消"); }free(str); break;
+		case 2:print_instruction(1); seat_changer(p);
+		}
+	}
 }
 
 ////////////////////////////////////////seat

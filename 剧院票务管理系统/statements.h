@@ -173,6 +173,7 @@ extern data_account PRESENT;
 
 int choice_judge(int i);//读取键盘事件  判断选择
 void set_position(short x, short y);//设置光标位置
+void set_position(COORD position);//设置光标位置
 void SetColor(short foreColor, short backColor);//设置字体颜色
 void hide_cursor();//隐藏光标
 void catch_cursor();//显示光标
@@ -180,7 +181,8 @@ POINT get_position();//得到当前光标y坐标
 int screen_clear(int order, int i, int change);/*主界面的高亮控制  i表示当前高亮选项 默认为1
 										参数change表改变量  order表示界面的选择  函数返回当前选项编号*/
 int turn_page();//翻页器
-
+int select_seat(Studio *p);//判别位置  ↑ -1   ← -2   ↓ 1    → 2    ESC 0   回车3  
+void clear_seat(COORD position, char status);//改变座位显示  COORD  当前位置   status 座位状态
 
 //window.cpp
 
@@ -203,6 +205,7 @@ void go_on();//按任意键继续
 void exam_mallocX(void *p);//malloc报错
 int enquiry(int i);//判断是否进行本次操作   i==1   enquiry   i==2 warnning
 void print_ok(); //提示操作成功
+void print_instruction(int i);//显示操作说明
 //friendly.cpp
 
 void process_all();//程序入口
@@ -230,6 +233,8 @@ time_status get_time();//时间的获取及判断
 data_program get_program_infomation();//获取剧目主要信息  并进行初始化
 void program_viewer();//剧目浏览器
 void studio_viewer();//放映厅查看器
+void seat_changer(Studio *p);//可视化座位修改器
+
 //sonfunction.cpp
 
 
@@ -257,6 +262,7 @@ void print_studio(Studio *p);////打印放映厅及座位信息
 //Seat *search_seat(char *obj);//根据放映厅编号查找座位
 void delete_seat(Studio *k);//删除放映厅时删除其座位
 void kill_studio(Studio *p);//删除指定放映厅
+void modify_studio(Studio *p);//修改放映厅名称及座位
 
 void initialize_seat(Studio *p);//为新放映厅初始化座位
 

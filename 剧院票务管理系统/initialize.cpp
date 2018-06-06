@@ -18,7 +18,7 @@ void initialize() {//全部初始化
 void initialize_present() {//初始化当前账户
 	PRESENT.UID[0] = '\0';
 	PRESENT.username[0] = PRESENT.password[0] = '\0';
-	PRESENT.user_type = USER_unkown;
+	PRESENT.user_type = USER_frozen;
 }
 
 void initialize_window() {//初始化窗口大小//与字体大小

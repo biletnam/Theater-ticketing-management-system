@@ -2,12 +2,16 @@
 #include"statements.h"
 
 void process_all() {//登录过程
-	show_main();
-	int choice = choice_judge(1);
-	switch (choice) {
-	case 1:process_sign(); break;
-	case 2:break;
-	case 3:show_bye(); exit(0);
+	int choice;
+	while (1) {
+		show_main();
+		choice = choice_judge(1);
+		switch (choice) {
+		case 0:break;
+		case 1:process_sign(); break;
+		case 2:break;
+		case 3:show_bye(); exit(0);
+		}
 	}
 }
 
@@ -106,10 +110,10 @@ void process_studio() {//影厅查询及管理过程
 		if(choice != 0)catch_cursor();
 		switch (choice){
 		case 0:break;
-		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(4, 6, 0), 1)); free(str); go_on(); break;
-		case 2: go_on(); break;
+		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
+		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
 		case 3:add_studio(); go_on(); break;
-		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(4, 6, 0), 1)); free(str); go_on(); break;
+		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
 		case 5:hide_cursor(); studio_viewer(); break;
 		}if (choice == 0)break;
 	}
