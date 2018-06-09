@@ -358,7 +358,6 @@ void seat_changer(Studio *p) {//可视化座位修改器
 	}
 	else {
 		printf("修改已取消\n");
-		go_on();
 	}
 }
 

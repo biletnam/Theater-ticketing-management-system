@@ -181,11 +181,11 @@ void add_studio() {//增加放映厅
 		str = get_string(1, 14, 1);
 	}
 	strcpy(p->element.studio_name, str); free(str);
-	printf("请输入该影厅座位的行数(8~15):");
-	int choice = get_num(8, 15, 1, 2);
+	printf("请输入该影厅座位的行数(5~12):");
+	int choice = get_num(5, 12, 1, 2);
 	p->element.seatx=choice;
-	printf("请输入该影厅座位的列数(10~40):");
-	choice = get_num(10, 40, 2, 2);
+	printf("请输入该影厅座位的列数(10~25):");
+	choice = get_num(10, 25, 2, 2);
 	p->element.seaty = choice;
 	if (enquiry(1)) {
 		p->next = list.studio_tail->next;
@@ -284,12 +284,41 @@ void modify_studio(Studio *p) {//修改影厅信息及座位情况
 	if (p) {
 		print_studio(p);
 		printf("请选择要修改的：\n");
-		printf("1.放映厅名称 2.座位\n");//2.座位行数 3.座位列数
-		int choice = get_num(1, 2, 1, 1); char *str = NULL;
+		printf("1.放映厅名称 2.座位行数 3.座位列数 4.座位设置\n");//2.座位行数 3.座位列数
+		int choice = get_num(1, 4, 1, 1); char *str = NULL; data_studio tem=p->element;
 		switch (choice) {
-		case 1:printf("请输入新的放映厅名称"); str = get_string(1, 14, 0); if (enquiry(1)) { strcpy(p->element.studio_name, str); save_studio_and_seat(); }
-			   else { printf("修改已取消"); }free(str); break;
-		case 2:print_instruction(1); seat_changer(p);
+		case 1:printf("请输入新的放映厅名称"); str = get_string(1, 14, 0); strcpy(tem.studio_name, str); free(str); break;
+		case 2:printf("请输入新的行数(5~12)："); choice = get_num(5, 12, 1, 2); tem.seatx = choice; break;
+		case 3:printf("请输入新的列数(10~25)："); choice = get_num(10, 25, 2, 2); tem.seaty = choice; break;
+		case 4:print_instruction(1); seat_changer(p); break;
+		}if (choice != 4) {
+			if (enquiry(1)) {
+				if (tem.seatx != p->element.seatx || tem.seaty != p->element.seaty) {//初始化座位
+					char seat[12][25] = { 0 }; int i, j; Seat *k = p->element.seat_head->next;
+					for (i = 1; i <= p->element.seatx; i++) {
+						for (j = 1; j <= p->element.seaty; j++) {//录入原有座位
+							seat[i][j] = k->seat_condition; k = k->next;
+						}
+					}
+					int tID = atoi(p->element.studio_ID);
+					for (i = 1; i <= tem.seatx; i++) {
+						for (j = 1; j <= tem.seaty; j++) {//插入新节点
+							if (i > p->element.seatx || j > p->element.seaty) {
+								Seat *q = (Seat *)malloc(sizeof(Seat));
+								q->seatx = i; q->seaty = j; q->seat_condition = (seat_conditions)0; q->stduio_ID = tID;
+								q->next = k->next; if (k->next)k->next->pre = q;
+								q->pre = k; k->next = q;
+							}
+							k = k->next;
+						}
+					}
+				}
+				p->element = tem;
+				save_studio_and_seat();
+			}
+			else {
+				printf("修改已取消\n");
+			}
 		}
 	}
 }
@@ -316,7 +345,7 @@ void initialize_seat(Studio *p) {//为新放映厅初始化座位
 	}
 }
 
-//Seat *search_seat(char *obj) {//根据放映厅ID/名称及行列查找座位
+//Seat *search_seat(char *obj) {//根据放映厅及行列数查看座位信息
 //	int flag = 0;
 //	Studio *k = search_studio(obj);
 //	if (k) {
@@ -331,10 +360,6 @@ void initialize_seat(Studio *p) {//为新放映厅初始化座位
 //		return NULL;
 //	}
 //}
-
-void modify_seat() {
-
-}
 
 void delete_seat(Studio *k) {//删除放映厅时删除其座位
 	if (k) {

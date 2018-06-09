@@ -111,7 +111,7 @@ void process_studio() {//影厅查询及管理过程
 		switch (choice){
 		case 0:break;
 		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
-		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
+		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); rewind(stdin); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
 		case 3:add_studio(); go_on(); break;
 		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
 		case 5:hide_cursor(); studio_viewer(); break;

@@ -122,7 +122,7 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 }
 
 int select_seat(Studio *p) {//ÅĞ±ğÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾ÊÇ·ñ±£´æ
-	char num[100][100] = { 0 }; int choice, i, j, flag = 0;
+	char num[15][30] = { 0 }; int choice, i, j, flag = 0;
 	if (p == NULL) { return flag; }
 	Seat *k = p->element.seat_head->next;
 	for (i = 1; i <= p->element.seatx; i++) {
@@ -168,9 +168,6 @@ int select_seat(Studio *p) {//ÅĞ±ğÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   
 						k = k->next;
 					}
 				}
-			}
-			else {
-				printf("ĞŞ¸ÄÒÑÈ¡Ïû");
 			}
 			return flag;
 		}

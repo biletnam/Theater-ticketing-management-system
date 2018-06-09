@@ -88,8 +88,8 @@ typedef struct em{//剧目数据域
 typedef struct emm {
 	char studio_ID[NAME/2];//最多六位数字   放映厅编号
 	char studio_name[NAME];//最多七个汉字    放映厅名称
-	int seatx;
-	int seaty;//放映厅座位 的行和列    固有属性   用来设置二维数组
+	int seatx;//5~12
+	int seaty;//10~25  放映厅座位 的行和列    固有属性   用来设置二维数组
 	Seat *seat_head, *seat_tail;//次链表
 }data_studio;
 

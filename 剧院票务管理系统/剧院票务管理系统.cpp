@@ -11,7 +11,7 @@ int main()
 	//show_welcome();
 	//seat_changer(list.studio_head->next);
 	//print_studio(list.studio_head->next); go_on();
-	print_instruction(1);
+	//print_instruction(1);
 	process_all();
     return 0;
 }
