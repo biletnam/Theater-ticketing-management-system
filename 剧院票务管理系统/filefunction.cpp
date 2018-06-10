@@ -52,14 +52,14 @@ void import_program() {//从文件读入剧目信息存储为链表
 }
 
 void import_studio_and_seat() {//导入放映厅及座位信息
-	int cnt = 0;
 	FILE *fp = fopen(".\\studio.txt", "r");
 	if (fp == NULL) {
 		print_re();
 			exit(1);
 	}
 	data_studio tem;
-	int i, j, t;
+	int i, j, t, ID;
+	list.studio_head->element.seatx = 0;
 	while (fscanf(fp, "%s %s %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
 		Studio *p = (Studio *)malloc(sizeof(Studio));
 		exam_mallocX(p);
@@ -72,13 +72,14 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 		p->pre = list.studio_tail;
 		list.studio_tail->next = p;
 		list.studio_tail = p;
-		cnt++;//计数
+		list.studio_head->element.seatx++;//计数
 		//座位的读取与处理
+		ID = atoi(p->element.studio_ID);
 		for (i = 1; i <= p->element.seatx; i++) {
 			for (j = 1; j <= p->element.seaty; j++) {
 				Seat *k = (Seat *)malloc(sizeof(Seat));
 				exam_mallocX(k);
-				k->seatx = i, k->seaty = j,k->stduio_ID=atoi(p->element.studio_ID);
+				k->seatx = i, k->seaty = j,k->stduio_ID=ID;
 				fscanf(fp, "%d", &t);
 				k->seat_condition = (seat_conditions)t;
 				k->next = p->element.seat_tail->next;
@@ -88,7 +89,6 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 			}
 		}
 	}
-	list.studio_head->element.seatx = cnt;//计数
 	fclose(fp);
 }
 
@@ -126,8 +126,10 @@ void save_studio_and_seat() {//保存放映厅及其座位数据
 	for (p; p; p = p->next) {
 		fprintf(fp, "%s %s %d %d\n", p->element.studio_ID, p->element.studio_name, p->element.seatx, p->element.seaty);
 		k = p->element.seat_head->next;
-		for (i = 0; i < p->element.seatx; i++) {
-			for (j = 0; j < p->element.seaty; j++) {
+		for (i = 1; i <= p->element.seatx; i++) {
+			for (j = 1; j <= p->element.seaty; j++) {
+				/*if (k->seatx > p->element.seatx || k->seaty > p->element.seaty) {
+					j--,k = k->next; continue; }*/
 				fprintf(fp, "%d ", k->seat_condition);
 				k = k->next;
 			}fprintf(fp, "\n");

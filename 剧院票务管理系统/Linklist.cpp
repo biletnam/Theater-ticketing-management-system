@@ -7,22 +7,22 @@ void initialize_linklist() {//初始化链表
 	list.studio_head = (Studio *)malloc(sizeof(Studio));
 	list.plan_head = (Plan *)malloc(sizeof(Plan));
 	//list.seat_head = (Seat *)malloc(sizeof(Seat));
-	list.ticket_head = (Ticket *)malloc(sizeof(Ticket));
-	list.record_head = (Record *)malloc(sizeof(Record));
+	//list.ticket_head = (Ticket *)malloc(sizeof(Ticket));
+	//list.record_head = (Record *)malloc(sizeof(Record));
 	list.account_head->next = list.account_head->pre = NULL;
 	list.program_head->next = list.program_head->pre =  NULL;
 	list.studio_head->next =list.studio_head->pre = NULL;
 	list.plan_head->next = list.plan_head->pre = NULL;
 	//list.seat_head->next = list.seat_head->pre = NULL;
-	list.ticket_head->next = list.ticket_head->pre = NULL;
-	list.record_head->next = list.record_head->pre = NULL;
+	//list.ticket_head->next = list.ticket_head->pre = NULL;
+	//list.record_head->next = list.record_head->pre = NULL;
 	list.account_tail = list.account_head;
 	list.program_tail = list.program_head;
 	list.studio_tail = list.studio_head;
 	list.plan_tail = list.plan_head;
 	//list.seat_tail = list.seat_head;
-	list.ticket_tail = list.ticket_head;
-	list.record_tail = list.record_head;
+	//list.ticket_tail = list.ticket_head;
+	//list.record_tail = list.record_head;
 }
 
 ////////////////////////////////////////program
@@ -260,7 +260,7 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 		for (i = 1; i <= p->element.seatx; i++) {
 			if(p->element.seaty>30)
 				printf("		");
-			else if(p->element.seaty>20)
+			else if(p->element.seaty>21)
 				printf("		   ");
 			else if(p->element.seaty>15)
 				printf("			");
@@ -294,28 +294,96 @@ void modify_studio(Studio *p) {//修改影厅信息及座位情况
 		}if (choice != 4) {
 			if (enquiry(1)) {
 				if (tem.seatx != p->element.seatx || tem.seaty != p->element.seaty) {//初始化座位
-					char seat[12][25] = { 0 }; int i, j; Seat *k = p->element.seat_head->next;
-					for (i = 1; i <= p->element.seatx; i++) {
-						for (j = 1; j <= p->element.seaty; j++) {//录入原有座位
-							seat[i][j] = k->seat_condition; k = k->next;
+					if(tem.seatx > p->element.seatx || tem.seaty > p->element.seaty)printf("已默认新增行或列无座位\n");
+					int i, j; Seat *k = p->element.seat_head->next;
+
+					//辣鸡方法 弃用
+
+					//char seat[13][26] = { 0 }; 
+					//for (i = 1; i <= p->element.seatx; i++) {
+					//	for (j = 1; j <= p->element.seaty; j++) {//录入原有座位
+					//		seat[i][j] = k->seat_condition; k = k->next;
+					//	}
+					//}
+					//delete_seat(p);//删除原有座位
+					//int ID = atoi(p->element.studio_ID); Seat *q = NULL;
+					//p->element.seat_head = (Seat *)malloc(sizeof(Seat)); exam_mallocX(p->element.seat_head);
+					//p->element.seat_tail = p->element.seat_head;
+					//p->element.seat_head->pre = p->element.seat_tail->next = NULL;//初始化座位链表
+					//for (i = 1; i <= tem.seatx; i++) {
+					//	for (j = 1; j <= tem.seaty; j++) {
+					//		q = (Seat *)malloc(sizeof(Seat));
+					//		exam_mallocX(q);
+					//		q->seatx = i; q->seaty = j; q->stduio_ID = ID; q->seat_condition = (seat_conditions)seat[i][j];
+					//		q->next = p->element.seat_tail->next; q->pre = p->element.seat_tail; 
+					//		p->element.seat_tail->next = q; p->element.seat_tail = q;
+					//	}
+					//}//数组转化为链表
+					//tem.seat_head = p->element.seat_head; tem.seat_tail = p->element.seat_tail;
+
+					///////////链表的实时更改    内存管理
+					int tID = atoi(p->element.studio_ID);
+					k = p->element.seat_head->next;
+					if (tem.seatx > p->element.seatx){//增加行数
+						for (i = p->element.seatx + 1; i <= tem.seatx; i++) {
+							for (j = 1; j <= p->element.seaty; j++) {//插入新节点
+								if (i > p->element.seatx || j > p->element.seaty) {
+									Seat *q = (Seat *)malloc(sizeof(Seat));
+									q->seatx = i; q->seaty = j; q->seat_condition = (seat_conditions)0; q->stduio_ID = tID;
+									q->next = p->element.seat_tail->next; q->pre = p->element.seat_tail;
+									p->element.seat_tail->next = q; p->element.seat_tail = q;
+								}
+							}
 						}
 					}
-					int tID = atoi(p->element.studio_ID);
-					for (i = 1; i <= tem.seatx; i++) {
-						for (j = 1; j <= tem.seaty; j++) {//插入新节点
-							if (i > p->element.seatx || j > p->element.seaty) {
-								Seat *q = (Seat *)malloc(sizeof(Seat));
-								q->seatx = i; q->seaty = j; q->seat_condition = (seat_conditions)0; q->stduio_ID = tID;
-								q->next = k->next; if (k->next)k->next->pre = q;
-								q->pre = k; k->next = q;
+					else if (tem.seaty > p->element.seaty) {//增加列数
+						for (i = 1; i <= p->element.seatx*p->element.seaty; i++) {
+							if(i%p->element.seaty==0)
+								for (j = p->element.seaty + 1; j <= tem.seaty; j++) {
+									Seat *q = (Seat *)malloc(sizeof(Seat));
+									q->seatx = (i - 1) / p->element.seaty + 1; q->seaty = j; q->seat_condition = (seat_conditions)0; q->stduio_ID = tID;
+									q->next = k->next; q->pre = k;
+									k->next = q; k = q;
+							}k = k->next;
+						}
+					}
+					else if (tem.seaty < p->element.seaty) {//减少列数
+						i = 1;
+						while ( k ) {
+							if (i%tem.seaty == 0) {
+								j = p->element.seaty - tem.seaty;
+								k = k->next;
+								while (j--) {
+									if (k) {
+										Seat *dead = k;
+										k->pre->next = k->next;
+										if (k->next) {
+											k->next->pre = k->pre;
+										}k = k->next;
+										free(dead); i = 1;
+									}
+								}
+							}
+							if(k)k = k->next; i++;
+						}
+					}
+					else if (tem.seatx < p->element.seatx) {//减少行数
+						for (i = 1, k; i <= tem.seatx*p->element.seaty; i++, k = k->next);
+						while (k) {
+							Seat *dead = k;
+							k->pre->next = k->next;
+							if (k->next) {
+								k->next->pre = k->pre;
 							}
 							k = k->next;
+							free(dead);
 						}
 					}
 				}
 				p->element = tem;
 				save_studio_and_seat();
-			}
+				print_ok();
+			}	
 			else {
 				printf("修改已取消\n");
 			}
@@ -323,7 +391,7 @@ void modify_studio(Studio *p) {//修改影厅信息及座位情况
 	}
 }
 
-////////////////////////////////////////seat
+/////////////////////////////////////////////seat
 
 void initialize_seat(Studio *p) {//为新放映厅初始化座位
 	p->element.seat_head = (Seat *)malloc(sizeof(Seat));

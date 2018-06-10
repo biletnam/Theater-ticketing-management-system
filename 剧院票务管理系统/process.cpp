@@ -119,6 +119,10 @@ void process_studio() {//影厅查询及管理过程
 	}
 }
 
+void process_plan() {//放映计划查询及管理过程
+
+}
+
 ///////////////////////////////////////////售票员
 
 void process_conducter() {

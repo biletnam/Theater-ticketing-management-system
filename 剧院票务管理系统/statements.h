@@ -66,6 +66,28 @@ typedef struct linklist_seat {
 	struct linklist_seat *pre, *next;
 }Seat;
 
+typedef struct linklist_ticket {
+	int ticket_ID;//入场券编号
+	//int plan_ID;//演出计划编号
+	int seatx;//座位所在行
+	int seaty;//座位所在列
+	int price;//票价    剧目决定
+	ticket_statuses ticket_status;//票的状态     参见enum tickets_statuses
+	struct linklist_ticket *pre, *next;
+}Ticket;
+
+typedef struct linklist_record{//交易记录
+	long record_ID;//交易记录ID
+	int conductor_ID;//售票员ID      会员账户
+	int plan_ID;//演出计划ID
+	int ticket_ID;//票ID
+	date_status date;//处理日期
+	time_status time;//处理时间
+	int price;//票价
+	sale_types sale_type;//交易类型
+	struct linklist_record *pre, *next;
+}Record;
+
 //////////////////////////////////////实体数据域定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef struct em{//剧目数据域
@@ -98,18 +120,20 @@ typedef struct emmm {//演出计划数据域
 	int play_ID;//剧目编号
 	int studio_ID;//放映厅编号
 	date_status date; //演出日期   参见date_status结构体定义
-	time_status time;//起止时间    参见time_status结构体定义  24小时制
+	time_status time;//开始时间    参见time_status结构体定义  24小时制
+	Ticket *ticket_head, *ticket_tail;//次链表
 }data_plan;
 
 typedef struct emmmm {//账号数据域
-	char UID[NAME / 2];//账号编号   用于修改密码或找回密码
+	char UID[NAME-2];//账号编号   12位   用于修改密码或找回密码
 	char username[NAME];//用户名   4~14个字符/2~7个汉字
 	char password[PASSWORD+1];//登录口令  6~12
 	user_types user_type;//账号类型     参见enum user_types枚举定义
 	long long contributions;//       业绩\购买额
+	Record *record_head, *record_tail;//销售记录、购买记录次链表
 }data_account;
 
-
+/////读取销售记录时计算业绩      新增销售记录时实时更新     销售排名时不再重新计算
 ////////////////////////////////////////实体定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
@@ -133,33 +157,12 @@ typedef struct linklist_account {//账号
 	struct linklist_account *pre, *next;
 }Account;
 
-typedef struct linklist_ticket {
-	int ticket_ID;//入场券编号
-	int plan_ID;//演出计划编号
-	int seatx;//座位所在行
-	int seaty;//座位所在列
-	int price;//票价    剧目决定
-	ticket_statuses ticket_status;//票的状态     参见enum tickets_statuses
-	struct linklist_ticket *pre, *next;
-}Ticket;
 
-typedef struct linklist_record{//交易记录
-	long record_ID;//交易记录ID
-	int conductor_ID;//售票员ID      会员账户
-	int ticket_ID;//票ID
-	date_status date;//处理日期
-	time_status time;//处理时间
-	int price;//票价
-	sale_types sale_type;//交易类型
-	struct linklist_record *pre, *next;
-}Record;
 
 typedef struct ctrl {//链表类型
 	Program *program_head,*program_tail;
 	Studio *studio_head,*studio_tail;
-	Ticket *ticket_head, *ticket_tail;
 	Plan *plan_head,*plan_tail;
-	Record *record_head, *record_tail;
 	Account *account_head,*account_tail;
 }List;
 
@@ -216,6 +219,7 @@ void process_acount();//账户管理过程
 void process_manager();//剧院经理过程
 void process_program();//剧目查询及管理过程
 void process_studio();//影厅查询及管理过程
+void process_plan();//放映计划查询及管理过程
 
 void process_conducter();//售票员过程
 void process_customer();//顾客过程

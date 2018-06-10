@@ -11,7 +11,7 @@ void print_examinput() {//非法输入报错
 	rewind(stdin);
 }
 
-void go_on() {//按任意键继续
+inline void go_on() {//按任意键继续
 	rewind(stdin);
 	printf("按任意键继续\n");
 	rewind(stdin);
@@ -46,6 +46,7 @@ void print_ok() {//提示操作成功
 
 void print_instruction(int i) {//显示说明
 	if (i == 1) {
+		hide_cursor();
 		system("cls");
 		set_position(20, 6);
 		printf("操作说明");
@@ -54,6 +55,12 @@ void print_instruction(int i) {//显示说明
 		go_on();
 	}
 }
+
+void 哈哈() {//我去，真有这种特性
+	int 我去=5;
+	printf("%d", 我去);
+}
+
 
 //弃用
 

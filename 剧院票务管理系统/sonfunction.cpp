@@ -44,7 +44,7 @@ char *username_get(int judge) {//用户名的获取    judge!=0时进行输入检查
 	exam_mallocX(str);
 	str[0] = '\0';
 	scanf("%s", str);
-	if(judge)
+	if(judge&&str)//str基于警告加入
 	while (strlen(str) > 14 || strlen(str) < 4) {
 		print_examinput();
 		scanf("%s", str);
