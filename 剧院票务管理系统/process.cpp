@@ -44,7 +44,7 @@ void process_admin() {//管理员过程
 	int choice;
 	while (1) {
 		show_admin();
-		choice = choice_judge(7);
+		choice = choice_judge(11);
 		switch (choice) {
 		case 0:break;
 		case 1:process_acount(); break;

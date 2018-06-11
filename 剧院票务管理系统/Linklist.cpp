@@ -25,7 +25,7 @@ void initialize_linklist() {//初始化链表
 	//list.record_tail = list.record_head;
 }
 
-////////////////////////////////////////program
+//////////////////////////////////////////program
 
 void add_program() {//增加剧目
 	Program *p = (Program *)malloc(sizeof(Program));

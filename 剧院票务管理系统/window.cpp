@@ -106,8 +106,8 @@ int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—
 		set_position(36, 14); printf("‰Ø¿¿À˘”–%s",obj);
 	}
 	else if (order == 11) {
-		i == 0 ? i = 2 : i = i;
-		i > 2 ? i = 1: i = i;
+		i == 0 ? i = 3 : i = i;
+		i > 3 ? i = 1: i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 6); printf("œµÕ≥”√ªßπ‹¿Ì");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);

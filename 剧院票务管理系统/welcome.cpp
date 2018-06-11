@@ -189,6 +189,8 @@ void show_admin() {//系统管理员主界面
 	SetColor(7, 0);
 	set_position(34, 8);
 	printf("登录记录查询");
+	set_position(34, 10); 
+	printf("管理我的信息");
 }
 
 void show_account() {//账户查询及管理界面
@@ -209,7 +211,7 @@ void show_account() {//账户查询及管理界面
 	set_position(36, 12);
 	printf("删除用户信息");
 	set_position(36, 14);
-	printf("浏览用户信息");
+	printf("浏览所有用户");
 }
 
 
