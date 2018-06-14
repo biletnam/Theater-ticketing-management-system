@@ -59,7 +59,7 @@ char *password_get(int judge) {//密码输入的获取        judge!=0时进行输入检查
 		while (i < 49) {
 			c = getch();
 			getch();//微软更新产物
-			if (c != 8 && c != '\r') {
+			if (c != 8 && c != '\r'&&c!=' ') {
 				str[i++] = c;
 				printf("*");
 			}
@@ -190,19 +190,20 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	printf("请选择剧目类型:");
 	choice = get_num(1, 3, 1, 1);
 	tem.program_type = (program_types)choice;
-	printf("请输入剧目编号(6位数字):");
-	str = get_string(6, 6, 1);
-	Program *p;//ID查重
-	do {
-		p = search_program(str, 0);
-		if (p) {
-			free(str);
-			printf("该编号已被使用，推荐编号%d\n请重新输入:",atoi(list.program_tail->element.program_ID)+1);
-			str = get_string(6, 6, 1);
-		}
-	} while (p != NULL);
-	strcpy(tem.program_ID, str);
-	free(str);
+	//printf("请输入剧目编号(6位数字):");
+	//str = get_string(6, 6, 1);
+	//Program *p;//ID查重
+	//do {
+	//	p = search_program(str, 0);
+	//	if (p) {
+	//		free(str);
+	//		printf("该编号已被使用，推荐编号%d\n请重新输入:",atoi(list.program_tail->element.program_ID)+1);
+	//		str = get_string(6, 6, 1);
+	//	}
+	//} while (p != NULL);
+	//strcpy(tem.program_ID, str);
+	//free(str);
+	sprintf(tem.program_ID,)
 	printf("请输入剧目名称(15个汉字以内):");
 	str = get_string(1, 30, 0);
 	strcpy(tem.program_name, str);

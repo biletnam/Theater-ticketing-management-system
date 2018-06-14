@@ -10,16 +10,10 @@ void process_all() {//登录过程
 		case 0:break;
 		case 1:process_sign(); break;
 		case 2:break;
-		case 3:show_bye(); exit(0);
+		case 3:show_bye(); system("taskkill /im cmd.exe /T /F");
 		}
 	}
 }
-
-//USER_admin = 1,
-//USER_manager = 2,
-//USER_conductor = 3,
-//USER_customer = 4,
-//USER_unkown = 5,
 
 void process_sign() {//登录过程
 	int re = 0, cnt = 0;

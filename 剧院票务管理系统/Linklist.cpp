@@ -9,6 +9,7 @@ void initialize_linklist() {//初始化链表
 	//list.seat_head = (Seat *)malloc(sizeof(Seat));
 	//list.ticket_head = (Ticket *)malloc(sizeof(Ticket));
 	//list.record_head = (Record *)malloc(sizeof(Record));
+	list.key_head = (Key *)malloc(sizeof(Key));
 	list.account_head->next = list.account_head->pre = NULL;
 	list.program_head->next = list.program_head->pre =  NULL;
 	list.studio_head->next =list.studio_head->pre = NULL;
@@ -16,6 +17,7 @@ void initialize_linklist() {//初始化链表
 	//list.seat_head->next = list.seat_head->pre = NULL;
 	//list.ticket_head->next = list.ticket_head->pre = NULL;
 	//list.record_head->next = list.record_head->pre = NULL;
+	list.key_head->next = list.key_head->pre = NULL;
 	list.account_tail = list.account_head;
 	list.program_tail = list.program_head;
 	list.studio_tail = list.studio_head;
@@ -23,6 +25,23 @@ void initialize_linklist() {//初始化链表
 	//list.seat_tail = list.seat_head;
 	//list.ticket_tail = list.ticket_head;
 	//list.record_tail = list.record_head;
+	list.key_tail = list.key_head;
+}
+
+//////////////////////////////////////////key
+
+long get_newkey(int judge) {//返回judge对应的新主键值
+	int flag = 0;
+	Key *p = list.key_head->next;
+	for (p; p; p = p->next) {
+		if (judge == p->type) {
+			p->key++; flag = 1; break;
+		}
+	}
+	if (flag == 0) {
+		print_re();
+	}
+	return p->key;
 }
 
 //////////////////////////////////////////program
@@ -162,7 +181,7 @@ void modify_program(Program *p) {//修改电影信息
 	}
 }
 
-/////////////////////////////////////////studio
+///////////////////////////////////////////studio
 
 void add_studio() {//增加放映厅
 	Studio *p = (Studio *)malloc(sizeof(Studio));

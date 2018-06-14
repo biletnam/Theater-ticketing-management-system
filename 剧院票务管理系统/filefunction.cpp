@@ -2,7 +2,24 @@
 #include"statements.h"
 ///////////////////////////////////////////import
 
-void import_account() {//读入账号信息
+void import_key() {//导入主键信息到链表
+	FILE *fp = fopen("key.txt", "r");
+	if (fp == NULL) {
+		print_re();
+		exit(1);
+	}
+	long key, type;
+	while (fscanf(fp, "%d %d", &key, &type) != EOF) {
+		Key *p = (Key *)malloc(sizeof(Key));
+		p->next = list.key_tail->next;
+		p->pre = list.key_tail;
+		p->key = key; p->type = type;
+		list.key_tail = p;
+	}
+	fclose(fp);
+}
+
+void import_account() {//导入账号信息到链表
 	int cnt = 0;
 	FILE *fp = fopen(".\\account.txt","r");
 	if (fp == NULL) {
@@ -26,7 +43,7 @@ void import_account() {//读入账号信息
 	fclose(fp);
 }
 
-void import_program() {//从文件读入剧目信息存储为链表
+void import_program() {//导入剧目信息到链表
 	FILE *fp = fopen(".\\program.txt", "r");
 	if (fp == NULL) {
 		print_re();
@@ -51,7 +68,7 @@ void import_program() {//从文件读入剧目信息存储为链表
 	fclose(fp);
 }
 
-void import_studio_and_seat() {//导入放映厅及座位信息
+void import_studio_and_seat() {//导入放映厅及座位信息到链表
 	FILE *fp = fopen(".\\studio.txt", "r");
 	if (fp == NULL) {
 		print_re();
@@ -92,7 +109,29 @@ void import_studio_and_seat() {//导入放映厅及座位信息
 	fclose(fp);
 }
 
+void import_plan() {//导入演出计划信息到链表
+	FILE *fp = fopen(".\\plan.txt", "r");
+	if (fp == NULL) {
+		print_re();
+		exit(1);
+	}
+	//fscanf(fp, "", );
+}
+
 //////////////////////////////////////////save
+
+inline void save_key() {//保存主键信息到文件
+	FILE *fp = fopen("key.txt", "w");
+	if (fp == NULL) {
+		print_re();
+		exit(1);
+	}
+	Key *p = list.key_head->next;
+	for (p; p; p = p->next) {
+		fprintf(fp, "%ld %d\n", p->key, p->type);
+	}
+	fclose(fp);
+}
 
 void save_program() {//保存剧目信息到文件
 	FILE *fp = fopen(".\\program.txt","w+");

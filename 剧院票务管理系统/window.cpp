@@ -41,6 +41,7 @@ int choice_judge(int i) {//读取键盘事件          i  // 界面选择   参见screen_cle
 					system("cls");
 					system("color ff");
 					system("taskkill /im cmd.exe /T /F");
+					//quick_exit(0);
 				}
 				else {
 					return 0;//最为返回上一层

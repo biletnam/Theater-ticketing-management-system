@@ -58,6 +58,13 @@ typedef struct {
 }time_status;//时间结构体
 
 ////////////////////////////////////////先行定义
+
+typedef struct linklist_key {
+	long key;
+	char type;//实体类型    0  电影    1 歌剧   2音乐会     3演出计划
+	struct linklist_key  *pre, *next;
+}Key;
+
 typedef struct linklist_seat {
 	int stduio_ID;//座位所在放映厅编号
 	int seatx;//座位所在行
@@ -164,6 +171,7 @@ typedef struct ctrl {//链表类型
 	Studio *studio_head,*studio_tail;
 	Plan *plan_head,*plan_tail;
 	Account *account_head,*account_tail;
+	Key *key_head, *key_tail;
 }List;
 
 ////////////////////////////////////////全局变量\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -242,13 +250,16 @@ void seat_changer(Studio *p);//可视化座位修改器
 //sonfunction.cpp
 
 
-void import_account();//读入账号信息
-void import_program();//读入剧目信息
-void import_studio_and_seat();//读入放映厅及座位信息
-
+void import_account();//导入账号信息到链表
+void import_program();//导入剧目信息到链表
+void import_studio_and_seat();//导入放映厅及座位信息到链表
+void import_plan();//导入演出计划信息到链表
+void import_key();//导入主键信息到链表
 
 void save_program();//保存剧目信息到文件
 void save_studio_and_seat();//保存放映厅及座位到文件
+inline void save_key();//保存主键信息到文件
+
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表

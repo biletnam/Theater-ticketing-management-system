@@ -2,6 +2,7 @@
 #include"statements.h"
 
 void import_all() {//导入所有信息
+	import_key();
 	import_account();
 	import_program();
 	import_studio_and_seat();

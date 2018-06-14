@@ -183,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="account.txt" />
+    <Text Include="key.txt" />
     <Text Include="plan.txt" />
     <Text Include="program.txt" />
     <Text Include="record.txt" />

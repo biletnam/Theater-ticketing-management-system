@@ -1,13 +1,4 @@
-﻿  filefunction.cpp
-  friendly.cpp
-  initialize.cpp
-  Linklist.cpp
-  process.cpp
-  sonfunction.cpp
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(120): warning C4018: “>”: 有符号/无符号不匹配
-c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(120): warning C4018: “<”: 有符号/无符号不匹配
-  welcome.cpp
+﻿  process.cpp
   window.cpp
-  剧院票务管理系统.cpp
   正在生成代码...
   剧院票务管理系统.vcxproj -> C:\Users\HP\source\repos\剧院票务管理系统\Debug\剧院票务管理系统.exe
