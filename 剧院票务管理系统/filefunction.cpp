@@ -8,12 +8,13 @@ void import_key() {//导入主键信息到链表
 		print_re();
 		exit(1);
 	}
-	long key, type;
-	while (fscanf(fp, "%d %d", &key, &type) != EOF) {
+	long key;int type;
+	while (fscanf(fp, "%ld %d", &key, &type) != EOF) {
 		Key *p = (Key *)malloc(sizeof(Key));
 		p->next = list.key_tail->next;
 		p->pre = list.key_tail;
 		p->key = key; p->type = type;
+		list.key_tail->next = p;
 		list.key_tail = p;
 	}
 	fclose(fp);
@@ -71,14 +72,13 @@ void import_program() {//导入剧目信息到链表
 void import_studio_and_seat() {//导入放映厅及座位信息到链表
 	FILE *fp = fopen(".\\studio.txt", "r");
 	if (fp == NULL) {
-		print_re();
-			exit(1);
+		print_re();exit(1);
 	}
 	data_studio tem;
 	int i, j, t, ID;
 	list.studio_head->element.seatx = 0;
-	while (fscanf(fp, "%s %s %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty) != EOF) {
-		Studio *p = (Studio *)malloc(sizeof(Studio));
+	while (fscanf(fp, "%s %s %d %d %d", tem.studio_ID, tem.studio_name, &tem.seatx,&tem.seaty,&tem.seatsum) != EOF) {
+		Studio *p = (Studio *)malloc(sizeof(Studio)); int cnt = 0;
 		exam_mallocX(p);
 		p->element = tem;
 		p->element.seat_head = (Seat *)malloc(sizeof(Seat));
@@ -97,34 +97,47 @@ void import_studio_and_seat() {//导入放映厅及座位信息到链表
 				Seat *k = (Seat *)malloc(sizeof(Seat));
 				exam_mallocX(k);
 				k->seatx = i, k->seaty = j,k->stduio_ID=ID;
-				fscanf(fp, "%d", &t);
+				fscanf(fp, "%d", &t); if (t == 1)cnt++;
 				k->seat_condition = (seat_conditions)t;
 				k->next = p->element.seat_tail->next;
 				k->pre = p->element.seat_tail;
 				p->element.seat_tail->next = k;
 				p->element.seat_tail = k;
 			}
-		}
+		}if (p->element.seatsum != cnt) { printf("座位文件校验错误\n"); print_re(); }
 	}
 	fclose(fp);
 }
 
-void import_plan() {//导入演出计划信息到链表
+void import_plan_and_ticket() {//导入演出计划信息到链表
 	FILE *fp = fopen(".\\plan.txt", "r");
 	if (fp == NULL) {
-		print_re();
-		exit(1);
+		print_re();exit(1);
 	}
-	//fscanf(fp, "", );
+	data_plan tem; int i;
+	while (fscanf(fp, "%ld %d %d %d-%d-%d %d:%d %d",&tem.plan_ID,&tem.program_ID,&tem.studio_ID,\
+&tem.date.year,&tem.date.month,&tem.date.day,&tem.time.hour,&tem.time.minute,&tem.ticketnum) != EOF) {
+		Plan *p = (Plan *)malloc(sizeof(Plan)); exam_mallocX(p);
+		p->element = tem;
+		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
+		p->element.ticket_head->pre = p->element.ticket_head->next = NULL;
+		p->element.ticket_tail = p->element.ticket_head;//票的链表初始化
+		//for (i = 1; i <= p->element.ticket; i++) {
+		//	Ticket *k = (Ticket *)malloc(sizeof(Ticket));
+		//	  fscanf("%")
+		//}
+		p->next = list.plan_tail->next; p->pre = list.plan_tail;
+		list.plan_tail->next = p; list.plan_tail = p;
+	}
+	fclose(fp);
 }
 
 //////////////////////////////////////////save
 
-inline void save_key() {//保存主键信息到文件
+void save_key() {//保存主键信息到文件
 	FILE *fp = fopen("key.txt", "w");
 	if (fp == NULL) {
-		print_re();
-		exit(1);
+		print_re();exit(1);
 	}
 	Key *p = list.key_head->next;
 	for (p; p; p = p->next) {
@@ -136,8 +149,7 @@ inline void save_key() {//保存主键信息到文件
 void save_program() {//保存剧目信息到文件
 	FILE *fp = fopen(".\\program.txt","w+");
 	if (fp == NULL) {
-		print_re();
-		exit(1);
+		print_re();exit(1);
 	}
 	Program *p = list.program_head->next;
 	for (p; p; p = p->next) {
@@ -163,7 +175,7 @@ void save_studio_and_seat() {//保存放映厅及其座位数据
 	Studio *p = list.studio_head->next;
 	Seat *k = NULL;
 	for (p; p; p = p->next) {
-		fprintf(fp, "%s %s %d %d\n", p->element.studio_ID, p->element.studio_name, p->element.seatx, p->element.seaty);
+		fprintf(fp, "%s %s %d %d %d\n", p->element.studio_ID, p->element.studio_name, p->element.seatx, p->element.seaty,p->element.seatsum);
 		k = p->element.seat_head->next;
 		for (i = 1; i <= p->element.seatx; i++) {
 			for (j = 1; j <= p->element.seaty; j++) {
@@ -172,6 +184,24 @@ void save_studio_and_seat() {//保存放映厅及其座位数据
 				fprintf(fp, "%d ", k->seat_condition);
 				k = k->next;
 			}fprintf(fp, "\n");
+		}
+	}
+	fclose(fp);
+}
+
+void save_plan_and_ticket() {//保存演出计划及票
+	FILE *fp = fopen("plan.txt", "w");
+	if (fp == NULL) {
+		print_re(); exit(1);
+	}
+	Plan *p = list.plan_head->next;
+	for (p; p; p = p->next) {
+		fprintf(fp, "%ld %d %d %d-%d-%d %d:%d %d",p->element.plan_ID,p->element.program_ID,p->element.studio_ID,\
+p->element.date.year, p->element.date.month, p->element.date.day,p->element.time.hour,p->element.time.minute,p->element.ticketnum);
+		Ticket *k = p->element.ticket_head->next;
+		for (int i = 1; i <= p->element.ticketnum; i++) {
+			fprintf(fp, "%ld %d %d %d %d     ", k->ticket_ID, k->seatx, k->seaty, k->price, k->ticket_status);
+			if (i % 5 == 0) { fprintf(fp, "\n"); }
 		}
 	}
 	fclose(fp);

@@ -116,14 +116,32 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 10); printf("¹ÜÀíÎÒµÄÐÅÏ¢");
 	}
-	else {
+	else if (order == 12) {
+		i == 0 ? i = 5 : i = i;
+		i > 5 ? i = 1 : i = i;
+		set_position(35, 4);
+		SetColor(10, 0);
+		printf("ÑÝ³ö²éÑ¯¼°¹ÜÀí");
+		SetColor(11, 0);
+		set_position(36, 6);
+		printf("²éÑ¯ÑÝ³ö¼Æ»®");
+		SetColor(7, 0);
+		set_position(36, 8);
+		printf("ÐÞ¸ÄÑÝ³ö¼Æ»®");
+		set_position(36, 10);
+		printf("ÐÂÔöÑÝ³ö¼Æ»®");
+		set_position(36, 12);
+		printf("É¾³ýÑÝ³ö¼Æ»®");
+		set_position(36, 14);
+		printf("ä¯ÀÀËùÓÐ¼Æ»®");
+	}else {
 		print_re();
 	}
 	return i;
 }
 
 int select_seat(Studio *p) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾ÊÇ·ñ±£´æ
-	char num[15][30] = { 0 }; int choice, i, j, flag = 0;
+	char num[15][30] = { 0 }; int choice, i, j, flag = 0,cnt = 0;
 	if (p == NULL) { return flag; }
 	Seat *k = p->element.seat_head->next;
 	for (i = 1; i <= p->element.seatx; i++) {
@@ -165,11 +183,12 @@ int select_seat(Studio *p) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   
 				}*///µ÷ÊÔ
 				for (i = 1; i <= p->element.seatx; i++) {
 					for (j = 1; j <= p->element.seaty; j++) {
-						k->seat_condition = (seat_conditions)num[i][j]; 
+						k->seat_condition = (seat_conditions)num[i][j]; if (num[i][j] == 1) { cnt++; }
 						k = k->next;
 					}
 				}
 			}
+			p->element.seatsum = cnt;
 			return flag;
 		}
 		else if (choice == 3) {

@@ -5,14 +5,12 @@
 #include"statements.h"
 List list; 
 data_account PRESENT;//当前用户
-int main()
-{
+int main(){
 	initialize();
 	//show_welcome();
-	//seat_changer(list.studio_head->next);
-	//print_studio(list.studio_head->next); go_on();
 	//print_instruction(1);
-	process_all();
+	//process_all();
+	process_manager();
     return 0;
 }
 

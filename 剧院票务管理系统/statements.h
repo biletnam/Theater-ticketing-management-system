@@ -6,6 +6,15 @@ const int NAME = 15, PASSWORD = 12;
 
 //////////////////////////////////////枚举类型定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
+typedef enum {
+	FILM_KEY = 1,
+	OPERA_KEY = 2,
+	CONCERT_KEY = 3,
+	PLAN_KEY = 4,
+	RECORD_KEY=5,
+	TICKET_KEY=6,
+}Key_status;
+
 typedef enum {//定义剧目枚举类型
 	PROGRAM_movie = 1,//电影
 	PROGRAM_opera = 2,//歌剧
@@ -34,7 +43,7 @@ typedef enum {//定义座位情况枚举类型
 }seat_conditions;
 
 typedef enum {
-	TICKET_available=0,//代售
+	TICKET_available=0,//待售
 	TICKET_sold = 1,//已售
 	TICKET_reserve = 2,//预留
 }ticket_statuses;
@@ -61,7 +70,7 @@ typedef struct {
 
 typedef struct linklist_key {
 	long key;
-	char type;//实体类型    0  电影    1 歌剧   2音乐会     3演出计划
+	char type;//实体类型    1  电影    2 歌剧   3音乐会     4演出计划     5销售记录
 	struct linklist_key  *pre, *next;
 }Key;
 
@@ -74,8 +83,7 @@ typedef struct linklist_seat {
 }Seat;
 
 typedef struct linklist_ticket {
-	int ticket_ID;//入场券编号
-	//int plan_ID;//演出计划编号
+	long ticket_ID;//入场券编号
 	int seatx;//座位所在行
 	int seaty;//座位所在列
 	int price;//票价    剧目决定
@@ -98,7 +106,7 @@ typedef struct linklist_record{//交易记录
 //////////////////////////////////////实体数据域定义\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef struct em{//剧目数据域
-	char program_ID[NAME/2];//六位数字  剧目编号
+	char program_ID[NAME/2+1];//  剧目编号
 	char program_name[NAME * 2 + 1];//15汉字    剧目名称
 	program_types program_type;//剧目类型  参见enum program_types枚举定义
 	program_ratings program_rating;//剧目等级 参见program_ratings枚举定义
@@ -117,17 +125,19 @@ typedef struct em{//剧目数据域
 typedef struct emm {
 	char studio_ID[NAME/2];//最多六位数字   放映厅编号
 	char studio_name[NAME];//最多七个汉字    放映厅名称
+	int seatsum;//可用座位个数
 	int seatx;//5~12
 	int seaty;//10~25  放映厅座位 的行和列    固有属性   用来设置二维数组
 	Seat *seat_head, *seat_tail;//次链表
 }data_studio;
 
 typedef struct emmm {//演出计划数据域
-	int plan_ID;//演出计划编号
-	int play_ID;//剧目编号
+	long plan_ID;//演出计划编号
+	int program_ID;//剧目编号
 	int studio_ID;//放映厅编号
 	date_status date; //演出日期   参见date_status结构体定义
 	time_status time;//开始时间    参见time_status结构体定义  24小时制
+	int ticketnum;//计划中当前的票数
 	Ticket *ticket_head, *ticket_tail;//次链表
 }data_plan;
 
@@ -249,20 +259,22 @@ void seat_changer(Studio *p);//可视化座位修改器
 
 //sonfunction.cpp
 
-
+void import_key();//导入主键信息到链表
 void import_account();//导入账号信息到链表
 void import_program();//导入剧目信息到链表
 void import_studio_and_seat();//导入放映厅及座位信息到链表
-void import_plan();//导入演出计划信息到链表
-void import_key();//导入主键信息到链表
+void import_plan_and_ticket();//导入演出计划信息到链表
 
+void save_key();//保存主键信息到文件
 void save_program();//保存剧目信息到文件
 void save_studio_and_seat();//保存放映厅及座位到文件
-inline void save_key();//保存主键信息到文件
+void save_plan_and_ticket();//保存演出计划及票
 
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
+
+long get_newkey(int judge);//返回judge对应的新主键值  1  电影    2 歌剧   3音乐会     4演出计划     5销售记录
 
 Program *search_program(char *obj, int judge);//按ID或名称查找剧目 judge 控制是否进行相似反馈
 void add_program();//增加剧目
@@ -280,6 +292,7 @@ void kill_studio(Studio *p);//删除指定放映厅
 void modify_studio(Studio *p);//修改放映厅名称及座位
 
 void initialize_seat(Studio *p);//为新放映厅初始化座位
+void initialize_ticket(Plan *p);//为演出计划按座位生成票
 
 //Linklist.cpp
 

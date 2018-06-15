@@ -113,6 +113,8 @@ void abandon() {//弃用
 	system("color f8");
 }
 
+/////////////////////////////////////manager
+
 void show_manager() {//剧院经理主界面
 	system("cls");
 	rewind(stdin);
@@ -175,6 +177,29 @@ void show_studio(){//影厅查询及管理界面
 	set_position(36, 14);
 	printf("浏览所有影厅");
 }
+
+void show_plan() {//演出计划查询及管理界面
+	rewind(stdin);
+	hide_cursor();
+	system("cls");
+	set_position(35, 4);
+	SetColor(10, 0);
+	printf("演出查询及管理");
+	SetColor(11, 0);
+	set_position(36, 6);
+	printf("查询演出计划");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("修改演出计划");
+	set_position(36, 10);
+	printf("新增演出计划");
+	set_position(36, 12);
+	printf("删除演出计划");
+	set_position(36, 14);
+	printf("浏览所有计划");
+}
+
+///////////////////////////////////admin
 
 void show_admin() {//系统管理员主界面
 	system("cls");

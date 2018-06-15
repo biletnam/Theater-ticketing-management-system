@@ -29,7 +29,7 @@ void process_sign() {//登录过程
 	case 3:process_conducter(); break;
 	case 4:process_customer(); break;
 	default:
-			print_re(); go_on(); exit(1);
+			print_re(); exit(1);
 		break;
 	}
 }
@@ -89,7 +89,7 @@ void process_program() {//剧目查询及管理过程
 		case 0:break;
 		case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(str = get_string(1, 30, 0), 1), 1); free(str); go_on(); break;
 		case 2:printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(str = get_string(1, 30, 0), 1)); free(str); go_on(); break;
-		case 3:add_program(); break;
+		case 3:add_program(); go_on(); break;
 		case 4:printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(str = get_string(1, 30, 0), 1)); free(str); go_on(); break;
 		case 5:hide_cursor(); program_viewer(); break;
 		}if (choice == 0)break;

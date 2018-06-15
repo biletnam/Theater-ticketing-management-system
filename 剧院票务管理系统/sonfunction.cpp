@@ -153,7 +153,7 @@ date_status get_date() {//日期的获得与判断
 			flag = 0;
 		}
 		if (flag == 0) {
-			print_examinput();
+			printf("请输入有效的日期！\n"); rewind(stdin);
 		}
 	} while (flag == 0 && (flag = 1));
 	date.year = y, date.month = m, date.day = d;
@@ -169,7 +169,7 @@ time_status get_time() {//时间的获得及判断
 		SetColor(7, 0);
 		if (h < 0 || h>23 || m < 0 || m>59) {
 			flag = 0;
-			print_examinput();
+			printf("请输入合法的时间！\n"); rewind(stdin);
 		}
 	} while (flag == 0 && (flag = 1));
 	time.hour = h, time.minute = m;
@@ -203,16 +203,17 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	//} while (p != NULL);
 	//strcpy(tem.program_ID, str);
 	//free(str);
-	sprintf(tem.program_ID,)
+	sprintf(tem.program_ID, "%ld", get_newkey(choice));
+	printf("已为剧目分配ID%s\n", tem.program_ID);
 	printf("请输入剧目名称(15个汉字以内):");
 	str = get_string(1, 30, 0);
 	strcpy(tem.program_name, str);
 	free(str);
-	tem.program_rating == 3 ? printf("请输入指挥姓名(7个汉字以内):") : printf("请输入导演姓名(7个汉字以内):");
+	tem.program_type == 3 ? printf("请输入指挥姓名(7个汉字以内):") : printf("请输入导演姓名(7个汉字以内):");
 	str = get_string(1, 14, 0);
 	strcpy(tem.director, str);
 	free(str);
-	printf("请输入上映日期与结束日期(year-month-day):\n");
+	printf("请输入开始日期与结束日期(year-month-day):\n");
 	do {
 		tem.start_date = get_date();
 		tem.end_date = get_date();
@@ -232,12 +233,12 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	printf("请设置票价(5~100)(元):");
 	choice = get_num(5, 100, 1, 3);
 	tem.price = choice;
-	printf("请设置影片语言(2个汉字):");
+	printf("请设置剧目语言(2个汉字):");
 	str = get_string(4, 4, 2);
-	printf("请输入影片放映成本(万元):");
-	choice = get_num(1, 100, 1, 2);
+	strcpy(tem.language, str);free(str);
+	printf("请输入剧目放映成本(万元):");
+	choice = get_num(1, 1000, 1, 3);
 	tem.cost = choice;
-	printf("具体信息已置为默认值\n如有需要请记得修改\n");
 	return tem;
 }
 

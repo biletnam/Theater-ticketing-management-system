@@ -30,17 +30,18 @@ void initialize_linklist() {//初始化链表
 
 //////////////////////////////////////////key
 
-long get_newkey(int judge) {//返回judge对应的新主键值
-	int flag = 0;
+long get_newkey(int type) {//返回judge对应的新主键值    并更新主键记录
+	int flag = 0;// 1  电影    2 歌剧   3音乐会     4演出计划     5销售记录
 	Key *p = list.key_head->next;
 	for (p; p; p = p->next) {
-		if (judge == p->type) {
+		if (type == p->type) {
 			p->key++; flag = 1; break;
 		}
 	}
 	if (flag == 0) {
 		print_re();
 	}
+	save_key();
 	return p->key;
 }
 
@@ -51,6 +52,7 @@ void add_program() {//增加剧目
 	exam_mallocX(p);
 	p->element = get_program_infomation();//剧目信息获取
 	if (enquiry(1)) {
+		printf("具体信息已置为默认值\n如有需要请记得修改\n");
 		p->next = list.program_tail->next;
 		p->pre = list.program_tail;
 		list.program_tail->next = p;
@@ -112,7 +114,7 @@ void kill_program(Program *p) {//按照ID或名字删除剧目
 void print_program(Program *p , int i) {//输出某个剧目信息    i  控制是否清屏
 	if (p) {
 		if(i)system("cls");
-		char rating[8],type[7],person[5];
+		char rating[8],type[7],person[11];
 		switch (p->element.program_rating) {
 		case 1:strcpy(rating, "Child"); break;
 		case 2:strcpy(rating, "Teen"); break;
@@ -122,19 +124,19 @@ void print_program(Program *p , int i) {//输出某个剧目信息    i  控制是否清屏
 		}
 		switch (p->element.program_type) {
 		case 1:strcpy(type, "电影"); strcpy(person,"导演"); break;
-		case 2:strcpy(rating, "歌剧"); strcpy(person, "导演"); break;
-		case 3:strcpy(rating, "音乐会"); strcpy(person, "指挥"); break;
+		case 2:strcpy(type, "歌剧"); strcpy(person, "导演"); break;
+		case 3:strcpy(type, "音乐会"); strcpy(person, "指挥"); break;
 		default:
 			print_re();
 		}
 		printf("\n");
 		printf("	==================================================================\n");
 		printf("	||								||\n");
-		printf("	||%s名称:%-15s		%s:%-8s		||\n",type, p->element.program_name,person, p->element.director);
+		printf("	||%s名称:%-15s		%s:%-12s	||\n",type, p->element.program_name,person, p->element.director);
 		printf("	||								||\n");
 		printf("	||主演:%12s	%-14s	时长:%dmin		||\n", p->element.performer[0], p->element.performer[1], p->element.duration);
 		printf("	||								||\n");
-		printf("	||电影标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area, p->element.price);
+		printf("	||剧目标签:%-s                 地区:%-s       票价:%-d		||\n", p->element.label, p->element.area, p->element.price);
 		printf("	||								||\n");
 		printf("	||放映等级:%-8s		语言:%-10s			||\n", rating, p->element.language);
 		printf("	==================================================================\n");
@@ -146,7 +148,7 @@ void modify_program(Program *p) {//修改电影信息
 	if (p) {
 		print_program(p,1);
 		printf("请选择你想要更改的\n");
-		printf("1.票价 2.放映等级 3.时长 4.地区 \n5.语言 6.电影标签 7.主演 8.导演\n");
+		printf("1.票价 2.放映等级 3.时长 4.地区 \n5.语言 6.剧目标签 7.主演 8.导演\n");
 		int choice = 0; char *str; rewind(stdin);
 		data_program tem=p->element;
 		choice = get_num(1, 8, 1, 1);
@@ -206,6 +208,7 @@ void add_studio() {//增加放映厅
 	printf("请输入该影厅座位的列数(10~25):");
 	choice = get_num(10, 25, 2, 2);
 	p->element.seaty = choice;
+	p->element.seatsum = p->element.seatx*p->element.seaty;//计算初始化后的可用座位
 	if (enquiry(1)) {
 		p->next = list.studio_tail->next;
 		p->pre = list.studio_tail;
@@ -295,7 +298,8 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 				}
 				k = k->next;
 			}printf("\n");
-		}printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
+		}if(cnt == p->element.seatsum )printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
+		else { printf("座位校对出现问题\n"); print_re(); }
 	}
 }
 
@@ -458,4 +462,78 @@ void delete_seat(Studio *k) {//删除放映厅时删除其座位
 			p = p->next;
 		}free(dead);
 	}
+}
+
+////////////////////////////////////////////plan
+
+void add_plan() {//新增演出计划
+	Plan *p = (Plan *)malloc(sizeof(Plan));
+	exam_mallocX(p);
+	p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
+	p->element.ticket_head->next = p->element.ticket_head->pre = NULL;
+	p->element.ticket_tail = p->element.ticket_head;
+	char *str = NULL; void *k = NULL;
+	p->element.plan_ID = get_newkey(PLAN_KEY);
+	printf("已为演出计划分配ID%ld\n", p->element.plan_ID);
+	printf("请输入演出剧目的ID或名称:");
+	do {
+		str = get_string(1, 30, 0);
+	} while ((k = search_program(str, 0)) != NULL&&(free(str),1));
+	p->element.program_ID = atoi(((Program *)k)->element.program_ID);
+	printf("请输入上演剧目的影厅ID或名称:");
+	do {
+		str = get_string(1, 14, 0);
+	} while ((k = search_studio(str, 0)) != NULL && (free(str), 1));
+	p->element.studio_ID = atoi(((Studio *)k)->element.studio_ID);
+	p->element.ticketnum = ((Studio *)k)->element.seatsum;
+	printf("请输入演出日期(year-month-day):");
+	p->element.date = get_date();
+	printf("请输入演出时间(24小时制)(hour:min):");
+	p->element.time = get_time();
+	if (enquiry(1)) {
+		initialize_ticket(p);
+		printf("已自动生成所有票\n");
+		p->next = list.plan_tail->next; p->pre = list.plan_tail;
+		list.plan_tail->next = p; list.plan_tail = p;
+		print_ok();
+	}
+}
+
+void search_plan() {//按ID检索演出计划
+
+}
+
+void delete_plan() {
+
+}
+
+void pirnt_plan() {
+
+}
+
+void modify() {
+
+}
+
+///////////////////////////////////////ticket
+
+void initialize_ticket(Plan *p) {//为演出计划按座位生成票
+	char str[20]; sprintf(str, "%d", p->element.program_ID);
+	int cnt = 0, price = search_program(str, 0)->element.price;
+	sprintf(str, "%d", p->element.studio_ID);
+	Studio *k = search_studio(str,0);
+	Seat *q = k->element.seat_head->next;
+	for (q; q; q = q->next) {
+		if (q->seat_condition != 1) {
+			continue;
+		}
+		Ticket *r = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(r);
+		r->ticket_ID = get_newkey(TICKET_KEY);
+		r->seatx = q->seatx; r->seaty = q->seaty;
+		r->price = price;
+		r->ticket_status = (ticket_statuses)TICKET_available;
+		r->next = p->element.ticket_tail->next; r->pre = p->element.ticket_tail;
+		p->element.ticket_tail->next = r; p->element.ticket_tail = r;
+		cnt++;
+	}if (cnt != k->element.seatsum) { printf("座位与票数校验错误\n"); print_re(); }
 }
