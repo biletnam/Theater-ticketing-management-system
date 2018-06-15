@@ -204,7 +204,7 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	//strcpy(tem.program_ID, str);
 	//free(str);
 	sprintf(tem.program_ID, "%ld", get_newkey(choice));
-	printf("已为剧目分配ID%s\n", tem.program_ID);
+	printf("已为剧目分配ID为 %s\n", tem.program_ID);
 	printf("请输入剧目名称(15个汉字以内):");
 	str = get_string(1, 30, 0);
 	strcpy(tem.program_name, str);

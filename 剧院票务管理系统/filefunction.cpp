@@ -122,10 +122,13 @@ void import_plan_and_ticket() {//导入演出计划信息到链表
 		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
 		p->element.ticket_head->pre = p->element.ticket_head->next = NULL;
 		p->element.ticket_tail = p->element.ticket_head;//票的链表初始化
-		//for (i = 1; i <= p->element.ticket; i++) {
-		//	Ticket *k = (Ticket *)malloc(sizeof(Ticket));
-		//	  fscanf("%")
-		//}
+		for (i = 1; i <= p->element.ticketnum; i++) {
+			Ticket *k = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(k); int t;
+			fscanf(fp, "%ld %d %d %d %d", &k->ticket_ID,&k->seatx,&k->seaty,&k->price,&t);
+			k->ticket_status = (ticket_statuses)t;
+			k->next = p->element.ticket_tail->next; k->pre = p->element.ticket_tail;
+			p->element.ticket_tail->next = k; p->element.ticket_tail = k;
+		}
 		p->next = list.plan_tail->next; p->pre = list.plan_tail;
 		list.plan_tail->next = p; list.plan_tail = p;
 	}
@@ -196,13 +199,15 @@ void save_plan_and_ticket() {//保存演出计划及票
 	}
 	Plan *p = list.plan_head->next;
 	for (p; p; p = p->next) {
-		fprintf(fp, "%ld %d %d %d-%d-%d %d:%d %d",p->element.plan_ID,p->element.program_ID,p->element.studio_ID,\
+		fprintf(fp, "%ld %d %d %d-%d-%d %d:%d %d\n",p->element.plan_ID,p->element.program_ID,p->element.studio_ID,\
 p->element.date.year, p->element.date.month, p->element.date.day,p->element.time.hour,p->element.time.minute,p->element.ticketnum);
 		Ticket *k = p->element.ticket_head->next;
 		for (int i = 1; i <= p->element.ticketnum; i++) {
 			fprintf(fp, "%ld %d %d %d %d     ", k->ticket_ID, k->seatx, k->seaty, k->price, k->ticket_status);
+			k = k->next;
 			if (i % 5 == 0) { fprintf(fp, "\n"); }
 		}
 	}
+	fprintf(fp, "\n");
 	fclose(fp);
 }

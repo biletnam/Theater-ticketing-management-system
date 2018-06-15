@@ -70,7 +70,7 @@ void process_manager() {//剧院经理过程
 		case 0:break;
 		case 1:process_program(); break;
 		case 2: process_studio(); break;
-		case 3:break;
+		case 3:process_plan(); break;
 		case 4:break;
 		}if (choice == 0) {
 			catch_cursor(); printf("\n是否退出登录?(0/1):");
@@ -114,7 +114,18 @@ void process_studio() {//影厅查询及管理过程
 }
 
 void process_plan() {//放映计划查询及管理过程
-
+	int choice;
+	while (1) {
+		show_plan();
+		choice = choice_judge(12);
+		if (choice != 0)catch_cursor();
+		switch (choice) {
+		case 0:break;
+		case 1:break;
+		case 2:break;
+		case 3:add_plan(); go_on(); break;
+		}if (choice == 0)break;
+	}
 }
 
 ///////////////////////////////////////////售票员

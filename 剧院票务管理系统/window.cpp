@@ -122,18 +122,16 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(35, 4);
 		SetColor(10, 0);
 		printf("Ñİ³ö²éÑ¯¼°¹ÜÀí");
-		SetColor(11, 0);
-		set_position(36, 6);
-		printf("²éÑ¯Ñİ³ö¼Æ»®");
-		SetColor(7, 0);
-		set_position(36, 8);
-		printf("ĞŞ¸ÄÑİ³ö¼Æ»®");
-		set_position(36, 10);
-		printf("ĞÂÔöÑİ³ö¼Æ»®");
-		set_position(36, 12);
-		printf("É¾³ıÑİ³ö¼Æ»®");
-		set_position(36, 14);
-		printf("ä¯ÀÀËùÓĞ¼Æ»®");
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 6); printf("²éÑ¯Ñİ³ö¼Æ»®");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("ĞŞ¸ÄÑİ³ö¼Æ»®");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10); printf("ĞÂÔöÑİ³ö¼Æ»®");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("É¾³ıÑİ³ö¼Æ»®");
+		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 14); printf("ä¯ÀÀËùÓĞ¼Æ»®");
 	}else {
 		print_re();
 	}

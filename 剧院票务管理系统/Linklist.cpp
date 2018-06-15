@@ -41,7 +41,6 @@ long get_newkey(int type) {//返回judge对应的新主键值    并更新主键记录
 	if (flag == 0) {
 		print_re();
 	}
-	save_key();
 	return p->key;
 }
 
@@ -59,6 +58,7 @@ void add_program() {//增加剧目
 		list.program_tail = p;
 		save_program();
 		list.program_head->element.cost += 1;
+		save_key();
 		print_ok();
 	}
 	else {
@@ -472,18 +472,21 @@ void add_plan() {//新增演出计划
 	p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
 	p->element.ticket_head->next = p->element.ticket_head->pre = NULL;
 	p->element.ticket_tail = p->element.ticket_head;
-	char *str = NULL; void *k = NULL;
+	char *str = NULL; void *k = NULL; int flag = 1;
 	p->element.plan_ID = get_newkey(PLAN_KEY);
-	printf("已为演出计划分配ID%ld\n", p->element.plan_ID);
+	printf("\n已为演出计划分配ID为 %ld\n", p->element.plan_ID);
 	printf("请输入演出剧目的ID或名称:");
 	do {
+		if (flag == 0)printf("该剧目不存在！\n请重新输入：");
 		str = get_string(1, 30, 0);
-	} while ((k = search_program(str, 0)) != NULL&&(free(str),1));
+	} while (((k = search_program(str, 0)) == NULL)&&(free(str),flag=0,1));
+	flag = 1;
 	p->element.program_ID = atoi(((Program *)k)->element.program_ID);
 	printf("请输入上演剧目的影厅ID或名称:");
 	do {
+		if (flag == 0)printf("该放映厅不存在！\n请重新输入：");
 		str = get_string(1, 14, 0);
-	} while ((k = search_studio(str, 0)) != NULL && (free(str), 1));
+	} while (((k = search_studio(str, 0)) == NULL) && (free(str), flag=0,1));
 	p->element.studio_ID = atoi(((Studio *)k)->element.studio_ID);
 	p->element.ticketnum = ((Studio *)k)->element.seatsum;
 	printf("请输入演出日期(year-month-day):");
@@ -495,7 +498,12 @@ void add_plan() {//新增演出计划
 		printf("已自动生成所有票\n");
 		p->next = list.plan_tail->next; p->pre = list.plan_tail;
 		list.plan_tail->next = p; list.plan_tail = p;
+		save_key();
+		save_plan_and_ticket();
 		print_ok();
+	}
+	else {
+		printf("演出计划新增已取消\n");
 	}
 }
 
@@ -528,7 +536,7 @@ void initialize_ticket(Plan *p) {//为演出计划按座位生成票
 			continue;
 		}
 		Ticket *r = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(r);
-		r->ticket_ID = get_newkey(TICKET_KEY);
+		r->ticket_ID = get_newkey(TICKET_KEY);	save_key();
 		r->seatx = q->seatx; r->seaty = q->seaty;
 		r->price = price;
 		r->ticket_status = (ticket_statuses)TICKET_available;

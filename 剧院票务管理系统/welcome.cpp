@@ -183,20 +183,12 @@ void show_plan() {//演出计划查询及管理界面
 	hide_cursor();
 	system("cls");
 	set_position(35, 4);
-	SetColor(10, 0);
-	printf("演出查询及管理");
-	SetColor(11, 0);
-	set_position(36, 6);
-	printf("查询演出计划");
-	SetColor(7, 0);
-	set_position(36, 8);
-	printf("修改演出计划");
-	set_position(36, 10);
-	printf("新增演出计划");
-	set_position(36, 12);
-	printf("删除演出计划");
-	set_position(36, 14);
-	printf("浏览所有计划");
+	SetColor(10, 0);printf("演出查询及管理");
+	SetColor(11, 0);set_position(36, 6);printf("查询演出计划");
+	SetColor(7, 0);set_position(36, 8);printf("修改演出计划");
+	set_position(36, 10);printf("新增演出计划");
+	set_position(36, 12);printf("删除演出计划");
+	set_position(36, 14);printf("浏览所有计划");
 }
 
 ///////////////////////////////////admin

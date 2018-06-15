@@ -215,6 +215,7 @@ void show_customer();//顾客主界面
 void show_manager();//剧院经理主界面
 void show_program();//剧目查询及管理界面
 void show_studio();//影厅查询及管理界面
+void show_plan();//演出计划查询及管理
 
 void show_admin();//系统管理员主界面
 void show_account();//账户管理界面
@@ -287,12 +288,15 @@ void add_studio();//增加放映厅
 void print_studio(Studio *p);////打印放映厅及座位信息
 
 //Seat *search_seat(char *obj);//根据放映厅编号查找座位
-void delete_seat(Studio *k);//删除放映厅时删除其座位
 void kill_studio(Studio *p);//删除指定放映厅
 void modify_studio(Studio *p);//修改放映厅名称及座位
 
 void initialize_seat(Studio *p);//为新放映厅初始化座位
+void delete_seat(Studio *k);//删除放映厅时删除其座位
 void initialize_ticket(Plan *p);//为演出计划按座位生成票
+
+void add_plan();//新增演出计划
+
 
 //Linklist.cpp
 
