@@ -117,7 +117,7 @@ int get_num(int down, int up, int ndown, int nup) {//读取数字    并检查输入   范
 		SetColor(7, 0);
 		char str[25];
 		sprintf(str, "%d", num);
-		if (num<down || num>up || (strlen(str) > nup||strlen(str) < ndown)) {//检查大小及位数
+		if (num<down || num>up || (strlen(str) > (unsigned)nup||strlen(str) < (unsigned)ndown)) {//检查大小及位数
 			print_examinput();
 			flag = 0;
 		}
@@ -215,17 +215,20 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	free(str);
 	printf("请输入开始日期与结束日期(year-month-day):\n");
 	do {
-		tem.start_date = get_date();
-		tem.end_date = get_date();
-		//char date1[15], date2[15];
-		//sprintf(date1, "%d-%d-%d", tem.start_date.year, tem.start_date.month, tem.start_date.day);
-		//sprintf(date2, "%d-%d-%d", tem.end_date.year, tem.end_date.month, tem.end_date.day);
-		if (tem.start_date.year>tem.end_date.year||(tem.start_date.year==tem.end_date.year&&\
+		date_status start_date, end_date;
+		start_date = get_date();
+		end_date = get_date();
+		char date1[15], date2[15];
+		sprintf(date1, "%d-%02d-%02d", start_date.year, start_date.month, start_date.day);
+		sprintf(date2, "%d-%02d-%02d", end_date.year, end_date.month, end_date.day);
+		/*if (tem.start_date.year>tem.end_date.year||(tem.start_date.year==tem.end_date.year&&\
 			tem.start_date.month>tem.end_date.month)||(tem.start_date.year == tem.end_date.year\
 			&&tem.start_date.month==tem.end_date.month&&tem.start_date.day>tem.end_date.day)) {
 			flag = 0;
 			print_examinput();
-		}
+		}*/
+		if (strcmp(date2, date1) < 0) { printf("请重新输入有效的起止日期："); flag = 0; }
+		else { strcpy(tem.start_date, date1); strcpy(tem.end_date, date2); }
 	} while (flag == 0 && (flag = 1));
 	printf("请设置剧目时长(1~600)(min):");
 	choice = get_num(1,600,1,3);

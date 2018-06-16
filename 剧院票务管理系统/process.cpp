@@ -87,12 +87,12 @@ void process_program() {//剧目查询及管理过程
 		if (choice != 0)catch_cursor();
 		switch (choice) {
 		case 0:break;
-		case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(str = get_string(1, 30, 0), 1), 1); free(str); go_on(); break;
-		case 2:printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(str = get_string(1, 30, 0), 1)); free(str); go_on(); break;
-		case 3:add_program(); go_on(); break;
-		case 4:printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(str = get_string(1, 30, 0), 1)); free(str); go_on(); break;
+		case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(str = get_string(1, 30, 0), 1), 1); free(str); break;
+		case 2:printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
+		case 3:add_program(); break;
+		case 4:printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
 		case 5:hide_cursor(); program_viewer(); break;
-		}if (choice == 0)break;
+		}if (choice == 0)break; if (choice < 5)go_on();
 	}
 }
 
@@ -104,12 +104,12 @@ void process_studio() {//影厅查询及管理过程
 		if(choice != 0)catch_cursor();
 		switch (choice){
 		case 0:break;
-		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
-		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); rewind(stdin); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
-		case 3:add_studio(); go_on(); break;
-		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); go_on(); break;
+		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); rewind(stdin); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 3:add_studio();break;
+		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
 		case 5:hide_cursor(); studio_viewer(); break;
-		}if (choice == 0)break;
+		}if (choice == 0)break; if (choice < 5) go_on();
 	}
 }
 
@@ -121,10 +121,11 @@ void process_plan() {//放映计划查询及管理过程
 		if (choice != 0)catch_cursor();
 		switch (choice) {
 		case 0:break;
-		case 1:break;
+		case 1: {printf("\n\n1.演出计划ID  2.剧目名称/ID 3.演出厅名称/ID\n请选择检索方式："); int num = get_num(1, 3, 1, 1); printf("请输入名称/ID："); search_plan(get_string(1, 30, 0), num); }break;
 		case 2:break;
-		case 3:add_plan(); go_on(); break;
-		}if (choice == 0)break;
+		case 3:add_plan(); break;
+		case 4:;//delete_plan(); break;
+		}if (choice == 0)break;go_on(); 
 	}
 }
 

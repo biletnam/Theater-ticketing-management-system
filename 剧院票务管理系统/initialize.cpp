@@ -6,7 +6,8 @@ void import_all() {//导入所有信息
 	import_account();
 	import_program();
 	import_studio_and_seat();
-    import_plan_and_ticket();
+    //import_plan_and_ticket();
+	import_plan_and_ticket_bin();
 }
 
 void initialize() {//全部初始化

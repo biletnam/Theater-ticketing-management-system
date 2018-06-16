@@ -52,9 +52,9 @@ void import_program() {//导入剧目信息到链表
 	}
 	data_program tem = {0};
 	int type, rating, cnt = 0;
-	while (fscanf(fp, "%s %s %d %d %s %s %s",tem.program_ID, tem.program_name, &type, &rating, tem.director, tem.performer[0], tem.performer[1])==7&&\
-		fscanf(fp,"%d-%d-%d %d-%d-%d", &tem.start_date.year, &tem.start_date.month, &tem.start_date.day, &tem.end_date.year, &tem.end_date.month, &tem.end_date.day)== 6\
-		&&fscanf(fp,"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
+	while (fscanf(fp, "%s %s %d %d %s %s %s",tem.program_ID, tem.program_name, &type, &rating, tem.director,\
+		tem.performer[0], tem.performer[1])==7&&fscanf(fp,"%s %s", tem.start_date, tem.end_date)== 2&&fscanf(fp,\
+		"%d %s %s %s %d %d", &tem.duration, tem.label, tem.area, tem.language, &tem.price, &tem.cost)==6){
 		tem.program_type = (program_types)type,tem.program_rating=(program_ratings)rating;
 		Program *p = (Program *)malloc(sizeof(Program));
 		exam_mallocX(p);
@@ -114,18 +114,42 @@ void import_plan_and_ticket() {//导入演出计划信息到链表
 	if (fp == NULL) {
 		print_re();exit(1);
 	}
-	data_plan tem; int i;
-	while (fscanf(fp, "%ld %d %d %d-%d-%d %d:%d %d",&tem.plan_ID,&tem.program_ID,&tem.studio_ID,\
-&tem.date.year,&tem.date.month,&tem.date.day,&tem.time.hour,&tem.time.minute,&tem.ticketnum) != EOF) {
+	data_plan tem; int i, cnt = 0;
+	while (fscanf(fp, "%ld %s %d %s %s %d %d",&tem.plan_ID,&tem.program_name,&tem.studio_ID,\
+tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
 		Plan *p = (Plan *)malloc(sizeof(Plan)); exam_mallocX(p);
-		p->element = tem;
+		p->element = tem; cnt++;
 		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
 		p->element.ticket_head->pre = p->element.ticket_head->next = NULL;
 		p->element.ticket_tail = p->element.ticket_head;//票的链表初始化
 		for (i = 1; i <= p->element.ticketnum; i++) {
 			Ticket *k = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(k); int t;
-			fscanf(fp, "%ld %d %d %d %d", &k->ticket_ID,&k->seatx,&k->seaty,&k->price,&t);
+			fscanf(fp, "%ld %d %d %d %d", &k->ticket_ID, &k->seatx, &k->seaty, &k->price, &t);
 			k->ticket_status = (ticket_statuses)t;
+			k->next = p->element.ticket_tail->next; k->pre = p->element.ticket_tail;
+			p->element.ticket_tail->next = k; p->element.ticket_tail = k;
+		}
+		p->next = list.plan_tail->next; p->pre = list.plan_tail;
+		list.plan_tail->next = p; list.plan_tail = p;
+	}
+	list.plan_head->element.ticketnum = cnt;
+	fclose(fp);
+}
+
+void import_plan_and_ticket_bin() {//导入二进制数据至链表
+	FILE *fp = fopen("plan.bin", "rb");
+	if (fp == NULL) {
+		print_re(); exit(1);
+	}
+	int size_plan = sizeof(data_plan), size_ticket = sizeof(Ticket); data_plan tem;
+	while (fread(&tem, size_plan, 1, fp) == 1) {
+		Plan *p = (Plan *)malloc(sizeof(Plan)); p->element = tem;
+		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); //exam_mallocX(p->element.ticket_head);
+		p->element.ticket_head->pre = p->element.ticket_head->next = NULL;
+		p->element.ticket_tail = p->element.ticket_head;//票的链表初始化
+		for (int i = 1; i <= tem.ticketnum; i++) {
+			Ticket *k = (Ticket *)malloc(sizeof(Ticket)); //exam_mallocX(k);
+			fread(k, size_ticket, 1, fp);
 			k->next = p->element.ticket_tail->next; k->pre = p->element.ticket_tail;
 			p->element.ticket_tail->next = k; p->element.ticket_tail = k;
 		}
@@ -156,14 +180,10 @@ void save_program() {//保存剧目信息到文件
 	}
 	Program *p = list.program_head->next;
 	for (p; p; p = p->next) {
-		fprintf(fp, "%s %s %d %d %s %s %s %d-%d-%d \
-%d-%d-%d %d %s %s %s %d %d\n", p->element.program_ID\
-		,p->element.program_name, p->element.program_type\
-		, p->element.program_rating, p->element.director, p->element.performer[0]\
-		, p->element.performer[1],p->element.start_date.year, p->element.start_date\
-		.month, p->element.start_date.day, p->element.end_date.year, p->element.end_date.\
-		month, p->element.end_date.day, p->element.duration, p->element.label, \
-		p->element.area, p->element.language, p->element.price, p->element.cost);
+		fprintf(fp, "%s %s %d %d %s %s %s %s %s %d %s %s %s %d %d\n", p->element.program_ID\
+		,p->element.program_name, p->element.program_type, p->element.program_rating, p->element.director,\
+		p->element.performer[0], p->element.performer[1],p->element.start_date, p->element.end_date,\
+		p->element.duration, p->element.label, p->element.area, p->element.language, p->element.price, p->element.cost);
 	}
 	fclose(fp);
 }
@@ -199,15 +219,48 @@ void save_plan_and_ticket() {//保存演出计划及票
 	}
 	Plan *p = list.plan_head->next;
 	for (p; p; p = p->next) {
-		fprintf(fp, "%ld %d %d %d-%d-%d %d:%d %d\n",p->element.plan_ID,p->element.program_ID,p->element.studio_ID,\
-p->element.date.year, p->element.date.month, p->element.date.day,p->element.time.hour,p->element.time.minute,p->element.ticketnum);
+		fprintf(fp, "%ld %s %d %s %s %d %d\n",p->element.plan_ID,p->element.program_name,p->element.studio_ID,\
+		p->element.date,p->element.time,p->element.ticketnum, p->element.button);
 		Ticket *k = p->element.ticket_head->next;
 		for (int i = 1; i <= p->element.ticketnum; i++) {
 			fprintf(fp, "%ld %d %d %d %d     ", k->ticket_ID, k->seatx, k->seaty, k->price, k->ticket_status);
 			k = k->next;
 			if (i % 5 == 0) { fprintf(fp, "\n"); }
 		}
+		fprintf(fp, "\n");
+	}
+	fclose(fp);
+}
+
+void save_plan_and_ticket(Plan *p) {//追加演出计划与票的信息到文件
+	FILE *fp = fopen("plan.txt", "a+");
+	if (fp == NULL) {
+		print_re(); exit(1);
+	}
+	fprintf(fp, "%ld %s %d %s %s %d %d\n", p->element.plan_ID, p->element.program_name, p->element.studio_ID, \
+		p->element.date, p->element.time, p->element.ticketnum, p->element.button);
+	Ticket *k = p->element.ticket_head->next;
+	for (int i = 1; i <= p->element.ticketnum; i++) {
+		fprintf(fp, "%ld %d %d %d %d     ", k->ticket_ID, k->seatx, k->seaty, k->price, k->ticket_status);
+		k = k->next;
+		if (i % 5 == 0) { fprintf(fp, "\n"); }
 	}
 	fprintf(fp, "\n");
+	fclose(fp);
+}
+
+void save_plan_and_ticket_bin() {//二进制文件
+	FILE *fp = fopen("plan.bin", "wb");
+	if (fp == NULL) {
+		print_re(); exit(1);
+	}
+	Plan *p = list.plan_head->next; 
+	int size_plan = sizeof(data_plan), size_ticket = sizeof(Ticket);
+	for (p; p; p = p->next) {
+		fwrite(&(p->element),size_plan,1,fp);
+		for (Ticket *k = p->element.ticket_head->next; k; k = k->next) {
+			fwrite(k, size_ticket, 1, fp);
+		}
+	}
 	fclose(fp);
 }

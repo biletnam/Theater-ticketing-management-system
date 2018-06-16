@@ -10,7 +10,9 @@ int main(){
 	//show_welcome();
 	//print_instruction(1);
 	//process_all();
-	process_manager();
+	//save_plan_and_ticket_bin();
+	//import_plan_and_ticket_bin();
+	process_plan();
     return 0;
 }
 

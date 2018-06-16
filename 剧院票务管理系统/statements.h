@@ -112,8 +112,8 @@ typedef struct em{//剧目数据域
 	program_ratings program_rating;//剧目等级 参见program_ratings枚举定义
 	char director[NAME];//7个汉字     导演   音乐会为指挥
 	char performer[2][NAME];//7个汉字      主演   两名
-	date_status start_date; //上映日期   参见date_status结构体定义
-	date_status end_date; //结束日期   参见date_status结构体定义
+	char start_date[11]; //上映日期   格式2018-05-12 长度为10
+	char end_date[11]; //结束日期   格式2018-05-12 长度为10s
 	int duration;//剧目时长       minute   [1,600]
 	char  label[5];//剧目标签   比如  喜剧  动作   惊悚 
 	char area[5];//地区   2个汉字
@@ -133,11 +133,12 @@ typedef struct emm {
 
 typedef struct emmm {//演出计划数据域
 	long plan_ID;//演出计划编号
-	int program_ID;//剧目编号
+	char program_name[NAME * 2 + 1];//演出剧目名称
 	int studio_ID;//放映厅编号
-	date_status date; //演出日期   参见date_status结构体定义
-	time_status time;//开始时间    参见time_status结构体定义  24小时制
+	char date[11]; //演出日期   格式2018-05-12 长度为10
+	char time[6];//开始时间    格式hh:mm  长度为5 24小时制
 	int ticketnum;//计划中当前的票数
+	int button;//计划的有效性   删除后此值变为0    载入时为0的值跳过
 	Ticket *ticket_head, *ticket_tail;//次链表
 }data_plan;
 
@@ -221,13 +222,14 @@ void show_admin();//系统管理员主界面
 void show_account();//账户管理界面
 //welcom.cpp
 
-void print_re();
+void print_re();//获得反馈
 void print_examinput();//非法输入报错
 void go_on();//按任意键继续
 void exam_mallocX(void *p);//malloc报错
 int enquiry(int i);//判断是否进行本次操作   i==1   enquiry   i==2 warnning
 void print_ok(); //提示操作成功
 void print_instruction(int i);//显示操作说明
+void print_planhead();//打印演出计划表头
 //friendly.cpp
 
 void process_all();//程序入口
@@ -265,12 +267,14 @@ void import_account();//导入账号信息到链表
 void import_program();//导入剧目信息到链表
 void import_studio_and_seat();//导入放映厅及座位信息到链表
 void import_plan_and_ticket();//导入演出计划信息到链表
+void import_plan_and_ticket_bin();// 导入演出计划信息到链表
 
 void save_key();//保存主键信息到文件
 void save_program();//保存剧目信息到文件
 void save_studio_and_seat();//保存放映厅及座位到文件
-void save_plan_and_ticket();//保存演出计划及票
-
+void save_plan_and_ticket();//保存演出计划及票到文件
+void save_plan_and_ticket(Plan *p); //追加演出计划与票的信息到文件
+void save_plan_and_ticket_bin();//保存演出计划及票到二进制文件
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
@@ -296,7 +300,11 @@ void delete_seat(Studio *k);//删除放映厅时删除其座位
 void initialize_ticket(Plan *p);//为演出计划按座位生成票
 
 void add_plan();//新增演出计划
-
+void print_plan(Plan *p);//打印演出计划信息
+Plan *search_plan(long obj, int judge);//按plan_ID检索演出计划
+void search_plan(char *obj, int choice);//按各种ID/名称输出演出计划 1plan_ID  2program  3studio
+void delete_plan(Plan *p);//隐藏演出计划
+void modify_plan(Plan *p);//修改演出计划
 
 //Linklist.cpp
 
