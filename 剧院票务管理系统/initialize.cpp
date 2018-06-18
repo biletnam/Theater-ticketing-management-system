@@ -6,16 +6,16 @@ void import_all() {//导入所有信息
 	import_account();
 	import_program();
 	import_studio_and_seat();
-    //import_plan_and_ticket();
-	import_plan_and_ticket_bin();
+    import_plan_and_ticket();
+	//import_plan_and_ticket_bin();
 }
 
 void initialize() {//全部初始化
 	initialize_window();
 	initialize_linklist();
 	initialize_present();
+	clean_plan_atFirst();
 	import_all();
-
 }
 
 void initialize_present() {//初始化当前账户

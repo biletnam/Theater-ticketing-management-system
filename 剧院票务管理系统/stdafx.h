@@ -14,10 +14,12 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 
-#include<windows.h>
 #include<stdlib.h>
 #include<conio.h>
 #include<string.h>
 #include<math.h>
 #include<time.h>
 #include <graphics.h>
+#include<mmsystem.h>
+#include<windows.h>
+#pragma comment(lib,"winmm.lib")

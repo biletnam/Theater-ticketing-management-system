@@ -1,4 +1,13 @@
-﻿  initialize.cpp
+﻿  stdafx.cpp
+  Linklist.cpp
+  filefunction.cpp
+  friendly.cpp
+  initialize.cpp
+  process.cpp
+  sonfunction.cpp
+c:\users\hp\source\repos\剧院票务管理系统\剧院票务管理系统\sonfunction.cpp(368): warning C4101: “c”: 未引用的局部变量
+  welcome.cpp
+  window.cpp
   剧院票务管理系统.cpp
   正在生成代码...
   剧院票务管理系统.vcxproj -> C:\Users\HP\source\repos\剧院票务管理系统\Debug\剧院票务管理系统.exe

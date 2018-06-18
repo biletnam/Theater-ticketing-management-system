@@ -19,9 +19,11 @@ inline void go_on() {//按任意键继续
 	getch();
 }
 
-void exam_mallocX(void *p) {//malloc报错
+void exam_NULL(void *p, int choice) {//空指针报错   0 malloc   1文件
 	if (p == NULL) {
-		printf("不能分配更多内存了\n");
+		if(choice == 0)printf("不能分配更多内存了\n");
+		else if (choice == 1) {printf("打开文件失败"); print_re();}
+		else {print_re();}
 		exit(1);
 	}
 }

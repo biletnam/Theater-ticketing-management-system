@@ -287,6 +287,7 @@ void catch_cursor() {//œ‘ æπ‚±Í
 	SetConsoleCursorInfo(hOut, &cci);
 	//CloseHandle(hOut);
 }
+
 /*
 void Clear(int x, int y, int rowCount)
 {

@@ -6,6 +6,7 @@ void initialize_linklist() {//初始化链表
 	list.program_head = (Program *)malloc(sizeof(Program));
 	list.studio_head = (Studio *)malloc(sizeof(Studio));
 	list.plan_head = (Plan *)malloc(sizeof(Plan));
+	list.plan_tem_head = (Plan *)malloc(sizeof(Plan));
 	//list.seat_head = (Seat *)malloc(sizeof(Seat));
 	//list.ticket_head = (Ticket *)malloc(sizeof(Ticket));
 	//list.record_head = (Record *)malloc(sizeof(Record));
@@ -14,6 +15,7 @@ void initialize_linklist() {//初始化链表
 	list.program_head->next = list.program_head->pre =  NULL;
 	list.studio_head->next =list.studio_head->pre = NULL;
 	list.plan_head->next = list.plan_head->pre = NULL;
+	list.plan_tem_head->next = list.plan_tem_head->pre = NULL;
 	//list.seat_head->next = list.seat_head->pre = NULL;
 	//list.ticket_head->next = list.ticket_head->pre = NULL;
 	//list.record_head->next = list.record_head->pre = NULL;
@@ -22,6 +24,7 @@ void initialize_linklist() {//初始化链表
 	list.program_tail = list.program_head;
 	list.studio_tail = list.studio_head;
 	list.plan_tail = list.plan_head;
+	list.plan_tem_tail = list.plan_tem_head;
 	//list.seat_tail = list.seat_head;
 	//list.ticket_tail = list.ticket_head;
 	//list.record_tail = list.record_head;
@@ -48,7 +51,7 @@ long get_newkey(int type) {//返回judge对应的新主键值    并更新主键记录
 
 void add_program() {//增加剧目
 	Program *p = (Program *)malloc(sizeof(Program));
-	exam_mallocX(p);
+	exam_NULL(p, 0);
 	p->element = get_program_infomation();//剧目信息获取
 	if (enquiry(1)) {
 		printf("具体信息已置为默认值\n如有需要请记得修改\n");
@@ -191,7 +194,7 @@ void modify_program(Program *p) {//修改电影信息
 
 void add_studio() {//增加放映厅
 	Studio *p = (Studio *)malloc(sizeof(Studio));
-	exam_mallocX(p);
+	exam_NULL(p, 0);
 	printf("\n请输入新的放映厅编号(4~6位数字):\n"); rewind(stdin);
 	char *str = get_string(4, 6, 1);
 	while (search_studio(str, 0)) {
@@ -422,14 +425,14 @@ void modify_studio(Studio *p) {//修改影厅信息及座位情况
 
 void initialize_seat(Studio *p) {//为新放映厅初始化座位
 	p->element.seat_head = (Seat *)malloc(sizeof(Seat));
-	exam_mallocX(p->element.seat_head);
+	exam_NULL(p->element.seat_head, 0);
 	p->element.seat_head->pre = p->element.seat_head->next = NULL;//次链表初始化
 	p->element.seat_tail = p->element.seat_head;
 	int i, j;
 	for (i = 1; i <= p->element.seatx; i++) {
 		for (j = 1; j <= p->element.seaty; j++) {
 			Seat *k = (Seat *)malloc(sizeof(Seat));
-			exam_mallocX(k);
+			exam_NULL(k ,0);
 			k->seatx = i, k->seaty = j, k->stduio_ID = atoi(p->element.studio_ID);
 			k->seat_condition = (seat_conditions)1;
 			k->next = p->element.seat_tail->next;
@@ -471,10 +474,10 @@ void delete_seat(Studio *k) {//删除放映厅时删除其座位
 ////////////////////////////////////////////plan
 
 void add_plan() {//新增演出计划
-	Plan *p = (Plan *)malloc(sizeof(Plan)); date_status tem; time_status time;
-	exam_mallocX(p);
+	Plan *p = (Plan *)malloc(sizeof(Plan)); char *tem;
+	exam_NULL(p, 0);
 	p->element.button = 1;
-	p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(p->element.ticket_head);
+	p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(p->element.ticket_head, 0);
 	p->element.ticket_head->next = p->element.ticket_head->pre = NULL;
 	p->element.ticket_tail = p->element.ticket_head;
 	char *str = NULL; Program *k = NULL; Studio *s = NULL; int flag = 1;
@@ -500,19 +503,17 @@ void add_plan() {//新增演出计划
 		if (flag == 0)printf("演出计划与剧目上架日期不符\n请重请输入:");
 		flag = 1;
 		tem = get_date();
-		char  date[40];
-		sprintf(date, "%d-%02d-%02d",tem.year, tem.month, tem.day);
-		if (strcmp(date, k->element.start_date) < 0 || strcmp(k->element.end_date, date) < 0) { flag = 0; }
-		else { strcpy(p->element.date, date); }
+		if (strcmp(tem, k->element.start_date) < 0 || strcmp(k->element.end_date, tem) < 0) { flag = 0; }
+		else { strcpy(p->element.date, tem); }free(tem);
 	} while (flag == 0);
 	printf("请输入演出开始时间(24小时制)(hour:min):");
-	time = get_time(); sprintf(p->element.time, "%02d:%02d", time.hour, time.minute);
+	tem = get_time(); strcpy(p->element.time, tem); free(tem);
 	if (enquiry(1)) {
 		initialize_ticket(p);
 		p->next = list.plan_tail->next; p->pre = list.plan_tail;
 		list.plan_tail->next = p; list.plan_tail = p;
 		save_key();
-		save_plan_and_ticket(p);
+		save_plan_and_ticket();
 		print_ok();
 		printf("已自动生成所有票\n");
 	}
@@ -521,46 +522,49 @@ void add_plan() {//新增演出计划
 	}
 }
 
-void search_plan(char *obj, int choice) {//按各种ID/名称输出演出计划 1plan_ID  2program  3studio
-	Plan *p = list.plan_head->next;
+void search_plan(char *obj, int choice, Plan *head) {//按各种ID/名称输出演出计划 1plan_ID  2program  3studio
+	Plan *p = head->next;
 	long objnum = atol(obj); Program *k = search_program(obj, 0); Studio *r = search_studio(obj, 0);
-	if (choice != 1 && k == NULL && r == NULL) { if (choice == 2 && k == NULL) { search_program(obj, 1); } if (choice == 3 && r == NULL) { search_studio(obj, 1); } return; }
+	if ((choice == 2 || choice ==3) && k == NULL && r == NULL) { if (choice == 2 && k == NULL) { search_program(obj, 1); } if (choice == 3 && r == NULL) { search_studio(obj, 1); } return; }
 	char program_name[40]; if(k)strcpy(program_name, k->element.program_name);
 	int studio_ID, flag = 0, judge = 0; if(r) studio_ID = atoi(r->element.studio_ID);
 	if (choice == 1) {
-		p = search_plan(objnum , 1);
-		if (p) { print_planhead(); print_plan(p); judge = 1; }//judge标识是否有输出
+		p = search_plan(objnum , 1,head);
+		if (p) { print_planhead(); print_plan(p);}//judge标识是否有输出
 	}
 	else {
 		for (p; p; p = p->next) {
-			if (p->element.button == 0) { continue; }//button 屏蔽
+			//if (p->element.button == 0) { continue; }//button 屏蔽
 			flag = 0;
 			switch (choice) {
 			case 2:if (strcmp(p->element.program_name, program_name) == 0)flag = 1; break;
 			case 3:if (p->element.studio_ID == studio_ID)flag = 1; break;
+			case 4:if (strcmp(p->element.date, obj) == 0)flag = 1; break;
 			}
 			if (flag) { if (judge == 0) { print_planhead(); } print_plan(p); judge = 1; }
 		}
+		if(judge == 0)printf("没有这样的演出计划哟\n");
 	}
-	if(judge == 0)printf("没有这样的演出计划哟\n");
 }
 
-Plan *search_plan(long obj, int judge) {//按plan_ID检索演出计划  judge控制是否进行相似反馈
-	Plan *p = list.plan_head->next;
+Plan *search_plan(long obj, int judge, Plan *head) {//按plan_ID检索演出计划  judge控制是否进行相似反馈
+	Plan *p = head->next;
 	int flag = 0;
 	for (p; p; p = p->next) {
-		if (p->element.button!=0 && p->element.plan_ID == obj) {//button屏蔽
+		if (p->element.plan_ID == obj) {
 			flag = 1; break;
 		}
 	}
 	if (flag)return p;
 	if (judge && flag == 0) {
-		//printf("该演出计划不存在哦\n"); 
-		int flagnum = 0;
-		for (p = list.plan_head->next; p; p = p->next) {
-			if (p->element.button!=0 && p->element.plan_ID == obj) {
-				if (flagnum == 0) { print_planhead(); flagnum = 1;}
-				print_plan(p);
+		printf("没有这样的演出计划哟\n"); 
+		int flagnum = 0; char tem[10],objstr[10];
+		sprintf(objstr, "%ld", obj);
+		for (p = head->next; p; p = p->next) {
+			sprintf(tem, "%ld", p->element.plan_ID);
+			if (strstr(tem, objstr) != NULL) {
+				if (flagnum == 0) { printf("嗯  "); Sleep(500); printf("你也许要找的是\n"); Sleep(1000); flagnum = 1; }
+				printf("%ld\n", p->element.plan_ID);
 			}
 		}if (flagnum) {
 			printf("请确认后重新查找\n"); rewind(stdin);
@@ -570,16 +574,30 @@ Plan *search_plan(long obj, int judge) {//按plan_ID检索演出计划  judge控制是否进
 }
 
 void delete_plan(Plan *p) {//隐藏放映计划及票
-	if (p&&p->element.button ) {
-		p->element.button = 0;
+	if (p) {
+		if (enquiry(1)) {
+			p->element.button = 2;//   0过期      1有效
+			save_plan_and_ticket();
+			p->pre->next = p->next; p->next->pre = p->pre;
+			//p->next = list.plan_tem_tail->next; p->pre = list.plan_tem_tail;
+			//list.plan_tem_tail->next = p; list.plan_tem_tail = p;//移动p到plan_tem链表
+			delete_ticket(p);
+			free(p);
+			print_ok();
+		}
+		else {
+			printf("删除已取消\n");
+		}
 	}
-	save_plan_and_ticket();
 }
 
 void print_plan(Plan *p) {//打印演出计划信息
-	if (p && p->element.button ) {
+	if (p) {
 		printf("%ld    %-20s%8d	%7d	%14s	%7s\n\n", p->element.plan_ID, p->element.program_name, p->element.studio_ID,\
 			p->element.ticketnum,p->element.date,p->element.time);
+	}
+	else {
+		printf("没有这样的演出计划哟\n");
 	}
 }
 
@@ -599,7 +617,7 @@ void initialize_ticket(Plan *p) {//为演出计划按座位生成票
 		if (q->seat_condition != 1) {
 			continue;
 		}
-		Ticket *r = (Ticket *)malloc(sizeof(Ticket)); exam_mallocX(r);
+		Ticket *r = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(r, 0);
 		r->ticket_ID = get_newkey(TICKET_KEY);	save_key();
 		r->seatx = q->seatx; r->seaty = q->seaty;
 		r->price = price;
@@ -608,4 +626,16 @@ void initialize_ticket(Plan *p) {//为演出计划按座位生成票
 		p->element.ticket_tail->next = r; p->element.ticket_tail = r;
 		cnt++;
 	}if (cnt != k->element.seatsum) { printf("座位与票数校验错误\n"); print_re(); }
+}
+
+void delete_ticket(Plan *p) {//删除演出计划下的票
+	if (p) {
+		Ticket *dead = p->element.ticket_head;
+		Ticket *k = dead->next;
+		while (k) {
+			free(dead);
+			dead = k;
+			k = k->next;
+		}free(dead);
+	}
 }

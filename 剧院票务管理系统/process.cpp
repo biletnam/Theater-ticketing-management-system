@@ -114,18 +114,34 @@ void process_studio() {//影厅查询及管理过程
 }
 
 void process_plan() {//放映计划查询及管理过程
-	int choice;
+	int choice, num;//clean_plan();
 	while (1) {
 		show_plan();
 		choice = choice_judge(12);
 		if (choice != 0)catch_cursor();
 		switch (choice) {
 		case 0:break;
-		case 1: {printf("\n\n1.演出计划ID  2.剧目名称/ID 3.演出厅名称/ID\n请选择检索方式："); int num = get_num(1, 3, 1, 1); printf("请输入名称/ID："); search_plan(get_string(1, 30, 0), num); }break;
+		case 1: process_plan_inquiry(); break;
 		case 2:break;
 		case 3:add_plan(); break;
-		case 4:;//delete_plan(); break;
+		case 4:printf("\n请输入要删除的演出计划ID:"); num = get_num(111111, 999999, 6, 6); delete_plan(search_plan(num, 1, list.plan_head)); break;
 		}if (choice == 0)break;go_on(); 
+	}
+}
+
+void process_plan_inquiry() {//查询演出计划
+	int num; char *str = NULL;
+	Plan *head = NULL; printf("\n\n1.当前演出计划 2.过期演出计划\n请选择查询范围：");
+	num = get_num(1, 2, 1, 1); if (num == 1)head = list.plan_head; else head = list.plan_tem_head;
+	printf("1.演出计划ID  2.剧目名称/ID 3.演出厅名称/ID 4.日期\n请选择检索方式：");
+	num = get_num(1, 4, 1, 1);
+	if (num < 4) {
+		printf("请输入名称/ID：");
+		search_plan(str = get_string(1, 30, 0), num, head); free(str);
+	}
+	else {
+		printf("请输入日期:"); str = get_date();
+		search_plan(str, num, head); free(str);
 	}
 }
 

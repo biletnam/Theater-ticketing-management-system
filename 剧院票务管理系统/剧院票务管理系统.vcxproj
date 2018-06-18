@@ -188,7 +188,6 @@
     <Text Include="program.txt" />
     <Text Include="record.txt" />
     <Text Include="studio.txt" />
-    <Text Include="ticket.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

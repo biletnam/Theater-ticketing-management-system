@@ -41,7 +41,7 @@ int sign_judge() {//登陆判断及获取账户信息   return flag   flag表示账户类型
 
 char *username_get(int judge) {//用户名的获取    judge!=0时进行输入检查 
 	char *str=(char *)malloc(NAME*5);
-	exam_mallocX(str);
+	exam_NULL(str, 0);
 	str[0] = '\0';
 	scanf("%s", str);
 	if(judge&&str)//str基于警告加入
@@ -125,7 +125,7 @@ int get_num(int down, int up, int ndown, int nup) {//读取数字    并检查输入   范
 	return num;
 }
 
-date_status get_date() {//日期的获得与判断
+char *get_date() {//日期的获得与判断
 	date_status date = {0,0,0};
 	int flag = 1,y,m,d;
 	do {
@@ -157,10 +157,12 @@ date_status get_date() {//日期的获得与判断
 		}
 	} while (flag == 0 && (flag = 1));
 	date.year = y, date.month = m, date.day = d;
-	return date;
+	char  *re=(char *)malloc(sizeof(char)*40);
+	sprintf(re, "%d-%02d-%02d", date.year, date.month, date.day);
+	return re;
 }
 
-time_status get_time() {//时间的获得及判断
+char *get_time() {//时间的获得及判断
 	time_status time = {0,0};
 	int h, m,flag=1;
 	do {
@@ -173,7 +175,9 @@ time_status get_time() {//时间的获得及判断
 		}
 	} while (flag == 0 && (flag = 1));
 	time.hour = h, time.minute = m;
-	return time;
+	char *str = (char *)malloc(sizeof(char) * 22);
+	sprintf(str, "%02d:%02d", time.hour, time.minute);
+	return str;
 }
 
 data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
@@ -215,20 +219,18 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	free(str);
 	printf("请输入开始日期与结束日期(year-month-day):\n");
 	do {
-		date_status start_date, end_date;
+		char *start_date, *end_date;
 		start_date = get_date();
 		end_date = get_date();
-		char date1[15], date2[15];
-		sprintf(date1, "%d-%02d-%02d", start_date.year, start_date.month, start_date.day);
-		sprintf(date2, "%d-%02d-%02d", end_date.year, end_date.month, end_date.day);
 		/*if (tem.start_date.year>tem.end_date.year||(tem.start_date.year==tem.end_date.year&&\
 			tem.start_date.month>tem.end_date.month)||(tem.start_date.year == tem.end_date.year\
 			&&tem.start_date.month==tem.end_date.month&&tem.start_date.day>tem.end_date.day)) {
 			flag = 0;
 			print_examinput();
 		}*/
-		if (strcmp(date2, date1) < 0) { printf("请重新输入有效的起止日期："); flag = 0; }
-		else { strcpy(tem.start_date, date1); strcpy(tem.end_date, date2); }
+		if (strcmp(end_date, end_date) < 0) { printf("请重新输入有效的起止日期："); flag = 0; }
+		else { strcpy(tem.start_date, start_date); strcpy(tem.end_date, end_date); }
+		free(start_date); free(end_date);
 	} while (flag == 0 && (flag = 1));
 	printf("请设置剧目时长(1~600)(min):");
 	choice = get_num(1,600,1,3);
@@ -244,27 +246,6 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
 	tem.cost = choice;
 	return tem;
 }
-
-//void program_viewer() {//剧目浏览器
-//	Program *p=list.program_head->next;
-//	print_program(p);
-//	int choice;
-//	while (choice = turn_page()) {
-//		if (choice == -1) {
-//			if (p != list.program_head->next)
-//				p = p->pre;
-//		}
-//		else if (choice == 1) {
-//			if (p != list.program_tail)
-//				p = p->next;
-//		}
-//		print_program(p);
-//		if (p == list.program_head->next)
-//			printf("\n		已经是第一页了");
-//		else if (p == list.program_tail)
-//			printf("\n		已经是最后一页了");
-//	}
-//}
 
 void program_viewer() {//剧目浏览器
 	Program *p1 = list.program_head->next;
@@ -367,5 +348,56 @@ void seat_changer(Studio *p) {//可视化座位修改器
 }
 
 void account_appeal() {//账号申诉过程
+
+}
+
+void timer() {//读取系统时间
+	time_t t;
+	time(&t);
+	now = localtime(&t);
+}
+
+//////////////////////////////////////赋闲函数
+
+void clean_plan_atFirst() {//程序开始将过期的演出计划标记过期
+	timer();
+	char date[15];
+	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+	FILE *fp = fopen(".\\plan.txt", "r+");
+	exam_NULL(fp, 1);
+	char t[20000],c; data_plan tem;
+	while (fscanf(fp, "%ld %s %d %s %s %d %d\r\n", &tem.plan_ID, &tem.program_name, &tem.studio_ID, \
+		tem.date, tem.time, &tem.ticketnum, &tem.button) != EOF) {
+		if (strcmp(date,tem.date)>0) {
+			fseek(fp, -3, SEEK_CUR);
+			fprintf(fp, "%d", 0);
+			fseek(fp, 3, SEEK_CUR);
+		}
+		//else { fscanf(fp, "%[^\r\n]", t); fscanf(fp, "%[^\r\n]", t); }
+		fgets(t,20000,fp);//读完一整行
+	}
+	fclose(fp);
+}
+
+void clean_plan() {//检查并处理过期演出计划
+	timer();
+	char date[15];
+	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+	Plan *p = list.plan_head->next;
+	for (p; p; p = p->next) {
+		if (strcmp(date, p->element.date) > 0) {
+			p->element.button = 0;
+			p->next = list.plan_tem_tail->next; p->pre = list.plan_tem_tail;
+			list.plan_tem_tail->next = p; list.plan_tem_tail = p;//移动p到plan_tem链表
+			modify_plan_and_ticket(p);
+		}
+	}
+}
+
+//////////////////////////////////////赋闲函数
+
+/////////////////////////////////////////////////music
+
+void play_bgm() {
 
 }

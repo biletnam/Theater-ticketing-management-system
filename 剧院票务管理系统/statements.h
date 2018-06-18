@@ -181,6 +181,7 @@ typedef struct ctrl {//链表类型
 	Program *program_head,*program_tail;
 	Studio *studio_head,*studio_tail;
 	Plan *plan_head,*plan_tail;
+	Plan *plan_tem_head, *plan_tem_tail;
 	Account *account_head,*account_tail;
 	Key *key_head, *key_tail;
 }List;
@@ -189,7 +190,7 @@ typedef struct ctrl {//链表类型
 
 extern List list;
 extern data_account PRESENT;
-
+extern struct tm *now;
 
 /////////////////////////////////////////函数\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -225,7 +226,7 @@ void show_account();//账户管理界面
 void print_re();//获得反馈
 void print_examinput();//非法输入报错
 void go_on();//按任意键继续
-void exam_mallocX(void *p);//malloc报错
+void exam_NULL(void *p, int choice);//空指针报错   0 malloc   1文件
 int enquiry(int i);//判断是否进行本次操作   i==1   enquiry   i==2 warnning
 void print_ok(); //提示操作成功
 void print_instruction(int i);//显示操作说明
@@ -241,6 +242,7 @@ void process_manager();//剧院经理过程
 void process_program();//剧目查询及管理过程
 void process_studio();//影厅查询及管理过程
 void process_plan();//放映计划查询及管理过程
+void process_plan_inquiry(); //查询演出计划过程
 
 void process_conducter();//售票员过程
 void process_customer();//顾客过程
@@ -253,12 +255,15 @@ int sign_judge();//登陆成功及账户类型的判断
 char *password_get(int judge);//用户密码的获取
 char *get_string(int down, int up,int judge);//字符串检查函数    down~up   字符串字节数限制
 int get_num(int down, int up, int ndown, int nup);//读取数字    并检查输入   范围[down,up]   位数n[ndown,nup]
-date_status get_date();//日期的获取及判断
-time_status get_time();//时间的获取及判断
+char *get_date();//日期的获取及判断
+char *get_time();//时间的获取及判断
 data_program get_program_infomation();//获取剧目主要信息  并进行初始化
 void program_viewer();//剧目浏览器
 void studio_viewer();//放映厅查看器
 void seat_changer(Studio *p);//可视化座位修改器
+void timer();//读取系统时间
+void clean_plan_atFirst();//将过期的演出计划标记过期
+void clean_plan();//检查并处理过期演出计划
 
 //sonfunction.cpp
 
@@ -268,6 +273,8 @@ void import_program();//导入剧目信息到链表
 void import_studio_and_seat();//导入放映厅及座位信息到链表
 void import_plan_and_ticket();//导入演出计划信息到链表
 void import_plan_and_ticket_bin();// 导入演出计划信息到链表
+//void import_plan_and_ticket_tem();//导入已过期演出计划到链表
+
 
 void save_key();//保存主键信息到文件
 void save_program();//保存剧目信息到文件
@@ -275,6 +282,9 @@ void save_studio_and_seat();//保存放映厅及座位到文件
 void save_plan_and_ticket();//保存演出计划及票到文件
 void save_plan_and_ticket(Plan *p); //追加演出计划与票的信息到文件
 void save_plan_and_ticket_bin();//保存演出计划及票到二进制文件
+
+void modify_plan_and_ticket(Plan *p);//局部覆写文件    将button置零
+
 //filefunction.cpp
 
 void initialize_linklist();//初始化链表
@@ -301,10 +311,13 @@ void initialize_ticket(Plan *p);//为演出计划按座位生成票
 
 void add_plan();//新增演出计划
 void print_plan(Plan *p);//打印演出计划信息
-Plan *search_plan(long obj, int judge);//按plan_ID检索演出计划
-void search_plan(char *obj, int choice);//按各种ID/名称输出演出计划 1plan_ID  2program  3studio
+Plan *search_plan(long obj, int judge, Plan *head);//按plan_ID检索演出计划
+void search_plan(char *obj, int choice, Plan *head);//按各种ID/名称输出演出计划 1plan_ID  2program  3studio
 void delete_plan(Plan *p);//隐藏演出计划
 void modify_plan(Plan *p);//修改演出计划
+
+
+void delete_ticket(Plan *p);//删除演出计划下的票
 
 //Linklist.cpp
 
