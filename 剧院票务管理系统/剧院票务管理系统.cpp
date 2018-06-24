@@ -7,12 +7,16 @@ List list;
 data_account PRESENT;//当前用户
 struct tm *now;
 int main(){
-	PlaySound(_T("C:\\Users\\HP\\Desktop.\\银 河 骑 士 李 老 板 - 嘉 禾 天 橙 国 际 大 影 院.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT);
 	//show_welcome();
+	
 	initialize();
 	//print_instruction(1);
+	//rewrite_ticket(list.plan_head->next->next, list.plan_head->next->next->element.ticket_head->next);
+	draw_ticket(list.plan_head->next,list.plan_head->next->element.ticket_head->next); go_on();
 	process_all();
-	//process_plan();
+	//plan_viewer(list.plan_head);
+	//print_ticket(list.plan_head->next); go_on();
+	//process_conducter();
     return 0;
 }
 

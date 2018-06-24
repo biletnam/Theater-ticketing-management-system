@@ -1,7 +1,7 @@
-#include"stdafx.h"
+ï»¿#include"stdafx.h"
 #include"statements.h"
 
-int sign_judge() {//µÇÂ½ÅĞ¶Ï¼°»ñÈ¡ÕË»§ĞÅÏ¢   return flag   flag±íÊ¾ÕË»§ÀàĞÍ  
+int sign_judge() {//ç™»é™†åˆ¤æ–­åŠè·å–è´¦æˆ·ä¿¡æ¯   return flag   flagè¡¨ç¤ºè´¦æˆ·ç±»å‹  
 	show_sign();
 	int cnt=0,flag=0;
 	set_position(39, 8);
@@ -13,9 +13,10 @@ int sign_judge() {//µÇÂ½ÅĞ¶Ï¼°»ñÈ¡ÕË»§ĞÅÏ¢   return flag   flag±íÊ¾ÕË»§ÀàĞÍ
 		if (strcmp(username, p->element.username) == 0) {
 			break;
 		}
-	}if (p != NULL) {//ÓÃ»§Ãû´æÔÚ
-		if (strcmp(password, p->element.password) == 0) {//ÃÜÂëÕıÈ·
-			//ÃÜÂëÕıÈ·½«ÕË»§ĞÅÏ¢Ğ´ÖÁµ±Ç°ÕË»§ĞÅÏ¢
+	}if (p != NULL) {//ç”¨æˆ·åå­˜åœ¨
+		if (strcmp(password, p->element.password) == 0) {//å¯†ç æ­£ç¡®
+			//å¯†ç æ­£ç¡®å°†è´¦æˆ·ä¿¡æ¯å†™è‡³å½“å‰è´¦æˆ·ä¿¡æ¯
+			strcpy(PRESENT.UID, p->element.UID);
 			strcpy(PRESENT.username, username);
 			strcpy(PRESENT.password, password);
 			PRESENT.user_type = p->element.user_type;
@@ -25,26 +26,26 @@ int sign_judge() {//µÇÂ½ÅĞ¶Ï¼°»ñÈ¡ÕË»§ĞÅÏ¢   return flag   flag±íÊ¾ÕË»§ÀàĞÍ
 			system("cls");
 			set_position(25, 10);
 			SetColor(12, 0);
-			printf("¿ÚÁî²»¶ÔÓ´\n");
+			printf("å£ä»¤ä¸å¯¹å“Ÿ\n");
 			go_on();
 		}
 	}
-	else {//ÓÃ»§Ãû²»´æÔÚ
+	else {//ç”¨æˆ·åä¸å­˜åœ¨
 		system("cls");
 		set_position(25, 10);
 		SetColor(12, 0);
-		printf("Ã»ÓĞÕâ¸öÕËºÅÓ´\n");
+		printf("æ²¡æœ‰è¿™ä¸ªè´¦å·å“Ÿ\n");
 		go_on();
 	}
-	return flag;//flag==0  ±íÊ¾µÇÂ¼Ê§°Ü£¬ÆäËûÀàĞÍ²Î¼ûuser_types
+	return flag;//flag==0  è¡¨ç¤ºç™»å½•å¤±è´¥ï¼Œå…¶ä»–ç±»å‹å‚è§user_types
 }
 
-char *username_get(int judge) {//ÓÃ»§ÃûµÄ»ñÈ¡    judge!=0Ê±½øĞĞÊäÈë¼ì²é 
+char *username_get(int judge) {//ç”¨æˆ·åçš„è·å–    judge!=0æ—¶è¿›è¡Œè¾“å…¥æ£€æŸ¥ 
 	char *str=(char *)malloc(NAME*5);
 	exam_NULL(str, 0);
 	str[0] = '\0';
 	scanf("%s", str);
-	if(judge&&str)//str»ùÓÚ¾¯¸æ¼ÓÈë
+	if(judge&&str)//stråŸºäºè­¦å‘ŠåŠ å…¥
 	while (strlen(str) > 14 || strlen(str) < 4) {
 		print_examinput();
 		scanf("%s", str);
@@ -52,13 +53,14 @@ char *username_get(int judge) {//ÓÃ»§ÃûµÄ»ñÈ¡    judge!=0Ê±½øĞĞÊäÈë¼ì²é
 	return str;
 }
 
-char *password_get(int judge) {//ÃÜÂëÊäÈëµÄ»ñÈ¡        judge!=0Ê±½øĞĞÊäÈë¼ì²é
+char *password_get(int judge) {//å¯†ç è¾“å…¥çš„è·å–        judge!=0æ—¶è¿›è¡Œè¾“å…¥æ£€æŸ¥
 	char *password = (char *)malloc(PASSWORD * 4 * sizeof(char));
 	char str[50], c = 0, i = 0;
 	do {
+		rewind(stdin);
 		while (i < 49) {
 			c = getch();
-			getch();//Î¢Èí¸üĞÂ²úÎï
+			getch();//å¾®è½¯æ›´æ–°äº§ç‰©
 			if (c != 8 && c != '\r'&&c!=' ') {
 				str[i++] = c;
 				printf("*");
@@ -71,29 +73,31 @@ char *password_get(int judge) {//ÃÜÂëÊäÈëµÄ»ñÈ¡        judge!=0Ê±½øĞĞÊäÈë¼ì²é
 				break;
 			}
 		}
-		str[i] = '\0';//Ò»´ÎÃÜÂë»ñÈ¡
+		str[i] = '\0';//ä¸€æ¬¡å¯†ç è·å–
 	} while ((strlen(str)<6||strlen(str)>12)&&judge);
 	strcpy(password,str);
 	return password;
 }
 
-char *get_string(int down,int up ,int judge) {//×Ö·û´®»ñÈ¡¼°¼ì²éº¯Êı    ³¤¶È[down,up]   ×Ö·û´®×Ö½ÚÊıÏŞÖÆ
-	char *str = (char *)malloc(sizeof(char)*100);// judge ¿ª¹Ø   ÊÇ·ñ¿ªÆôÊı×Ö¼ì²é¡¢ºº×Ö¼ì²é  
+char *get_string(int down,int up ,int judge) {//å­—ç¬¦ä¸²è·å–åŠæ£€æŸ¥å‡½æ•°    é•¿åº¦[down,up]   å­—ç¬¦ä¸²å­—èŠ‚æ•°é™åˆ¶
+	catch_cursor();
+	char *str = (char *)malloc(sizeof(char)*100);// judge å¼€å…³   æ˜¯å¦å¼€å¯æ•°å­—æ£€æŸ¥ã€æ±‰å­—æ£€æŸ¥  
 	SetColor(14, 0);
+	rewind(stdin);
 	scanf("%s", str);
 	SetColor(7, 0);
 	unsigned int flag = 1, i;
 	do {
-		if (judge) {//½øĞĞ¼ì²é¼ì²é
+		if (judge) {//è¿›è¡Œæ£€æŸ¥æ£€æŸ¥
 			if (judge == 1) {
 				for (i = 0; i < strlen(str); i++) {
-					if (isdigit(str[i]) == 0) {//È«ÎªÊı×Ö
+					if (isdigit(str[i]) == 0) {//å…¨ä¸ºæ•°å­—
 						flag = 0; break;
 					}
 				}
 			}else if (judge == 2) {
 				for (i = 0; i < strlen(str); i++) {
-					if (0<=str[i]&&str[i]<=255) {//ºº×Ö¼ì²é
+					if (0<=str[i]&&str[i]<=255) {//æ±‰å­—æ£€æŸ¥
 						flag = 0; break;
 					}
 				}
@@ -106,30 +110,35 @@ char *get_string(int down,int up ,int judge) {//×Ö·û´®»ñÈ¡¼°¼ì²éº¯Êı    ³¤¶È[dow
 			SetColor(7, 0);
 		}
 	} while ((flag == 0) && (flag = 1));
+	hide_cursor();
 	return str;
 }
 
-int get_num(int down, int up, int ndown, int nup) {//¶ÁÈ¡Êı×Ö    ²¢¼ì²éÊäÈë   ·¶Î§[down,up]   Î»Êın[ndown,nup]
+int get_num(int down, int up, int ndown, int nup) {//è¯»å–æ•°å­—    å¹¶æ£€æŸ¥è¾“å…¥   èŒƒå›´[down,up]   ä½æ•°n[ndown,nup]
 	int num,flag=1;
+	catch_cursor();
 	do {
 		SetColor(14, 0);
+		rewind(stdin);
 		scanf("%d", &num);
 		SetColor(7, 0);
 		char str[25];
 		sprintf(str, "%d", num);
-		if (num<down || num>up || (strlen(str) > (unsigned)nup||strlen(str) < (unsigned)ndown)) {//¼ì²é´óĞ¡¼°Î»Êı
+		if (num<down || num>up || (strlen(str) > (unsigned)nup||strlen(str) < (unsigned)ndown)) {//æ£€æŸ¥å¤§å°åŠä½æ•°
 			print_examinput();
 			flag = 0;
 		}
 	} while (flag == 0 && (flag = 1));
+	hide_cursor();
 	return num;
 }
 
-char *get_date() {//ÈÕÆÚµÄ»ñµÃÓëÅĞ¶Ï
+char *get_date() {//æ—¥æœŸçš„è·å¾—ä¸åˆ¤æ–­
 	date_status date = {0,0,0};
 	int flag = 1,y,m,d;
 	do {
 		SetColor(14, 0);
+		rewind(stdin);
 		scanf("%d-%d-%d", &y, &m, &d);
 		SetColor(7, 0);
 		if (y < 2018 || y>2050) {
@@ -153,7 +162,7 @@ char *get_date() {//ÈÕÆÚµÄ»ñµÃÓëÅĞ¶Ï
 			flag = 0;
 		}
 		if (flag == 0) {
-			printf("ÇëÊäÈëÓĞĞ§µÄÈÕÆÚ£¡\n"); rewind(stdin);
+			printf("è¯·è¾“å…¥æœ‰æ•ˆçš„æ—¥æœŸï¼\n"); rewind(stdin);
 		}
 	} while (flag == 0 && (flag = 1));
 	date.year = y, date.month = m, date.day = d;
@@ -162,16 +171,17 @@ char *get_date() {//ÈÕÆÚµÄ»ñµÃÓëÅĞ¶Ï
 	return re;
 }
 
-char *get_time() {//Ê±¼äµÄ»ñµÃ¼°ÅĞ¶Ï
+char *get_time() {//æ—¶é—´çš„è·å¾—åŠåˆ¤æ–­
 	time_status time = {0,0};
 	int h, m,flag=1;
 	do {
 		SetColor(14,0);
+		rewind(stdin);
 		scanf("%d:%d", &h, &m);
 		SetColor(7, 0);
 		if (h < 0 || h>23 || m < 0 || m>59) {
 			flag = 0;
-			printf("ÇëÊäÈëºÏ·¨µÄÊ±¼ä£¡\n"); rewind(stdin);
+			printf("è¯·è¾“å…¥åˆæ³•çš„æ—¶é—´ï¼\n"); rewind(stdin);
 		}
 	} while (flag == 0 && (flag = 1));
 	time.hour = h, time.minute = m;
@@ -180,44 +190,44 @@ char *get_time() {//Ê±¼äµÄ»ñµÃ¼°ÅĞ¶Ï
 	return str;
 }
 
-data_program get_program_infomation() {//»ñÈ¡¾çÄ¿Ö÷ÒªĞÅÏ¢  ²¢½øĞĞ³õÊ¼»¯
+data_program get_program_infomation() {//è·å–å‰§ç›®ä¸»è¦ä¿¡æ¯  å¹¶è¿›è¡Œåˆå§‹åŒ–
 	catch_cursor();
 	data_program tem = { 0 };
-	strcpy(tem.area, "¡ª¡ª");
-	strcpy(tem.performer[0], "¡ª¡ª");
-	strcpy(tem.performer[1], "¡ª¡ª");
-	strcpy(tem.language, "ÖĞÎÄ");
-	strcpy(tem.label, "¡ª¡ª");
+	strcpy(tem.area, "â€”â€”");
+	strcpy(tem.performer[0], "â€”â€”");
+	strcpy(tem.performer[1], "â€”â€”");
+	strcpy(tem.language, "ä¸­æ–‡");
+	strcpy(tem.label, "â€”â€”");
 	tem.program_rating = (program_ratings)1;
 	char *str; int flag = 1, choice;
-	printf("\n1.µçÓ°   2.¸è¾ç   3.ÒôÀÖ»á\n");
-	printf("ÇëÑ¡Ôñ¾çÄ¿ÀàĞÍ:");
+	printf("\n1.ç”µå½±   2.æ­Œå‰§   3.éŸ³ä¹ä¼š\n");
+	printf("è¯·é€‰æ‹©å‰§ç›®ç±»å‹:");
 	choice = get_num(1, 3, 1, 1);
 	tem.program_type = (program_types)choice;
-	//printf("ÇëÊäÈë¾çÄ¿±àºÅ(6Î»Êı×Ö):");
+	//printf("è¯·è¾“å…¥å‰§ç›®ç¼–å·(6ä½æ•°å­—):");
 	//str = get_string(6, 6, 1);
-	//Program *p;//ID²éÖØ
+	//Program *p;//IDæŸ¥é‡
 	//do {
 	//	p = search_program(str, 0);
 	//	if (p) {
 	//		free(str);
-	//		printf("¸Ã±àºÅÒÑ±»Ê¹ÓÃ£¬ÍÆ¼ö±àºÅ%d\nÇëÖØĞÂÊäÈë:",atoi(list.program_tail->element.program_ID)+1);
+	//		printf("è¯¥ç¼–å·å·²è¢«ä½¿ç”¨ï¼Œæ¨èç¼–å·%d\nè¯·é‡æ–°è¾“å…¥:",atoi(list.program_tail->element.program_ID)+1);
 	//		str = get_string(6, 6, 1);
 	//	}
 	//} while (p != NULL);
 	//strcpy(tem.program_ID, str);
 	//free(str);
 	sprintf(tem.program_ID, "%ld", get_newkey(choice));
-	printf("ÒÑÎª¾çÄ¿·ÖÅäIDÎª %s\n", tem.program_ID);
-	printf("ÇëÊäÈë¾çÄ¿Ãû³Æ(15¸öºº×ÖÒÔÄÚ):");
+	printf("å·²ä¸ºå‰§ç›®åˆ†é…IDä¸º %s\n", tem.program_ID);
+	printf("è¯·è¾“å…¥å‰§ç›®åç§°(15ä¸ªæ±‰å­—ä»¥å†…):");
 	str = get_string(1, 30, 0);
 	strcpy(tem.program_name, str);
 	free(str);
-	tem.program_type == 3 ? printf("ÇëÊäÈëÖ¸»ÓĞÕÃû(7¸öºº×ÖÒÔÄÚ):") : printf("ÇëÊäÈëµ¼ÑİĞÕÃû(7¸öºº×ÖÒÔÄÚ):");
+	tem.program_type == 3 ? printf("è¯·è¾“å…¥æŒ‡æŒ¥å§“å(7ä¸ªæ±‰å­—ä»¥å†…):") : printf("è¯·è¾“å…¥å¯¼æ¼”å§“å(7ä¸ªæ±‰å­—ä»¥å†…):");
 	str = get_string(1, 14, 0);
 	strcpy(tem.director, str);
 	free(str);
-	printf("ÇëÊäÈë¿ªÊ¼ÈÕÆÚÓë½áÊøÈÕÆÚ(year-month-day):\n");
+	printf("è¯·è¾“å…¥å¼€å§‹æ—¥æœŸä¸ç»“æŸæ—¥æœŸ(year-month-day):\n");
 	do {
 		char *start_date, *end_date;
 		start_date = get_date();
@@ -228,30 +238,30 @@ data_program get_program_infomation() {//»ñÈ¡¾çÄ¿Ö÷ÒªĞÅÏ¢  ²¢½øĞĞ³õÊ¼»¯
 			flag = 0;
 			print_examinput();
 		}*/
-		if (strcmp(end_date, end_date) < 0) { printf("ÇëÖØĞÂÊäÈëÓĞĞ§µÄÆğÖ¹ÈÕÆÚ£º"); flag = 0; }
+		if (strcmp(end_date, end_date) < 0) { printf("è¯·é‡æ–°è¾“å…¥æœ‰æ•ˆçš„èµ·æ­¢æ—¥æœŸï¼š"); flag = 0; }
 		else { strcpy(tem.start_date, start_date); strcpy(tem.end_date, end_date); }
 		free(start_date); free(end_date);
 	} while (flag == 0 && (flag = 1));
-	printf("ÇëÉèÖÃ¾çÄ¿Ê±³¤(1~600)(min):");
+	printf("è¯·è®¾ç½®å‰§ç›®æ—¶é•¿(1~600)(min):");
 	choice = get_num(1,600,1,3);
 	tem.duration = choice;
-	printf("ÇëÉèÖÃÆ±¼Û(5~100)(Ôª):");
+	printf("è¯·è®¾ç½®ç¥¨ä»·(5~100)(å…ƒ):");
 	choice = get_num(5, 100, 1, 3);
 	tem.price = choice;
-	printf("ÇëÉèÖÃ¾çÄ¿ÓïÑÔ(2¸öºº×Ö):");
+	printf("è¯·è®¾ç½®å‰§ç›®è¯­è¨€(2ä¸ªæ±‰å­—):");
 	str = get_string(4, 4, 2);
 	strcpy(tem.language, str);free(str);
-	printf("ÇëÊäÈë¾çÄ¿·ÅÓ³³É±¾(ÍòÔª):");
+	printf("è¯·è¾“å…¥å‰§ç›®æ”¾æ˜ æˆæœ¬(ä¸‡å…ƒ):");
 	choice = get_num(1, 1000, 1, 3);
 	tem.cost = choice;
 	return tem;
 }
 
-void program_viewer() {//¾çÄ¿ä¯ÀÀÆ÷
+void program_viewer() {//å‰§ç›®æµè§ˆå™¨
 	Program *p1 = list.program_head->next;
 	Program *p2=NULL;
 	int choice, cnt = 1, pages = (list.program_head->element.cost + 1) / 2;
-	print_program(p1, 1); printf("				µ±Ç°µÚ%dÒ³£¬¹²%dÒ³", cnt, pages);
+	print_program(p1, 1); printf("				å½“å‰ç¬¬%dé¡µï¼Œå…±%dé¡µ", cnt, pages);
 	if (p1) {
 		p2 = p1->next;
 		print_program(p2,0);
@@ -264,14 +274,14 @@ void program_viewer() {//¾çÄ¿ä¯ÀÀÆ÷
 				if (p1) {
 					p2 = p1->next; cnt++;
 				}
-				//else {//²»ÖØ¸´Êä³ö
+				//else {//ä¸é‡å¤è¾“å‡º
 				//	p2 = NULL;
 				//}
 			}
 			/*else {
 				p1 = NULL;
 			}*/
-			print_program(p1,1); printf("				µ±Ç°µÚ%dÒ³£¬¹²%dÒ³", cnt, pages); print_program(p2,0);
+			print_program(p1,1); printf("				å½“å‰ç¬¬%dé¡µï¼Œå…±%dé¡µ", cnt, pages); print_program(p2,0);
 		}
 		else if (choice == -1 || choice == -2) {
 			if(p1!=list.program_head&&p2!=list.program_head)
@@ -280,7 +290,7 @@ void program_viewer() {//¾çÄ¿ä¯ÀÀÆ÷
 					if (p2&&p2->pre!=list.program_head) {
 						p1 = p2->pre; cnt--;
 				}
-			//	else {//²»ÖØ¸´Êä³ö
+			//	else {//ä¸é‡å¤è¾“å‡º
 			//		p2 = NULL;
 			//	}
 			}
@@ -288,54 +298,78 @@ void program_viewer() {//¾çÄ¿ä¯ÀÀÆ÷
 			//	p1 = NULL;
 			//}
 			if (p1&&p2) {
-				if (p1 != list.program_head)print_program(p1, 1); printf("				µ±Ç°µÚ%dÒ³£¬¹²%dÒ³",cnt,pages); if (p2 != list.program_head)print_program(p2, 0);
+				if (p1 != list.program_head)print_program(p1, 1); printf("				å½“å‰ç¬¬%dé¡µï¼Œå…±%dé¡µ",cnt,pages); if (p2 != list.program_head)print_program(p2, 0);
 			}
 			/*else {
 				if (p1 != list.program_head)print_program(p1, 1); if (p2 != list.program_head) print_program(p2, 0);
 			}*/
-		}else {
-			print_re();
 		}
 		/*if (choice==1&&(p1 == list.program_tail || p2 == list.program_tail)) {
-			printf("ÒÑ¾­ÊÇ×îºóÒ»Ò³ÁË\n");
+			printf("å·²ç»æ˜¯æœ€åä¸€é¡µäº†\n");
 		}
 		else if (choice == -1 && (p1 == list.program_head->next || p2 == list.program_head->next)) {
-			printf("ÒÑ¾­ÊÇµÚÒ»Ò³ÁË\n");
+			printf("å·²ç»æ˜¯ç¬¬ä¸€é¡µäº†\n");
 		}*/
 	}
 }
 
-void studio_viewer() {//·ÅÓ³Ìü²é¿´Æ÷
+void studio_viewer() {//æ”¾æ˜ å…æŸ¥çœ‹å™¨
 	int choice, cnt = 1, pages = list.studio_head->element.seatx;
 	Studio *p = list.studio_head->next;
-	if (p) { print_studio(p); printf("			µ±Ç°µÚ%d¸ö·ÅÓ³Ìü£¬¹²%d¸ö", cnt, pages); }
+	if (p) { print_studio(p); printf("			å½“å‰ç¬¬%dä¸ªæ”¾æ˜ å…ï¼Œå…±%dä¸ª", cnt, pages); }
 	while (choice=turn_page()) {
 		if (choice == 1 || choice == 2) {
 			if (p->next) { p = p->next; cnt++; }
 			if (p) print_studio(p);
-			printf("			µ±Ç°µÚ%d¸ö·ÅÓ³Ìü£¬¹²%d¸ö", cnt, pages);
+			printf("			å½“å‰ç¬¬%dä¸ªæ”¾æ˜ å…ï¼Œå…±%dä¸ª", cnt, pages);
 		}
 		else if (choice == -1 || choice == -2) {
 			if (p != list.studio_head->next) { p = p->pre; cnt--; }
 			print_studio(p);
-			printf("			µ±Ç°µÚ%d¸ö·ÅÓ³Ìü£¬¹²%d¸ö", cnt, pages);
+			printf("			å½“å‰ç¬¬%dä¸ªæ”¾æ˜ å…ï¼Œå…±%dä¸ª", cnt, pages);
 		}
 	}
 }
 
-void seat_changer(Studio *p) {//¿ÉÊÓ»¯×ùÎ»ĞŞ¸ÄÆ÷
+void plan_viewer(Plan *head) {//æ¼”å‡ºè®¡åˆ’æµè§ˆå™¨
+	Plan *p = head->next;
+	int num = (head->element.ticketnum + 6) / 7, choice = 1, i, cnt = 0, flagend = 1, flaghead = 1;
+	int re = head->element.ticketnum % 7;
+	if (p == NULL) { printf("æš‚æ— è®¡åˆ’\n"); return; }//flagend    flaghead  æ ‡è¯†æ˜¯å¦è¾¾åˆ°é“¾è¡¨è¾¹ç•Œ
+	do {
+		if (((choice == 1 || choice == 2) && cnt <= num && p->next) || ((choice == -1 || choice == -2) && cnt >= 0 && p->pre) && (flagend || flaghead)) {
+			system("cls");
+			printf("\n\n				      æ¼”å‡ºè®¡åˆ’ä¸€è§ˆ\n\n");
+			print_planhead();
+			if ((choice == -1 || choice == -2) && flaghead) {
+				flagend = 1;
+				for (int j = 1; j <= 7 + re; j++)if (p->pre != head)p = p->pre; else break;
+			}
+			for (i = 1; i <= 7; i++) {//(choice == 1 || choice == 2)
+				if (flagend) { flaghead = 1; print_plan(p); if (p->next)p = p->next; else flagend = 0; }
+				//else if ((choice == -1 || choice == -2) && flaghead) { flagend = 1; print_plan(p); if (p->pre != head)p = p->pre; else flaghead = 0; }
+				else break;
+			}
+			if (cnt < num && choice > 0) cnt++; else if (cnt > 1 && choice < 0) cnt--;
+			printf("    ===============================================================================\n");
+			printf("				    å½“å‰ç¬¬%dé¡µï¼Œå…±%dé¡µ\n", cnt, num);
+		}
+	} while (choice = turn_page());
+}
+
+void seat_changer(Studio *p) {//å¯è§†åŒ–åº§ä½ä¿®æ”¹å™¨
 	system("cls");
 	if(p==NULL){ return;}
 	Seat *k = p->element.seat_head->next;
-	if (k == NULL) { printf("Õâ¸ö·ÅÓ³ÌüÃ»ÓĞ×ùÎ»Ó´\n"); go_on(); return; }
+	if (k == NULL) { printf("è¿™ä¸ªæ”¾æ˜ å…æ²¡æœ‰åº§ä½å“Ÿ\n"); go_on(); return; }
 	int i, j;
 	for (i=1 ; i <=p->element.seatx ; i++) {
 		for (j=1 ; j <= p->element.seaty; j++) {
 			switch (k->seat_condition)
 			{
 			case 0:printf("  "); break;
-			case 1:printf("¡ğ");  break;
-			case 9:printf("¡ñ"); break;
+			case 1:printf("â—‹");  break;
+			case 9:printf("â—"); break;
 			}k = k->next;
 		}printf("\n");
 	}
@@ -343,43 +377,46 @@ void seat_changer(Studio *p) {//¿ÉÊÓ»¯×ùÎ»ĞŞ¸ÄÆ÷
 		save_studio_and_seat();
 	}
 	else {
-		printf("ĞŞ¸ÄÒÑÈ¡Ïû\n");
+		printf("ä¿®æ”¹å·²å–æ¶ˆ\n");
 	}
 }
 
-void account_appeal() {//ÕËºÅÉêËß¹ı³Ì
+void ticket_changer(Plan *p) {//å”®ç¥¨æµè§ˆå™¨
+	int choice;
+	/*while (choice == turn_page()) {
+		if()
+	}*/
+}
+
+void password_change(char *obj, int i) {//  i      1 :  åŠ å¯†     2:è§£å¯†
+	if (i == 1) {
+		for (i = 0; (unsigned)i < strlen(obj); i++) {
+			obj[i] += i;
+		}
+	}
+	else if (i == 2) {
+		for (i = 0; (unsigned)i < strlen(obj); i++) {
+			obj[i] -= i;
+		}
+	}
+	else {
+		print_re();
+	}
+}
+
+void account_appeal() {//è´¦å·ç”³è¯‰è¿‡ç¨‹
 
 }
 
-void timer() {//¶ÁÈ¡ÏµÍ³Ê±¼ä
+void timer() {//è¯»å–ç³»ç»Ÿæ—¶é—´
 	time_t t;
 	time(&t);
 	now = localtime(&t);
 }
 
-//////////////////////////////////////¸³ÏĞº¯Êı
+//////////////////////////////////////èµ‹é—²å‡½æ•°
 
-void clean_plan_atFirst() {//³ÌĞò¿ªÊ¼½«¹ıÆÚµÄÑİ³ö¼Æ»®±ê¼Ç¹ıÆÚ
-	timer();
-	char date[15];
-	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
-	FILE *fp = fopen(".\\plan.txt", "r+");
-	exam_NULL(fp, 1);
-	char t[20000],c; data_plan tem;
-	while (fscanf(fp, "%ld %s %d %s %s %d %d\r\n", &tem.plan_ID, &tem.program_name, &tem.studio_ID, \
-		tem.date, tem.time, &tem.ticketnum, &tem.button) != EOF) {
-		if (strcmp(date,tem.date)>0) {
-			fseek(fp, -3, SEEK_CUR);
-			fprintf(fp, "%d", 0);
-			fseek(fp, 3, SEEK_CUR);
-		}
-		//else { fscanf(fp, "%[^\r\n]", t); fscanf(fp, "%[^\r\n]", t); }
-		fgets(t,20000,fp);//¶ÁÍêÒ»ÕûĞĞ
-	}
-	fclose(fp);
-}
-
-void clean_plan() {//¼ì²é²¢´¦Àí¹ıÆÚÑİ³ö¼Æ»®
+void clean_plan() {//æ£€æŸ¥å¹¶å¤„ç†è¿‡æœŸæ¼”å‡ºè®¡åˆ’
 	timer();
 	char date[15];
 	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
@@ -388,16 +425,22 @@ void clean_plan() {//¼ì²é²¢´¦Àí¹ıÆÚÑİ³ö¼Æ»®
 		if (strcmp(date, p->element.date) > 0) {
 			p->element.button = 0;
 			p->next = list.plan_tem_tail->next; p->pre = list.plan_tem_tail;
-			list.plan_tem_tail->next = p; list.plan_tem_tail = p;//ÒÆ¶¯pµ½plan_temÁ´±í
-			modify_plan_and_ticket(p);
+			list.plan_tem_tail->next = p; list.plan_tem_tail = p;//ç§»åŠ¨påˆ°plan_temé“¾è¡¨
+			//modify_plan_and_ticket(p);
 		}
 	}
 }
 
-//////////////////////////////////////¸³ÏĞº¯Êı
+//////////////////////////////////////èµ‹é—²å‡½æ•°
 
 /////////////////////////////////////////////////music
 
 void play_bgm() {
-
+	switch (now->tm_sec % 5) {
+	case 0:PlaySound(_T("C:\\Users\\HP\\source\\repos\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\res\\phaolobeats.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 1:PlaySound(_T("C:\\Users\\HP\\source\\repos\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\res\\Skip Swing.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 2:PlaySound(_T("C:\\Users\\HP\\source\\repos\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\res\\é“¶ æ²³ éª‘ å£« æ è€ æ¿ - å˜‰ ç¦¾ å¤© æ©™ å›½ é™… å¤§ å½± é™¢.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 3:PlaySound(_T("C:\\Users\\HP\\source\\repos\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\res\\Horsey.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 4:PlaySound(_T("C:\\Users\\HP\\source\\repos\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\å‰§é™¢ç¥¨åŠ¡ç®¡ç†ç³»ç»Ÿ\\res\\VANTAGE ï¼ï¼ - ä¼‘ã¿.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	}
 }

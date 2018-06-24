@@ -11,8 +11,9 @@ typedef enum {
 	OPERA_KEY = 2,
 	CONCERT_KEY = 3,
 	PLAN_KEY = 4,
-	RECORD_KEY=5,
-	TICKET_KEY=6,
+	RECORD_KEY = 5,
+	TICKET_KEY = 6,
+	ACCOUNT_KEY = 7,
 }Key_status;
 
 typedef enum {//¶¨Òå¾çÄ¿Ã¶¾ÙÀàĞÍ
@@ -49,7 +50,7 @@ typedef enum {
 }ticket_statuses;
 
 typedef enum {
-	SALE_sold=1,//ÂôÆ±
+	SALE_sold=1,//Âô³ö
 	SALE_return=2,//ÍËÆ±
 }sale_types;
 
@@ -84,6 +85,7 @@ typedef struct linklist_seat {
 
 typedef struct linklist_ticket {
 	long ticket_ID;//Èë³¡È¯±àºÅ
+	long plan_ID;//Ñİ³ö¼Æ»®±àºÅ
 	int seatx;//×ùÎ»ËùÔÚĞĞ
 	int seaty;//×ùÎ»ËùÔÚÁĞ
 	int price;//Æ±¼Û    ¾çÄ¿¾ö¶¨
@@ -93,12 +95,11 @@ typedef struct linklist_ticket {
 
 typedef struct linklist_record{//½»Ò×¼ÇÂ¼
 	long record_ID;//½»Ò×¼ÇÂ¼ID
-	int conductor_ID;//ÊÛÆ±Ô±ID      »áÔ±ÕË»§
-	int plan_ID;//Ñİ³ö¼Æ»®ID
-	int ticket_ID;//Æ±ID
-	date_status date;//´¦ÀíÈÕÆÚ
-	time_status time;//´¦ÀíÊ±¼ä
+	long conductor_ID;//¼ÇÂ¼²úÉúÕß
+	long plan_ID;//Ñİ³ö¼Æ»®ID
+	long ticket_ID;//Æ±ID
 	int price;//Æ±¼Û
+	char datetime[17];//´¦ÀíÊ±¼ä
 	sale_types sale_type;//½»Ò×ÀàĞÍ
 	struct linklist_record *pre, *next;
 }Record;
@@ -143,12 +144,12 @@ typedef struct emmm {//Ñİ³ö¼Æ»®Êı¾İÓò
 }data_plan;
 
 typedef struct emmmm {//ÕËºÅÊı¾İÓò
-	char UID[NAME-2];//ÕËºÅ±àºÅ   12Î»   ÓÃÓÚĞŞ¸ÄÃÜÂë»òÕÒ»ØÃÜÂë
+	char UID[NAME-6];//ÕËºÅ±àºÅ   8Î»   ÓÃÓÚĞŞ¸ÄÃÜÂë»òÕÒ»ØÃÜÂë
 	char username[NAME];//ÓÃ»§Ãû   4~14¸ö×Ö·û/2~7¸öºº×Ö
 	char password[PASSWORD+1];//µÇÂ¼¿ÚÁî  6~12
 	user_types user_type;//ÕËºÅÀàĞÍ     ²Î¼ûenum user_typesÃ¶¾Ù¶¨Òå
-	long long contributions;//       Òµ¼¨\¹ºÂò¶î
-	Record *record_head, *record_tail;//ÏúÊÛ¼ÇÂ¼¡¢¹ºÂò¼ÇÂ¼´ÎÁ´±í
+	long contributions;//       ±¾ÔÂÒµ¼¨\¹ºÂò¶î
+	//Record *record_head, *record_tail;//ÏúÊÛ¼ÇÂ¼¡¢¹ºÂò¼ÇÂ¼ Á´±í
 }data_account;
 
 /////¶ÁÈ¡ÏúÊÛ¼ÇÂ¼Ê±¼ÆËãÒµ¼¨      ĞÂÔöÏúÊÛ¼ÇÂ¼Ê±ÊµÊ±¸üĞÂ     ÏúÊÛÅÅÃûÊ±²»ÔÙÖØĞÂ¼ÆËã
@@ -178,11 +179,12 @@ typedef struct linklist_account {//ÕËºÅ
 
 
 typedef struct ctrl {//Á´±íÀàĞÍ
-	Program *program_head,*program_tail;
-	Studio *studio_head,*studio_tail;
-	Plan *plan_head,*plan_tail;
+	Program *program_head, *program_tail;
+	Studio *studio_head, *studio_tail;
+	Plan *plan_head, *plan_tail;
 	Plan *plan_tem_head, *plan_tem_tail;
-	Account *account_head,*account_tail;
+	Account *account_head, *account_tail;
+	Record *record_head, *record_tail;
 	Key *key_head, *key_tail;
 }List;
 
@@ -204,8 +206,10 @@ POINT get_position();//µÃµ½µ±Ç°¹â±êy×ø±ê
 int screen_clear(int order, int i, int change);/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ¡Ïî Ä¬ÈÏÎª1
 										²ÎÊıchange±í¸Ä±äÁ¿  order±íÊ¾½çÃæµÄÑ¡Ôñ  º¯Êı·µ»Øµ±Ç°Ñ¡Ïî±àºÅ*/
 int turn_page();//·­Ò³Æ÷
-int select_seat(Studio *p);//ÅĞ±ğÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3  
+int select_seat(Studio *p);//ÅĞ±ğÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ı 1    ¡ú 2    ESC 0   »Ø³µ3  ·µ»ØÖµÅĞ¶ÏÊÇ·ñĞŞ¸Ä
+int select_seat(Plan *p, int limit);//ÊÛÆ±Ñ¡ÔñÎ»ÖÃ  ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾Ëù¹ºÆ±Êı  limit ×î´ó¹ºÂòÁ¿
 void clear_seat(COORD position, char status);//¸Ä±ä×ùÎ»ÏÔÊ¾  COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
+void clear_ticket(COORD position, char status);//COORD  µ±Ç°Î»ÖÃ   status Æ±×´Ì¬
 
 //window.cpp
 
@@ -221,7 +225,11 @@ void show_plan();//Ñİ³ö¼Æ»®²éÑ¯¼°¹ÜÀí
 
 void show_admin();//ÏµÍ³¹ÜÀíÔ±Ö÷½çÃæ
 void show_account();//ÕË»§¹ÜÀí½çÃæ
-//welcom.cpp
+void show_account_type();//ÕË»§ÀàĞÍÑ¡Ôñ½çÃæ
+
+void show_conducter();//ÊÛÆ±Ô±¹ÜÀí½çÃæ
+void show_ticket();//ÊÛÆ±Ô±Æ±Îñ¹ÜÀí½çÃæ
+//////////////////////////////////////////////////welcom.cpp
 
 void print_re();//»ñµÃ·´À¡
 void print_examinput();//·Ç·¨ÊäÈë±¨´í
@@ -236,15 +244,17 @@ void print_planhead();//´òÓ¡Ñİ³ö¼Æ»®±íÍ·
 void process_all();//³ÌĞòÈë¿Ú
 void process_sign();//µÇÂ¼¹ı³Ì
 void process_admin();//¹ÜÀíÔ±¹ı³Ì
-void process_acount();//ÕË»§¹ÜÀí¹ı³Ì
+void process_account();//ÕË»§¹ÜÀí¹ı³Ì
 
 void process_manager();//¾çÔº¾­Àí¹ı³Ì
 void process_program();//¾çÄ¿²éÑ¯¼°¹ÜÀí¹ı³Ì
 void process_studio();//Ó°Ìü²éÑ¯¼°¹ÜÀí¹ı³Ì
 void process_plan();//·ÅÓ³¼Æ»®²éÑ¯¼°¹ÜÀí¹ı³Ì
-void process_plan_inquiry(); //²éÑ¯Ñİ³ö¼Æ»®¹ı³Ì
+void process_plan_inquiry(Plan *head); //²éÑ¯Ñİ³ö¼Æ»®¹ı³Ì
 
 void process_conducter();//ÊÛÆ±Ô±¹ı³Ì
+void process_ticket();//ÊÛÆ±Ô±Æ±Îñ¹ÜÀí¹ı³Ì
+
 void process_customer();//¹Ë¿Í¹ı³Ì
 
 void account_appeal();//ÕËºÅÉêËß¹ı³Ì
@@ -261,10 +271,14 @@ data_program get_program_infomation();//»ñÈ¡¾çÄ¿Ö÷ÒªĞÅÏ¢  ²¢½øĞĞ³õÊ¼»¯
 void program_viewer();//¾çÄ¿ä¯ÀÀÆ÷
 void studio_viewer();//·ÅÓ³Ìü²é¿´Æ÷
 void seat_changer(Studio *p);//¿ÉÊÓ»¯×ùÎ»ĞŞ¸ÄÆ÷
+void plan_viewer(Plan *head);//Ñİ³ö¼Æ»®ä¯ÀÀÆ÷
+void ticket_changer(Plan *p);//ÊÛÆ±ä¯ÀÀÆ÷
+
 void timer();//¶ÁÈ¡ÏµÍ³Ê±¼ä
-void clean_plan_atFirst();//½«¹ıÆÚµÄÑİ³ö¼Æ»®±ê¼Ç¹ıÆÚ
 void clean_plan();//¼ì²é²¢´¦Àí¹ıÆÚÑİ³ö¼Æ»®
 
+void password_change(char *obj, int i);//ÃÜÂëµÄ¼ÓÃÜ½âÃÜ´¦Àí£¬1 :  ¼ÓÃÜ     2:½âÃÜ
+void play_bgm();
 //sonfunction.cpp
 
 void import_key();//µ¼ÈëÖ÷¼üĞÅÏ¢µ½Á´±í
@@ -273,6 +287,7 @@ void import_program();//µ¼Èë¾çÄ¿ĞÅÏ¢µ½Á´±í
 void import_studio_and_seat();//µ¼Èë·ÅÓ³Ìü¼°×ùÎ»ĞÅÏ¢µ½Á´±í
 void import_plan_and_ticket();//µ¼ÈëÑİ³ö¼Æ»®ĞÅÏ¢µ½Á´±í
 void import_plan_and_ticket_bin();// µ¼ÈëÑİ³ö¼Æ»®ĞÅÏ¢µ½Á´±í
+void import_record();//µ¼ÈëÏúÊÛ¼ÇÂ¼µ½Á´±í
 //void import_plan_and_ticket_tem();//µ¼ÈëÒÑ¹ıÆÚÑİ³ö¼Æ»®µ½Á´±í
 
 
@@ -282,10 +297,15 @@ void save_studio_and_seat();//±£´æ·ÅÓ³Ìü¼°×ùÎ»µ½ÎÄ¼ş
 void save_plan_and_ticket();//±£´æÑİ³ö¼Æ»®¼°Æ±µ½ÎÄ¼ş
 void save_plan_and_ticket(Plan *p); //×·¼ÓÑİ³ö¼Æ»®ÓëÆ±µÄĞÅÏ¢µ½ÎÄ¼ş
 void save_plan_and_ticket_bin();//±£´æÑİ³ö¼Æ»®¼°Æ±µ½¶ş½øÖÆÎÄ¼ş
+void save_account();//±£´æÕËºÅÁ´±íĞÅÏ¢µ½ÎÄ¼ş
+void save_account(Account *p);//×·¼ÓÕËºÅĞÅÏ¢µ½ÎÄ¼ş
+void save_record(Record *r);//×·¼ÓĞÂµÄ¼ÇÂ¼µ½ÎÄ¼şÄ©Î²
+int save_invitation_code(char *obj);//±È½Ï ²¢ ¾Ö²¿ĞŞ¸ÄÑûÇëÂë  //·µ»ØÖµÎª±È¶Ô½á¹û
 
-void modify_plan_and_ticket(Plan *p);//¾Ö²¿¸²Ğ´ÎÄ¼ş    ½«buttonÖÃÁã
+void rewrite_ticket(Plan *p, Ticket *t);//¾Ö²¿¸²Ğ´ÎÄ¼ş    ¸ü¸ÄÆ±µÄ×´Ì¬
+void clean_plan_atFirst();//½«¹ıÆÚµÄÑİ³ö¼Æ»®±ê¼Ç¹ıÆÚ
 
-//filefunction.cpp
+///////////////////////////////////////////////////filefunction.cpp
 
 void initialize_linklist();//³õÊ¼»¯Á´±í
 
@@ -293,7 +313,7 @@ long get_newkey(int judge);//·µ»Øjudge¶ÔÓ¦µÄĞÂÖ÷¼üÖµ  1  µçÓ°    2 ¸è¾ç   3ÒôÀÖ»
 
 Program *search_program(char *obj, int judge);//°´ID»òÃû³Æ²éÕÒ¾çÄ¿ judge ¿ØÖÆÊÇ·ñ½øĞĞÏàËÆ·´À¡
 void add_program();//Ôö¼Ó¾çÄ¿
-void kill_program(Program *p);//°´ÕÕID»òÃû×ÖÉ¾³ı¾çÄ¿
+void delete_program(Program *p);//°´ÕÕID»òÃû×ÖÉ¾³ı¾çÄ¿
 void print_program(Program *p , int i);////Êä³öÄ³¸öÓ°Æ¬ĞÅÏ¢
 void modify_program(Program *p);//ĞŞ¸ÄÓ°Æ¬ĞÅÏ¢
 
@@ -302,7 +322,7 @@ void add_studio();//Ôö¼Ó·ÅÓ³Ìü
 void print_studio(Studio *p);////´òÓ¡·ÅÓ³Ìü¼°×ùÎ»ĞÅÏ¢
 
 //Seat *search_seat(char *obj);//¸ù¾İ·ÅÓ³Ìü±àºÅ²éÕÒ×ùÎ»
-void kill_studio(Studio *p);//É¾³ıÖ¸¶¨·ÅÓ³Ìü
+void delete_studio(Studio *p);//É¾³ıÖ¸¶¨·ÅÓ³Ìü
 void modify_studio(Studio *p);//ĞŞ¸Ä·ÅÓ³ÌüÃû³Æ¼°×ùÎ»
 
 void initialize_seat(Studio *p);//ÎªĞÂ·ÅÓ³Ìü³õÊ¼»¯×ùÎ»
@@ -315,11 +335,26 @@ Plan *search_plan(long obj, int judge, Plan *head);//°´plan_ID¼ìË÷Ñİ³ö¼Æ»®
 void search_plan(char *obj, int choice, Plan *head);//°´¸÷ÖÖID/Ãû³ÆÊä³öÑİ³ö¼Æ»® 1plan_ID  2program  3studio
 void delete_plan(Plan *p);//Òş²ØÑİ³ö¼Æ»®
 void modify_plan(Plan *p);//ĞŞ¸ÄÑİ³ö¼Æ»®
-
+void sort_plan(Plan *head);//Á´±íÃ°Åİ¡£¡£ÅÅĞò
 
 void delete_ticket(Plan *p);//É¾³ıÑİ³ö¼Æ»®ÏÂµÄÆ±
+void print_ticket(Plan *p);//´òÓ¡Ñİ³ö¼Æ»®ÏÂÆ±µÄÇé¿ö
+Ticket *search_ticket(long ID, Plan *head);//¸ù¾İID²éÕÒÆ±  head ²éÕÒ·¶Î§ judge¿ØÖÆÏàËÆ·´À¡
+void sale_ticket(Plan *p, int judge);//ÊÛÆ±ÍËÆ±
+void return_ticket(Ticket *t, int judge);//ÍËÆ±    ²úÉúÏúÊÛ¼ÇÂ¼  ²¢¸üĞÂÖ÷¼ü
+void draw_ticket(Plan *p, Ticket *t);//»­Ò»ÕÅÆ±
+void draw_ticket(Ticket *t, int judge);//»­Ò»ÕÅÆ±  0ÊÛÆ±Ô±   1¾çÔº½±Àø
 
-//Linklist.cpp
+void print_account(Account *p);//´òÓ¡ÕËºÅĞÅÏ¢
+void add_account(int choice);//Ôö¼ÓÕË»§ĞÅÏ¢
+void modify_account(Account *p);//ĞŞ¸ÄÕË»§ĞÅÏ¢
+void delete_account(Account *p);//É¾³ıÕË»§ĞÅÏ¢
+Account* search_account(char *obj, int judge);//²éÕÒÕË»§ĞÅÏ¢
+
+Record *add_record(Plan *p, Ticket *t, Account *a, sale_types type);//²úÉúÒ»ÌõÏúÊÛ¼ÇÂ¼¼Óµ½¼ÇÂ¼Á´±í  ²¢Ë¢ĞÂÒµ¼¨
+Record *search_record(long obj);//¸ù¾İTicket_IDµ¹Ğò²éÕÒÏúÊÛ¼ÇÂ¼
+
+////////////////////////////////////////////////////////Linklist.cpp
 
 void import_all();//µ¼ÈëÕË»§ĞÅÏ¢
 void initialize();//³õÊ¼»¯×¼±¸
@@ -327,3 +362,10 @@ void initialize_present();//³õÊ¼»¯µ±Ç°ÕË»§
 void initialize_window();//³õÊ¼»¯ÏÔÊ¾´°¿Ú
 
 //initialize.cpp
+
+
+
+
+//void ShowListByPage(int listSize);
+//int listSize();
+//List.h

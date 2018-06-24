@@ -12,7 +12,6 @@ void print_examinput() {//非法输入报错
 }
 
 inline void go_on() {//按任意键继续
-	rewind(stdin);
 	printf("按任意键继续\n");
 	rewind(stdin);
 	getch();
@@ -22,7 +21,7 @@ inline void go_on() {//按任意键继续
 void exam_NULL(void *p, int choice) {//空指针报错   0 malloc   1文件
 	if (p == NULL) {
 		if(choice == 0)printf("不能分配更多内存了\n");
-		else if (choice == 1) {printf("打开文件失败"); print_re();}
+		else if (choice == 1) {printf("打开文件失败\n"); print_re();}
 		else {print_re();}
 		exit(1);
 	}
@@ -35,7 +34,6 @@ int enquiry(int i) {//判断是否进行本次操作   i==1   enquiry   i==2 warnning
 		printf("该操作不可恢复，是否继续?(0/1):");
 	else
 		print_re();
-	rewind(stdin);
 	int judge = 0;
 	judge = get_num(0,1,1,1);
 	return judge;
@@ -59,8 +57,8 @@ void print_instruction(int i) {//显示说明
 }
 
 void print_planhead() {//打印演出计划表头
-	printf("==========================================================================\n");
-	printf("| ID  |         剧目名称       |演出厅编号|总票数|   演出日期   |开始时间|\n\n");
+	printf("    ===============================================================================\n");
+	printf("    | ID  |         剧目名称       |演出厅编号|总票数|余票数|  演出日期  |开始时间|\n\n");
 }
 
 void 哈哈() {//我去，真有这种特性

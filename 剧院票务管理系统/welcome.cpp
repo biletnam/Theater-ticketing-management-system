@@ -131,7 +131,7 @@ void show_manager() {//剧院经理主界面
 	set_position(34, 10);
 	printf("演出查询及管理");
 	set_position(34,12);
-	printf("票务查询及管理");
+	printf("销售统计与查询");//按演出计划查询
 	set_position(34, 14);
 	printf("我的账号及密码");
 }
@@ -231,6 +231,52 @@ void show_account() {//账户查询及管理界面
 	printf("浏览所有用户");
 }
 
+void show_account_type(){//账户类型选择界面
+	system("CLS");
+	printf("\t\t|-----请选择需要添加账户的类型-----|\n");
+	printf("\t\t|-----------剧院经理请按2----------|\n");
+	printf("\t\t|------------售票员请按3-----------|\n");
+	printf("\t\t|-----------系统管理员请按1--------|\n");
+	printf("\t\t|----------- 顾客请按4-------------|\n");
+	printf("请输入:");
+}
+
+///////////////////////////////////conducter
+
+void show_conducter() {//售票员主界面
+	system("cls");
+	rewind(stdin);
+	hide_cursor();
+	set_position(36, 4);
+	SetColor(10, 0);
+	printf("售票与统计");
+	SetColor(11, 0);
+	set_position(34, 6);
+	printf("演出检索与查询");
+	SetColor(7, 0);
+	set_position(34, 8);
+	printf("票务查询及管理");
+	set_position(34, 10);
+	printf("销售统计与查询");
+	set_position(34, 12);
+	printf("演出计划浏览器");
+	set_position(34, 14);
+	printf("我的账号及密码");
+}
+
+void show_ticket() {//售票 退票 查票
+	system("cls");
+	rewind(stdin);
+	hide_cursor();
+	SetColor(11, 0);
+	set_position(36, 8);
+	printf("查询演出票");
+	SetColor(7, 0);
+	set_position(36, 10);
+	printf("售出演出票");
+	set_position(36, 12);
+	printf("退还演出票\n");
+}
 
 //弃用
 /*void show_program_types() {//显示剧目类型   配合choice_judege进行选择

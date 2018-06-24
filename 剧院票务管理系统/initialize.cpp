@@ -16,6 +16,8 @@ void initialize() {//全部初始化
 	initialize_present();
 	clean_plan_atFirst();
 	import_all();
+	sort_plan(list.plan_head);
+	sort_plan(list.plan_tem_head);
 }
 
 void initialize_present() {//初始化当前账户

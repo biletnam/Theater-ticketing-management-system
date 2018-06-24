@@ -22,8 +22,9 @@ void process_sign() {//登录过程
 		cnt++;
 		re = sign_judge();
 	}
+	play_bgm();
 	switch (re) {
-	case 0:account_appeal();//账号申诉
+	case 0:account_appeal(); break;//账号申诉
 	case 1:process_admin(); break;
 	case 2:process_manager(); break;
 	case 3:process_conducter(); break;
@@ -34,6 +35,8 @@ void process_sign() {//登录过程
 	}
 }
 
+///////////////////////////////////////系统管理员过程
+
 void process_admin() {//管理员过程
 	int choice;
 	while (1) {
@@ -41,21 +44,30 @@ void process_admin() {//管理员过程
 		choice = choice_judge(11);
 		switch (choice) {
 		case 0:break;
-		case 1:process_acount(); break;
-		}if (choice == 0)break;
+		case 1:process_account(); break;
+		case 2:break;
+		case 3:modify_account(search_account(PRESENT.username, 0));
+		}if (choice == 0) {
+			catch_cursor(); printf("\n是否退出登录?(0/1):");
+			choice = get_num(0, 1, 1, 1); if (choice == 1) { go_on(); break; } go_on();
+		}
 	}
 }
 
-void process_acount() {//账户管理过程        //在这里调用你写的链表操作
-	int choice; //char *str;
+void process_account() {//账户管理过程        //在这里调用你写的链表操作
+	int choice;char *str = NULL;
 	while (1) {
 		show_account();
 		choice = choice_judge(5);
-		switch (choice) {
-		case 0:break;
-		case 1:break;
+		switch (catch_cursor(), choice) {
+		case 0: break;
+		case 1: printf("\n\n请输入要查找的账号ID或名称:\n"); print_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 2: printf("\n\n请输入要修改的账号ID或名称:\n");  modify_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 3: show_account_type(); choice = get_num(1, 4, 1, 1); add_account(choice); break;
+		case 4: printf("\n\n请输入你需要删除的账号信息:\n"); delete_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 5:break;
 		}
-		if (choice == 0)break;
+		if (choice == 0)break;if (choice < 5)go_on();
 	}
 }
 
@@ -72,6 +84,7 @@ void process_manager() {//剧院经理过程
 		case 2: process_studio(); break;
 		case 3:process_plan(); break;
 		case 4:break;
+		case 5:modify_account(search_account(PRESENT.UID, 0)); break;
 		}if (choice == 0) {
 			catch_cursor(); printf("\n是否退出登录?(0/1):");
 			choice = get_num(0, 1, 1, 1); if (choice == 1){go_on(); break;} go_on();
@@ -87,10 +100,10 @@ void process_program() {//剧目查询及管理过程
 		if (choice != 0)catch_cursor();
 		switch (choice) {
 		case 0:break;
-		case 1:printf("\n请输入要查询的影片ID或名称:\n"); rewind(stdin); print_program(search_program(str = get_string(1, 30, 0), 1), 1); free(str); break;
-		case 2:printf("\n请输入要修改的影片ID或名称:\n"); rewind(stdin); modify_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
+		case 1:printf("\n请输入要查询的影片ID或名称:"); print_program(search_program(str = get_string(1, 30, 0), 1), 1); free(str); break;
+		case 2:printf("\n请输入要修改的影片ID或名称:"); modify_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
 		case 3:add_program(); break;
-		case 4:printf("\n请输入要删除的影片ID或名称:\n"); rewind(stdin); kill_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
+		case 4:printf("\n请输入要删除的影片ID或名称:"); delete_program(search_program(str = get_string(1, 30, 0), 1)); free(str); break;
 		case 5:hide_cursor(); program_viewer(); break;
 		}if (choice == 0)break; if (choice < 5)go_on();
 	}
@@ -104,35 +117,35 @@ void process_studio() {//影厅查询及管理过程
 		if(choice != 0)catch_cursor();
 		switch (choice){
 		case 0:break;
-		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); rewind(stdin); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
-		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); rewind(stdin); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 1:printf("\n请输入要查询的放映厅ID或名称：\n"); print_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 2:printf("\n请输入要修改的放映厅ID或名称：\n"); modify_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
 		case 3:add_studio();break;
-		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); kill_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 4:printf("\n请输入要删除的放映厅ID或名称：\n"); delete_studio(search_studio(str = get_string(1, 14, 0), 1)); free(str); break;
 		case 5:hide_cursor(); studio_viewer(); break;
 		}if (choice == 0)break; if (choice < 5) go_on();
 	}
 }
 
 void process_plan() {//放映计划查询及管理过程
-	int choice, num;//clean_plan();
+	int choice, num; Plan *p = NULL;//clean_plan();
 	while (1) {
 		show_plan();
 		choice = choice_judge(12);
 		if (choice != 0)catch_cursor();
 		switch (choice) {
 		case 0:break;
-		case 1: process_plan_inquiry(); break;
-		case 2:break;
+		case 1:printf("\n\n1.当前演出计划 2.过期演出计划\n请选择查询范围：");
+			num = get_num(1, 2, 1, 1); if (num == 1)p = list.plan_head; else p = list.plan_tem_head; process_plan_inquiry(p); break;
+		case 2:printf("请输入要修改的演出计划ID:"); modify_plan(search_plan(get_num(1, 999999, 1, 6) , 1, list.plan_head)); break;
 		case 3:add_plan(); break;
-		case 4:printf("\n请输入要删除的演出计划ID:"); num = get_num(111111, 999999, 6, 6); delete_plan(search_plan(num, 1, list.plan_head)); break;
+		case 4:printf("\n\n请输入要删除的演出计划ID:"); num = get_num(1, 999999, 1, 6); p = search_plan(num, 0, list.plan_head); if (p == NULL) { p = search_plan(num, 0, list.plan_tem_head); } delete_plan(p); break;
+		case 5:printf("\n\n1. 浏览当前计划 2.浏览过期计划\n请选择："); num = get_num(1, 2, 1, 1); if (num == 1)p = list.plan_head; else p = list.plan_tem_head; hide_cursor(); plan_viewer(p); break;
 		}if (choice == 0)break;go_on(); 
 	}
 }
 
-void process_plan_inquiry() {//查询演出计划
+void process_plan_inquiry(Plan *head) {//查询演出计划
 	int num; char *str = NULL;
-	Plan *head = NULL; printf("\n\n1.当前演出计划 2.过期演出计划\n请选择查询范围：");
-	num = get_num(1, 2, 1, 1); if (num == 1)head = list.plan_head; else head = list.plan_tem_head;
 	printf("1.演出计划ID  2.剧目名称/ID 3.演出厅名称/ID 4.日期\n请选择检索方式：");
 	num = get_num(1, 4, 1, 1);
 	if (num < 4) {
@@ -148,8 +161,39 @@ void process_plan_inquiry() {//查询演出计划
 ///////////////////////////////////////////售票员
 
 void process_conducter() {
-
+	int choice; Plan *p = NULL;
+	while (1) {
+		show_conducter();
+		choice = choice_judge(13);
+		switch (choice) {
+		case 0:break;
+		case 1: printf("\n\n"); process_plan_inquiry(list.plan_head); break;//ticket_viewer(); break;
+		case 2:process_ticket();
+		case 3:break;
+		case 4:plan_viewer(list.plan_head); break;
+		case 5:modify_account(search_account(PRESENT.UID, 0)); break;
+		}if (choice == 0) {
+			catch_cursor(); printf("\n是否退出登录?(0/1):");
+			choice = get_num(0, 1, 1, 1); if (choice == 1) { go_on(); break; } go_on();
+		}
+	}
 }
+
+void process_ticket() {//票务查询及售票退票
+	int choice; Plan *p = NULL; Ticket *t = NULL;
+	while (1) {
+		show_ticket();
+		choice = choice_judge(14);
+		switch (choice) {
+		case 0:break;
+		case 1:printf("\n请输入票的ID:"); t = search_ticket((long)get_num(111111, 9999999999, 1, 10), 0); draw_ticket(t); break;
+		case 2:printf("请输入演出计划ID:"); p = search_plan((long)get_num(1, 999999, 1, 6), 1, list.plan_head); if (p)sale_ticket(p, 0); break;
+		case 3:printf("请输入已售出的票的ID:"); return_ticket(search_ticket((long)get_num(111111, 9999999999, 1, 10), list.plan_head), 0); break;
+		}if (choice == 0)break; go_on();
+	}
+}
+
+///////////////////////////////////////////顾客
 
 void process_customer() {
 	show_customer();

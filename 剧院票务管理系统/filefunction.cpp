@@ -21,10 +21,11 @@ void import_account() {//导入账号信息到链表
 	int cnt = 0;
 	FILE *fp = fopen(".\\account.txt","r");
 	exam_NULL(fp, 1);
-	int t;
-	data_account tem;
+	int t;data_account tem;
 	while (fscanf(fp,"%s %s %s %d",tem.UID,tem.username,tem.password,&t)!=EOF) {
+		tem.contributions = 0;
 		tem.user_type = user_types(t);
+		password_change(tem.password, 2);
 		Account *p = (Account *)malloc(sizeof(Account));
 		exam_NULL(p, 0);
 		p->element = tem;//每成功读取一组数据做一个结点，连接到链表上
@@ -34,7 +35,7 @@ void import_account() {//导入账号信息到链表
 		list.account_tail = p;
 		cnt++;//计数
 	}
-	list.account_head->element.contributions = cnt;
+	list.account_head->element.contributions = cnt;//计数
 	fclose(fp);
 }
 
@@ -86,7 +87,7 @@ void import_studio_and_seat() {//导入放映厅及座位信息到链表
 				Seat *k = (Seat *)malloc(sizeof(Seat));
 				exam_NULL(k, 0);
 				k->seatx = i, k->seaty = j,k->stduio_ID=ID;
-				fscanf(fp, "%d", &t); if (t == 1)cnt++;
+				fscanf(fp, "%d", &t); if (t == 1 || t == 2) cnt++;
 				k->seat_condition = (seat_conditions)t;
 				k->next = p->element.seat_tail->next;
 				k->pre = p->element.seat_tail;
@@ -104,7 +105,6 @@ void import_plan_and_ticket() {//导入演出计划信息到链表
 	data_plan tem; int i, cnt = 0, cntt = 0, cnttt = 0;
 	while (fscanf(fp, "%ld %s %d %s %s %d %d",&tem.plan_ID,&tem.program_name,&tem.studio_ID,\
 tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
-		if (tem.button != 0 && tem.button != 1) { continue; }
 		Plan *p = (Plan *)malloc(sizeof(Plan)); exam_NULL(p, 0);
 		p->element = tem;
 		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(p->element.ticket_head, 0);
@@ -114,6 +114,7 @@ tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
 		for (i = 1; i <= p->element.ticketnum; i++) {
 			Ticket *k = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(k, 0); int t;
 			fscanf(fp, "%ld %d %d %d %d", &k->ticket_ID, &k->seatx, &k->seaty, &k->price, &t);
+			k->plan_ID = p->element.plan_ID;
 			k->ticket_status = (ticket_statuses)t; if (k->ticket_status != TICKET_sold)cntt++;//余票计数
 			k->next = p->element.ticket_tail->next; k->pre = p->element.ticket_tail;
 			p->element.ticket_tail->next = k; p->element.ticket_tail = k;
@@ -132,6 +133,24 @@ tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
 	list.plan_tem_head->element.ticketnum = cnttt;
 	fclose(fp);
 }
+
+void import_record() {//导入销售记录到链表
+	FILE *fp = fopen(".\\record.txt", "r");
+	exam_NULL(fp, 0);
+	long record_ID, plan_ID, ticket_ID, conductor_ID, price;
+	int type; char time[50];
+	while (fscanf(fp, "%ld %d %ld %s %d %ld %ld", &record_ID,&type, &conductor_ID,\
+		time, &price, &ticket_ID, &plan_ID) != EOF) {
+		Record *r = (Record *)malloc(sizeof(Record));exam_NULL(r, 0);
+		r->sale_type = (sale_types)type; strcpy(r->datetime, time);
+		r->conductor_ID = conductor_ID; r->plan_ID = plan_ID; r->record_ID = record_ID;
+		r->price = price; r->ticket_ID = ticket_ID;
+		r->next = list.record_tail->next; r->pre = list.record_tail;
+		list.record_tail->next = r; list.record_tail = r;
+	}
+	fclose(fp);
+}
+
 
 //弃用
 
@@ -223,7 +242,7 @@ void save_plan_and_ticket() {//保存演出计划及票
 	exam_NULL(fp, 1);
 	Plan *p = list.plan_head->next;
 	for (p; p; p = p->next) {
-		if (p->element.button != 1 && p->element.button != 2) { continue; }//0  过期   1可用
+		if (p->element.button != 1 ) { continue; }//0  过期   1可用
 		fprintf(fp, "%ld %s %d %s %s %d %d\n",p->element.plan_ID,p->element.program_name,p->element.studio_ID,\
 		p->element.date,p->element.time,p->element.ticketnum, p->element.button);
 		Ticket *k = p->element.ticket_head->next;
@@ -278,23 +297,122 @@ void save_plan_and_ticket_bin() {//二进制文件
 	fclose(fp);
 }
 
-void modify_plan_and_ticket(Plan *p) {//局部覆写文件     将button置零
+void rewrite_ticket(Plan *p,Ticket *t) {//局部覆写文件     改变票的状态
 	FILE *fp = fopen(".\\plan.txt", "r+");
 	exam_NULL(fp, 1);
-	char t[50000]; data_plan tem;
+	char ttt[50000]; data_plan tem;
+	int seatx, seaty, price, status, flag = 0; long ticket_ID;
 	while (fscanf(fp, "%ld %s %d %s %s %d %d\r\n", &tem.plan_ID, &tem.program_name, &tem.studio_ID, \
 		tem.date, tem.time, &tem.ticketnum, &tem.button) != EOF) {
 		if (tem.plan_ID != p->element.plan_ID) {
-			fgets(t,50000,fp);//读完一整行
+			fgets(ttt,50000,fp);//读完一整行
+		}//fprintf(fp, "%ld %d %d %d %d     ", k->ticket_ID, k->seatx, k->seaty, k->price, k->ticket_status);
+		else {
+			while (fscanf(fp, "%ld %d %d %d %d", &ticket_ID, &seatx, &seaty, &price, &status)) {
+				if (t->ticket_ID == ticket_ID) {
+					flag = 1; break;
+				}
+			}
+			if (flag) {
+				fseek(fp, -1, SEEK_CUR);
+				status == 0 ? status = 1 : status = 0;
+				fprintf(fp, "%d", status);
+				break;
+			}
+			else print_re();
 		}
-		else break;
 	}
-	fseek(fp,-3,SEEK_CUR);
-	fprintf(fp, "%d", 0);
-	fseek(fp, 3, SEEK_CUR);
 	fclose(fp);
 }
 
-void modify_plan_and_ticket(Ticket *p,ticket_statuses status) {//局部覆写文件   修改票的状态
-
+void clean_plan_atFirst() {//程序开始将过期的演出计划标记过期
+	timer();
+	char date[15],time[10];
+	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+	sprintf(time, "%02d:%02d", now->tm_hour, now->tm_min);
+	FILE *fp = fopen(".\\plan.txt", "r+");
+	exam_NULL(fp, 1);
+	char t[20000]; data_plan tem;
+	while (fscanf(fp, "%ld %s %d %s %s %d %d\r\n", &tem.plan_ID, &tem.program_name, &tem.studio_ID, \
+		tem.date, tem.time, &tem.ticketnum, &tem.button) != EOF) {
+		if (strcmp(date, tem.date) > 0 || (strcmp(date, tem.date) == 0 && strcmp(time, tem.time) > 0)) {
+			fseek(fp, -3, SEEK_CUR);
+			fprintf(fp, "%d", 0);
+			fseek(fp, 3, SEEK_CUR);
+		}
+		//else { fscanf(fp, "%[^\r\n]", t); fscanf(fp, "%[^\r\n]", t); }
+		fgets(t, 20000, fp);//读完一整行
+	}
+	fclose(fp);
 }
+
+//void modify_ticket(Plan *p) {//局部覆写文件   修改票的状态
+//	FILE *fp = fopen(".\\plan.txt", "r+");
+//	exam_NULL(fp, 1);
+//	char t[50000]; data_plan tem;
+//	while (fscanf(fp, "%ld %s %d %s %s %d %d\r\n", &tem.plan_ID, &tem.program_name, &tem.studio_ID, \
+//		tem.date, tem.time, &tem.ticketnum, &tem.button) != EOF) {
+//		if (tem.plan_ID != p->element.plan_ID) {
+//			fgets(t, 50000, fp);//读完一整行
+//		}
+//		else break;
+//	}
+//	fseek(fp, 0, SEEK_CUR);
+//	Ticket *q = p->element.ticket_head->next;
+//	for (q; q; q = q->next) {
+//		
+//	}
+//	
+//	fclose(fp);
+//}
+
+void save_account(Account *p){
+	char str[13];
+	FILE *fp = fopen("account.txt", "a+");
+	exam_NULL(fp, 1);
+	strcpy(str, p->element.password);
+	password_change(str, 1);
+	fprintf(fp, "%s %s %s %d\n", p->element.UID, p->element.username, str, p->element.user_type);
+	fclose(fp);
+}
+
+void save_account(){
+	char str[13];
+	FILE *fp = fopen("account.txt", "w");
+	exam_NULL(fp, 1);
+	for (Account *p = list.account_head->next; p; p = p->next) {
+		strcpy(str, p->element.password);
+		password_change(str, 1);
+		fprintf(fp, "%s %s %s %d\n", p->element.UID, p->element.username, str, p->element.user_type);
+	}
+
+	fclose(fp);
+}
+
+void save_record(Record *r) {//追加新的记录到文件末尾
+	FILE *fp = fopen(".\\record.txt", "a");
+	exam_NULL(fp, 1);
+	fprintf(fp, "%ld %d %d %s %d %ld %ld\n", r->record_ID, r->sale_type, r->conductor_ID, \
+		r->datetime, r->price, r->ticket_ID, r->plan_ID);
+	fclose(fp);
+}
+
+int save_invitation_code(char *obj) {//比较 并 局部修改邀请码  //返回值为比对结果
+	FILE *fp = fopen(".\\invitation.txt", "r");
+	FILE *fpp = fopen(".\\invitation_tem.txt", "w+");
+	exam_NULL(fp, 1); exam_NULL(fpp, 1);
+	char str[15]; int flag = 0;
+	while (fscanf(fp, "%s", str) != EOF) {
+		if (strcmp(str, obj) == 0) { 
+			flag = 1;
+			continue; 
+		}
+		fprintf(fpp, "%s\n", str);
+	}
+	fclose(fp);
+	fclose(fpp);
+	remove(".\\invitation.txt");
+	rename("invitation_tem.txt", "invitation.txt");
+	return flag;
+}
+

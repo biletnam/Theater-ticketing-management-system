@@ -26,12 +26,10 @@ int choice_judge(int i) {//¶ÁÈ¡¼üÅÌÊÂ¼þ          i  // ½çÃæÑ¡Ôñ   ²Î¼ûscreen_cle
 		{
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_UP&& event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ü  
 			{
-				//screen_clear(highlight==1?highlight=3:--highlight);
 				highlight = screen_clear(i, highlight, -1);
 			}
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_DOWN && event.Event.KeyEvent.bKeyDown == (BOOL)true) //°´ÏÂ¡ý 
 			{
-				//screen_clear(highlight == 3 ? highlight = 1:++highlight);
 				highlight = screen_clear(i, highlight, 1);
 			}
 			if (event.Event.KeyEvent.wVirtualKeyCode == VK_ESCAPE && event.Event.KeyEvent.bKeyDown == (BOOL)true ) //°´ÏÂESC  
@@ -79,7 +77,7 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 10); printf("ÑÝ³ö²éÑ¯¼°¹ÜÀí");
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 12); printf("Æ±Îñ²éÑ¯¼°¹ÜÀí");
+		set_position(34, 12); printf("ÏúÊÛÍ³¼ÆÓë²éÑ¯");
 		i == 5?SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 14); printf("ÎÒµÄÕËºÅ¼°ÃÜÂë");
 	}
@@ -132,7 +130,35 @@ int screen_clear(int order,int i,int change) {/*Ö÷½çÃæµÄ¸ßÁÁ¿ØÖÆ  i±íÊ¾µ±Ç°¸ßÁÁÑ
 		set_position(36, 12); printf("É¾³ýÑÝ³ö¼Æ»®");
 		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(36, 14); printf("ä¯ÀÀËùÓÐ¼Æ»®");
-	}else {
+	}
+	else if (order == 13) {
+		i == 0 ? i = 5 : i = i;//¸ßÁÁ¿ØÖÆ
+		i > 5 ? i = 1 : i = i;
+		set_position(36, 4);
+		SetColor(10, 0);
+		printf("ÊÛÆ±ÓëÍ³¼Æ");
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 6); printf("ÑÝ³ö¼ìË÷Óë²éÑ¯");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 8); printf("Æ±Îñ²éÑ¯¼°¹ÜÀí");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 10); printf("ÏúÊÛÍ³¼ÆÓë²éÑ¯");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 12); printf("ÑÝ³ö¼Æ»®ä¯ÀÀÆ÷");
+		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 14); printf("ÎÒµÄÕËºÅ¼°ÃÜÂë");
+	}
+	else if (order == 14) {
+		i == 0 ? i = 3 : i = i;//¸ßÁÁ¿ØÖÆ
+		i > 3 ? i = 1 : i = i;
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("²éÑ¯ÑÝ³öÆ±");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10);printf("ÊÛ³öÑÝ³öÆ±");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("ÍË»¹ÑÝ³öÆ±\n");
+	}
+	else {
 		print_re();
 	}
 	return i;
@@ -201,11 +227,102 @@ int select_seat(Studio *p) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   
 	}
 }
 
+/*Î´Íê³É*/
+int select_seat(Plan *q, int limit) {//ÅÐ±ðÎ»ÖÃ  ¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾Ëù¹ºÆ±Êý  limit ×î´ó¹ºÂòÁ¿
+	char num[15][30] = { 0 }, str[20]; int choice, i, j, flag = 0, cnt = 0, cntt = 0,judge=0;
+	sprintf(str, "%d", q->element.studio_ID); Studio *p = search_studio(str,0);
+	if (p == NULL) { return flag; }
+	Seat *k = p->element.seat_head->next;
+	for (i = 1; i <= p->element.seatx; i++) {
+		for (j = 1; j <= p->element.seaty; j++) {
+			num[i][j] = k->seat_condition; k = k->next;//¿ÉÓÃ×ùÎ» 1 2   Ëð»µ×ùÎ»9   ÎÞ×ùÎ»0
+		}
+	}
+	Ticket *t = q->element.ticket_head->next;
+	for (t; t; t = t->next) {
+		if (t->ticket_status == TICKET_sold)
+			num[t->seatx][t->seaty] == 1?num[t->seatx][t->seaty]=-1:num[t->seatx][t->seaty]=-2;
+		//ÓÐ×ùÎ»ÓÐÆ± 1 2  ÓÐ×ùÎ»ÎÞÆ±-1 -2  ÎÞ×ùÎ» 0  Ëð»µ×ùÎ»9
+	}
+	set_position(0, 0); catch_cursor();
+	i = 1, j = 1;//  i µ±Ç°ÐÐÊý   j  µ±Ç°ÁÐÊý
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO info;
+	GetConsoleScreenBufferInfo(handle, &info);
+	COORD position;
+	position = info.dwCursorPosition;//¾­ÑéÖ¤COORD´æ´¢µÄ×ø±êÎ»ÖÃXÎª×Ö½ÚÊý  YÎªÐÐÊý
+	while ((choice = turn_page(), 1)) {
+		hide_cursor();
+		if (choice == -1 && i != 0) {
+			position.Y--; i--; set_position(position);
+		}
+		else if (choice == -2 && j != 0) {//¡ü -1   ¡û -2   ¡ý 1    ¡ú 2    ESC 0   »Ø³µ3
+			position.X -= 2; j--; set_position(position);
+		}
+		else if (choice == 1 && i != p->element.seatx) {
+			position.Y++; i++; set_position(position);
+		}
+		else if (choice == 2 && j != p->element.seaty) {
+			position.X += 2; j++; set_position(position);
+		}
+		else if (choice == 0) {
+			position.Y = p->element.seatx + 1; position.X = 0;
+			set_position(position);
+			if (enquiry(1)) {//ÊÇ·ñ±£´æÊý¾Ý
+				//ÓÐ×ùÎ»ÓÐÆ± 1 2  ÓÐ×ùÎ»ÎÞÆ±-1 -2  ÎÞ×ùÎ» 0  Ëð»µ×ùÎ»9
+				Ticket *t = q->element.ticket_head->next;
+				for (t; t; t = t->next) {
+					if (t->ticket_status != (ticket_statuses)num[t->seatx][t->seaty]) {//²úÉúÏúÊÛ¼ÇÂ¼
+
+					}
+					switch (num[t->seatx][t->seaty]) {
+					case -2:
+					case -1:t->ticket_status = TICKET_sold; break;
+					case 1:
+					case 2: t->ticket_status = TICKET_available; break;
+					default:print_re(); break;
+					}
+					if (t->ticket_status == TICKET_available)cnt++;
+				}
+				q->element.ticket_head->price = cnt;
+			}
+			return flag;
+		}
+		else if (choice == 3) {//ÓÐ×ùÎ»ÓÐÆ± 1 2  ÓÐ×ùÎ»ÎÞÆ±-1 -2  ÎÞ×ùÎ» 0  Ëð»µ×ùÎ»9
+			if (flag == limit) {
+				set_position(18, 1);
+				printf("±§Ç¸£¬Ò»´Î×î¶à¹ºÂò%dÕÅÆ±\n",limit);
+				set_position(position);
+			}
+			clear_ticket(position, num[i][j]);
+			switch (num[i][j]) {
+			case -2:num[i][j] = 2; flag--; break;
+			case -1:num[i][j] = 1; flag--; break;
+			case 1:num[i][j] = -1; flag++; break;
+			case 2:num[i][j] = -2; flag++; break;
+			default:
+				set_position(18,1);
+				printf("±§Ç¸£¬²»ÄÜÑ¡Ôñ¸ÃÎ»ÖÃ\n");
+				set_position(position); break;
+			}
+		}
+		Sleep(100); catch_cursor();
+	}
+}
+
 inline  void clear_seat(COORD position, char status) {//COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
 	switch (status) {//¿ÕÎ»0   ¿ÉÓÃ1    Ëð»µ9
 	case 0:printf("¡ð"); break;
 	case 1:printf("¡ñ"); break;
 	case 9:printf("  "); break;
+	}
+	set_position(position);
+}
+
+inline  void clear_ticket(COORD position, char status) {//COORD  µ±Ç°Î»ÖÃ   status Æ±×´Ì¬
+	switch (status) {//ÓÐ×ùÎ»ÎÞÆ± 1 2  ÓÐ×ùÎ»ÎÞÆ±-1 -2  ÎÞ×ùÎ» 0  Ëð»µ×ùÎ»9
+	case 1:printf("¡ñ"); break;
+	case 2:printf("¡ï"); break;
 	}
 	set_position(position);
 }
