@@ -3,7 +3,7 @@
 
 void print_re() {//请求bug反馈
 	printf("其实输出这句话是不可能的\n");
-	printf("出现错误请联系开发者qvq  \nQQ740721665或863139668"); rewind(stdin); go_on();
+	printf("出现错误请联系开发者qvq  \nQQ740721665或863139668\n"); rewind(stdin); go_on();
 }
 
 void print_examinput() {//非法输入报错
@@ -46,7 +46,6 @@ void print_ok() {//提示操作成功
 
 void print_instruction(int i) {//显示说明
 	if (i == 1) {
-		hide_cursor();
 		system("cls");
 		set_position(20, 6);
 		printf("操作说明");
@@ -61,11 +60,25 @@ void print_planhead() {//打印演出计划表头
 	printf("    | ID  |         剧目名称       |演出厅编号|总票数|余票数|  演出日期  |开始时间|\n\n");
 }
 
+void print_planhead2(){
+	printf("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+	printf("|====     剧目                 类型  演出日期 开始时间 时长 标签 票价 剩余票数 ===|\n");
+}
+
+void print_programhead() {//打印剧目排行榜表头
+	printf("\n======================================================================================\n");
+	printf("	  剧目名称	     |地区|   上映日期   |   下架日期   |    票房    |上座数量|\n\n");
+}
+
+void print_accounthead() {//打印账号表头
+	printf("\n\t\t|-------------------账号信息---------------------|\n");
+	printf("\t\t ID          用户名         密码          账号类型\n\n");
+}
+
 void 哈哈() {//我去，真有这种特性
 	int 我去=5;
 	printf("%d", 我去);
 }
-
 
 //弃用
 

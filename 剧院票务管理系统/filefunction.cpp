@@ -50,7 +50,7 @@ void import_program() {//µ¼Èë¾çÄ¿ĞÅÏ¢µ½Á´±í
 		tem.program_type = (program_types)type,tem.program_rating=(program_ratings)rating;
 		Program *p = (Program *)malloc(sizeof(Program));
 		exam_NULL(p, 0);
-		p->element = tem;
+		p->element = tem; p->element.contributions = 0;//Æ±·¿ÖÃÁã
 		p->next = list.program_tail->next;
 		p->pre = list.program_tail;
 		list.program_tail->next = p;
@@ -107,6 +107,7 @@ void import_plan_and_ticket() {//µ¼ÈëÑİ³ö¼Æ»®ĞÅÏ¢µ½Á´±í
 tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
 		Plan *p = (Plan *)malloc(sizeof(Plan)); exam_NULL(p, 0);
 		p->element = tem;
+		p->element.contributions = 0;
 		p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(p->element.ticket_head, 0);
 		p->element.ticket_head->pre = p->element.ticket_head->next = NULL;
 		p->element.ticket_tail = p->element.ticket_head;//Æ±µÄÁ´±í³õÊ¼»¯
@@ -116,6 +117,7 @@ tem.date,tem.time,&tem.ticketnum, &tem.button) != EOF) {
 			fscanf(fp, "%ld %d %d %d %d", &k->ticket_ID, &k->seatx, &k->seaty, &k->price, &t);
 			k->plan_ID = p->element.plan_ID;
 			k->ticket_status = (ticket_statuses)t; if (k->ticket_status != TICKET_sold)cntt++;//ÓàÆ±¼ÆÊı
+			else p->element.contributions += k->price;
 			k->next = p->element.ticket_tail->next; k->pre = p->element.ticket_tail;
 			p->element.ticket_tail->next = k; p->element.ticket_tail = k;
 		}
@@ -415,4 +417,3 @@ int save_invitation_code(char *obj) {//±È½Ï ²¢ ¾Ö²¿ĞŞ¸ÄÑûÇëÂë  //·µ»ØÖµÎª±È¶Ô½á¹
 	rename("invitation_tem.txt", "invitation.txt");
 	return flag;
 }
-

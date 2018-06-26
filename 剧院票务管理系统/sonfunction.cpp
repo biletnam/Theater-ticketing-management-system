@@ -14,19 +14,23 @@ int sign_judge() {//登陆判断及获取账户信息   return flag   flag表示
 			break;
 		}
 	}if (p != NULL) {//用户名存在
+		strcpy(PRESENT.username, username);
 		if (strcmp(password, p->element.password) == 0) {//密码正确
 			//密码正确将账户信息写至当前账户信息
-			strcpy(PRESENT.UID, p->element.UID);
-			strcpy(PRESENT.username, username);
+			strcpy(PRESENT.UID, p->element.UID);	
 			strcpy(PRESENT.password, password);
 			PRESENT.user_type = p->element.user_type;
 			flag = PRESENT.user_type;
+			log(1);
 		}
-		else {
+		else {//密码错误
+			log(0);
 			system("cls");
 			set_position(25, 10);
 			SetColor(12, 0);
 			printf("口令不对哟\n");
+			SetColor(7, 0);
+			set_position(25, 12);
 			go_on();
 		}
 	}
@@ -41,6 +45,7 @@ int sign_judge() {//登陆判断及获取账户信息   return flag   flag表示
 }
 
 char *username_get(int judge) {//用户名的获取    judge!=0时进行输入检查 
+	catch_cursor();
 	char *str=(char *)malloc(NAME*5);
 	exam_NULL(str, 0);
 	str[0] = '\0';
@@ -50,10 +55,12 @@ char *username_get(int judge) {//用户名的获取    judge!=0时进行输入�
 		print_examinput();
 		scanf("%s", str);
 	}
+	hide_cursor();
 	return str;
 }
 
 char *password_get(int judge) {//密码输入的获取        judge!=0时进行输入检查
+	catch_cursor();
 	char *password = (char *)malloc(PASSWORD * 4 * sizeof(char));
 	char str[50], c = 0, i = 0;
 	do {
@@ -76,6 +83,7 @@ char *password_get(int judge) {//密码输入的获取        judge!=0时进行�
 		str[i] = '\0';//一次密码获取
 	} while ((strlen(str)<6||strlen(str)>12)&&judge);
 	strcpy(password,str);
+	hide_cursor();
 	return password;
 }
 
@@ -134,6 +142,7 @@ int get_num(int down, int up, int ndown, int nup) {//读取数字    并检查�
 }
 
 char *get_date() {//日期的获得与判断
+	catch_cursor();
 	date_status date = {0,0,0};
 	int flag = 1,y,m,d;
 	do {
@@ -168,10 +177,12 @@ char *get_date() {//日期的获得与判断
 	date.year = y, date.month = m, date.day = d;
 	char  *re=(char *)malloc(sizeof(char)*40);
 	sprintf(re, "%d-%02d-%02d", date.year, date.month, date.day);
+	hide_cursor();
 	return re;
 }
 
 char *get_time() {//时间的获得及判断
+	catch_cursor();
 	time_status time = {0,0};
 	int h, m,flag=1;
 	do {
@@ -187,17 +198,18 @@ char *get_time() {//时间的获得及判断
 	time.hour = h, time.minute = m;
 	char *str = (char *)malloc(sizeof(char) * 22);
 	sprintf(str, "%02d:%02d", time.hour, time.minute);
+	hide_cursor();
 	return str;
 }
 
 data_program get_program_infomation() {//获取剧目主要信息  并进行初始化
-	catch_cursor();
 	data_program tem = { 0 };
 	strcpy(tem.area, "——");
 	strcpy(tem.performer[0], "——");
 	strcpy(tem.performer[1], "——");
 	strcpy(tem.language, "中文");
 	strcpy(tem.label, "——");
+	tem.contributions = 0;
 	tem.program_rating = (program_ratings)1;
 	char *str; int flag = 1, choice;
 	printf("\n1.电影   2.歌剧   3.音乐会\n");
@@ -257,10 +269,10 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初�
 	return tem;
 }
 
-void program_viewer() {//剧目浏览器
-	Program *p1 = list.program_head->next;
+void program_viewer(Program *head) {//剧目浏览器
+	Program *p1 = head->next;
 	Program *p2=NULL;
-	int choice, cnt = 1, pages = (list.program_head->element.cost + 1) / 2;
+	int choice, cnt = 1, pages = (head->element.cost + 1) / 2;
 	print_program(p1, 1); printf("				当前第%d页，共%d页", cnt, pages);
 	if (p1) {
 		p2 = p1->next;
@@ -268,7 +280,7 @@ void program_viewer() {//剧目浏览器
 	}
 	while (choice=turn_page()) {
 		if (choice == 1 || choice == 2) {
-			if(p1!=list.program_tail&&p2!=list.program_tail)
+			if(p1->next&&p2->next)
 			if (p2) {
 				p1 = p2->next;
 				if (p1) {
@@ -284,10 +296,10 @@ void program_viewer() {//剧目浏览器
 			print_program(p1,1); printf("				当前第%d页，共%d页", cnt, pages); print_program(p2,0);
 		}
 		else if (choice == -1 || choice == -2) {
-			if(p1!=list.program_head&&p2!=list.program_head)
-				if (p1&&p1->pre!=list.program_head) {
+			if(p1!=head&&p2!=head)
+				if (p1&&p1->pre!=head) {
 					p2 = p1->pre;
-					if (p2&&p2->pre!=list.program_head) {
+					if (p2&&p2->pre!=head) {
 						p1 = p2->pre; cnt--;
 				}
 			//	else {//不重复输出
@@ -298,7 +310,7 @@ void program_viewer() {//剧目浏览器
 			//	p1 = NULL;
 			//}
 			if (p1&&p2) {
-				if (p1 != list.program_head)print_program(p1, 1); printf("				当前第%d页，共%d页",cnt,pages); if (p2 != list.program_head)print_program(p2, 0);
+				if (p1 != head)print_program(p1, 1); printf("				当前第%d页，共%d页",cnt,pages); if (p2 != head)print_program(p2, 0);
 			}
 			/*else {
 				if (p1 != list.program_head)print_program(p1, 1); if (p2 != list.program_head) print_program(p2, 0);
@@ -357,6 +369,55 @@ void plan_viewer(Plan *head) {//演出计划浏览器
 	} while (choice = turn_page());
 }
 
+void account_viewer(Account *head) {//账号浏览器
+	Account *a = list.account_head->next;
+	int num = (list.account_head->element.contributions + 7) / 8, choice = 1, i, cnt = 0, flagend = 1, flaghead = 1;
+	int re = head->element.contributions % 8;
+	if (a == NULL) { printf("暂无计划\n"); return; }//flagend    flaghead  标识是否达到链表边界
+	do {
+		if (((choice == 1 || choice == 2) && cnt <= num && a->next) || ((choice == -1 || choice == -2) && cnt >= 0 && a->pre) && (flagend || flaghead)) {
+			system("cls");
+			print_accounthead();
+			if ((choice == -1 || choice == -2) && flaghead) {
+				flagend = 1;
+				for (int j = 1; j <= 7 + re; j++)if (a->pre != head)a = a->pre; else break;
+			}
+			for (i = 1; i <= 7; i++) {//(choice == 1 || choice == 2)
+				if (flagend) { flaghead = 1; print_account(a); if (a->next)a = a->next; else flagend = 0; }
+				//else if ((choice == -1 || choice == -2) && flaghead) { flagend = 1; print_plan(p); if (p->pre != head)p = p->pre; else flaghead = 0; }
+				else break;
+			}
+			if (cnt < num && choice > 0) cnt++; else if (cnt > 1 && choice < 0) cnt--;
+			printf("				    当前第%d页，共%d页\n", cnt, num);
+		}
+	} while (choice = turn_page());
+}
+
+void log_viewer() {//登录记录
+	FILE *fp = fopen(".\\sign_log.txt", "r");
+	exam_NULL(fp, 1);
+	int flag = 0;
+	char date[12], time[12], name[10], con[5];
+	while (fscanf(fp, "%s %s %s %s", date, time, name, con) != EOF) {
+		if (flag == 0) {
+			printf("\n\n\t日期及时间\t\t用户名\t\t状态\n\n");
+			flag = 1;
+		}
+		printf("%14s	  %-6s\t%-8s\t%-6s\n", date, time, name, con);
+	}
+	if (flag == 0) {
+		printf("暂无记录\n");
+	}
+	fclose(fp);
+	if (flag) {
+		printf("是否清空登录信息?(0/1):");
+		if (get_num(0, 1, 1, 1)) {
+			FILE *fp = fopen(".\\sign_log.txt", "w");
+			fclose(fp);
+		}
+	}
+}
+
 void seat_changer(Studio *p) {//可视化座位修改器
 	system("cls");
 	if(p==NULL){ return;}
@@ -381,11 +442,29 @@ void seat_changer(Studio *p) {//可视化座位修改器
 	}
 }
 
-void ticket_changer(Plan *p) {//售票浏览器
+void ticket_changer(Plan *p) {//售票浏览器     作废
 	int choice;
 	/*while (choice == turn_page()) {
 		if()
 	}*/
+}
+
+void log(int i) {//i      1 ：成功登陆     0：未成功登陆
+	timer();
+	char con[15];
+	if (i) {
+		strcpy(con, "成功");
+	}
+	else {
+		strcpy(con, "失败");
+	}
+	FILE *fp = fopen(".\\sign_log.txt", "a+");
+	if (fp == NULL) {
+		FILE *fp = fopen(".\\sign_log.txt", "w");
+	}
+	fprintf(fp, "%d-%d-%d	%02d:%02d	%s	%s\n", now->tm_year + 1900, \
+		now->tm_mon+1, now->tm_mday, now->tm_hour, now->tm_min, PRESENT.username, con);
+	fclose(fp);
 }
 
 void password_change(char *obj, int i) {//  i      1 :  加密     2:解密
@@ -404,14 +483,50 @@ void password_change(char *obj, int i) {//  i      1 :  加密     2:解密
 	}
 }
 
-void account_appeal() {//账号申诉过程
-
-}
-
 void timer() {//读取系统时间
 	time_t t;
 	time(&t);
 	now = localtime(&t);
+}
+
+////////////////////////////////////////////统计
+
+void account_count(Account *a) {//统计售票员销售额
+	a->element.contributions = 0;
+	Record *r = list.record_head->next; long ID = atol(a->element.UID);
+	for (r; r; r = r->next) {
+		if (r->conductor_ID == ID) {
+			a->element.contributions += r->price;
+		}
+	}
+}
+
+void account_count(Account *a, char *begin, char *end) {//按日期区间统计销售额
+	Record *r = list.record_head->next; long ID = atol(a->element.UID);
+	a->element.contributions = 0;
+	for (r; r; r = r->next) {
+		if (r->conductor_ID == ID&&strcmp(begin, r->datetime)<=0&& strcmp(r->datetime,end) <= 0) {
+			a->element.contributions += r->price;
+		}
+	}
+}
+
+void program_count(Program *pro) {//统计票房   按售出的票
+	Plan *p = list.plan_head->next;
+	for (p; p; p = p->next) {
+		if (strcmp(p->element.program_name, pro->element.program_name) == 0) {
+			pro->element.contributions += p->element.contributions;
+		}
+	}
+}
+
+void count_program() {//统计所有剧目票房
+	Program *p= list.program_head->next;
+	if(p)
+	for (p; p; p = p->next) {
+		p->element.contributions = 0;
+		program_count(p);
+	}
 }
 
 //////////////////////////////////////赋闲函数

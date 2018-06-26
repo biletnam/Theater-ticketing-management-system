@@ -188,6 +188,7 @@
     <Text Include="plan.txt" />
     <Text Include="program.txt" />
     <Text Include="record.txt" />
+    <Text Include="sign_log.txt" />
     <Text Include="studio.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

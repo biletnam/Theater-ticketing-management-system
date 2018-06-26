@@ -142,9 +142,18 @@ void print_program(Program *p , int i) {//Êä³öÄ³¸ö¾çÄ¿ÐÅÏ¢    i  ¿ØÖÆÊÇ·ñÇåÆÁ
 		printf("	||								||\n");
 		printf("	||¾çÄ¿±êÇ©:%-s                 µØÇø:%-8s	Æ±¼Û:%-5d	||\n", p->element.label, p->element.area, p->element.price);
 		printf("	||								||\n");
-		printf("	||·ÅÓ³µÈ¼¶:%-8s		ÓïÑÔ:%-10s			||\n", rating, p->element.language);
+		PRESENT.user_type == USER_customer?printf("	||·ÅÓ³µÈ¼¶:%-8s		ÓïÑÔ:%-10s			||\n", rating, p->element.language):\
+			printf("	||·ÅÓ³µÈ¼¶:%-8s		ÓïÑÔ:%-10s	ID%-8s	||\n", rating, p->element.language,p->element.program_ID);
 		printf("	==================================================================\n");
 		rewind(stdin);
+	}
+}
+
+void print_program_cnt(Program *p) {//´òÓ¡Æ±·¿
+	if (p) {
+		int cnt = p->element.contributions / p->element.price;
+		printf("%-30s%-4s%14s%14s%12d%12d\n\n", p->element.program_name, p->element.area, \
+			p->element.start_date, p->element.end_date, p->element.contributions, cnt);
 	}
 }
 
@@ -188,6 +197,21 @@ void modify_program(Program *p) {//ÐÞ¸ÄµçÓ°ÐÅÏ¢
 		if (get_num(0, 1, 1, 1)) {
 			modify_program(p);
 		}
+	}
+}
+
+void sort_program() {//°´Æ±·¿ÅÅÐò
+	Program *p = list.program_head->next; int flag = 0, i, j; data_program t;
+	for (i = 1; i < list.program_head->element.cost; i++) {
+		flag = 0;
+		for (p = list.program_head->next; p->next; p=p->next) {
+			if (p->element.contributions > p->next->element.contributions) {
+				t = p->element;
+				p->element = p->next->element;
+				p->next->element = t;
+				flag = 1;
+			}
+		}if (flag == 0)break;//Ã°ÅÝÅÅÐòÀ±¼¦ÓÅ»¯
 	}
 }
 
@@ -482,6 +506,7 @@ void add_plan() {//ÐÂÔöÑÝ³ö¼Æ»®
 	p->element.ticket_head = (Ticket *)malloc(sizeof(Ticket)); exam_NULL(p->element.ticket_head, 0);
 	p->element.ticket_head->next = p->element.ticket_head->pre = NULL;
 	p->element.ticket_tail = p->element.ticket_head;
+	p->element.contributions = 0;
 	char *str = NULL; Program *k = NULL; Studio *s = NULL; int flag = 1;
 	p->element.plan_ID = get_newkey(PLAN_KEY);
 	printf("\nÒÑÎªÑÝ³ö¼Æ»®·ÖÅäIDÎª %ld\n", p->element.plan_ID);
@@ -559,7 +584,7 @@ Plan *search_plan(long obj, int judge, Plan *head) {//°´plan_ID¼ìË÷ÑÝ³ö¼Æ»®  jud
 	}
 	if (flag)return p;
 	if (judge && flag == 0) {
-		printf("Ã»ÓÐÕâÑùµÄÑÝ³ö¼Æ»®Ó´\n"); 
+		head == list.plan_head ?printf("¸ÃID²»ÊôÓÚÓÐÐ§ÑÝ³ö¼Æ»®Ó´\n"):printf("¸ÃID²»ÊôÓÚ¹ýÆÚÑÝ³ö¼Æ»®Ó´\n"); 
 		int flagnum = 0; char tem[10],objstr[10];
 		sprintf(objstr, "%ld", obj);
 		for (p = head->next; p; p = p->next) {
@@ -710,54 +735,57 @@ void delete_ticket(Plan *p) {//É¾³ýÑÝ³ö¼Æ»®ÏÂµÄÆ±
 	}
 }
 
-void print_ticket(Plan *p) {//´òÓ¡Æ±µÄÇé¿ö   ¡ð/¡îÎ´ÊÛ  ¡ñ/¡ïÒÑÊÛ³ö  x×ùÎ»Ëð»µ
-	char seat[100][100] = { 0 }; char ID[12] ;
-	sprintf(ID, "%d", p->element.studio_ID);
-	Ticket *t = p->element.ticket_head->next;
-	Studio *k = search_studio(ID, 0);
-	Seat *s = k->element.seat_head->next;
-	for (s; s; s=s->next) {
-		if (s->seat_condition == SEAT_available || s->seat_condition == SEAT_private)
-			seat[s->seatx][s->seaty] = s->seat_condition;
-		else if(s->seat_condition == 9)//Ëð»µ
-			seat[s->seatx][s->seaty] = 9;
-	}//¿ÉÓÃ×ùÎ»1   ÑÅ×ù2  ÎÞ×ùÎ»0   Ëð»µ9
-	for (t; t; t = t->next) {
-		if (t->ticket_status == TICKET_sold)
-			seat[t->seatx][t->seaty] ==1? seat[t->seatx][t->seaty] = -1: seat[t->seatx][t->seaty] = -2;
+void print_ticket(Plan *p)//´òÓ¡Æ±µÄÇé¿ö   ¡ð/¡îÎ´ÊÛ  ¡ñ/¡ïÒÑÊÛ³ö  x×ùÎ»Ëð»µ
+{
+	if (p) {
+		char seat[100][100] = { 0 }; char ID[12];
+		sprintf(ID, "%d", p->element.studio_ID);
+		Ticket *t = p->element.ticket_head->next;
+		Studio *k = search_studio(ID, 0);
+		Seat *s = k->element.seat_head->next;
+		for (s; s; s = s->next) {
+			if (s->seat_condition == SEAT_available || s->seat_condition == SEAT_private)
+				seat[s->seatx][s->seaty] = s->seat_condition;
+			else if (s->seat_condition == 9)//Ëð»µ
+				seat[s->seatx][s->seaty] = 9;
+		}//¿ÉÓÃ×ùÎ»1   ÑÅ×ù2  ÎÞ×ùÎ»0   Ëð»µ9
+		for (t; t; t = t->next) {
+			if (t->ticket_status == TICKET_sold)
+				seat[t->seatx][t->seaty] == 1 ? seat[t->seatx][t->seaty] = -1 : seat[t->seatx][t->seaty] = -2;
 			//ÓÐ×ùÎ»ÓÐÆ± Îª1¡¢2  ÓÐ×ùÎ»ÎÞÆ± Îª-1    ÎÞ×ùÎ»0   Ëð»µ×ùÎ»9
-	}
-	system("cls");
-	printf("\n\n		=============================================================\n");
-	printf("		   ÑÝ³ö¼Æ»®ID:%-12ldÑÝ³öÌü:%-15sÊ£ÓàÆ±Êý%d    \n		   ÑÝ³öÈÕÆÚ:%-14s¿ªÊ¼Ê±¼ä:%-14s\n\n",p->element.plan_ID,k->element.studio_name\
-		,p->element.ticket_head->price,p->element.date,p->element.time);
-	printf("			¡ð/¡î¿ÉÑ¡  ¡ñ/¡ïÒÑÊÛ  ¡ÁËð»µ×ùÎ»  ×ùÎ» %d x %d\n\n", k->element.seatx, k->element.seaty);
-	printf("			¨q¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¨r\n");
-	printf("					¡üÓ«Ä»\n\n");
-	for (int i = 1; i <= k->element.seatx; i++) {
-		if (k->element.seaty>30)
-			printf("		");
-		else if (k->element.seaty>21)
-			printf("		   ");
-		else if (k->element.seaty>15)
-			printf("			");
-		else if (k->element.seaty <= 15)
-			printf("			    ");
-		for (int j = 1; j <= k->element.seaty; j++) {
-			switch (seat[i][j]) {
-			case -2:printf("¡ï"); break;
-			case -1:printf("¡ñ"); break;
-			case 0:printf("  "); break;
-			case 1:printf("¡ð"); break;
-			case 2:printf("¡î"); break;
-			case 9:printf("¡Á"); break;
-			}
 		}
-		printf("\n");
+		system("cls");
+		printf("\n\n		=============================================================\n");
+		printf("		   ÑÝ³ö¼Æ»®ID:%-12ldÑÝ³öÌü:%-15sÊ£ÓàÆ±Êý%d    \n		   ÑÝ³öÈÕÆÚ:%-14s¿ªÊ¼Ê±¼ä:%-14s\n\n", p->element.plan_ID, k->element.studio_name\
+			, p->element.ticket_head->price, p->element.date, p->element.time);
+		printf("			¡ð/¡î¿ÉÑ¡  ¡ñ/¡ïÒÑÊÛ  ¡ÁËð»µ×ùÎ»  ×ùÎ» %d x %d\n\n", k->element.seatx, k->element.seaty);
+		printf("			¨q¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¨r\n");
+		printf("					¡üÓ«Ä»\n\n");
+		for (int i = 1; i <= k->element.seatx; i++) {
+			if (k->element.seaty > 30)
+				printf("		");
+			else if (k->element.seaty > 21)
+				printf("		   ");
+			else if (k->element.seaty > 15)
+				printf("			");
+			else if (k->element.seaty <= 15)
+				printf("			    ");
+			for (int j = 1; j <= k->element.seaty; j++) {
+				switch (seat[i][j]) {
+				case -2:printf("¡ï"); break;
+				case -1:printf("¡ñ"); break;
+				case 0:printf("  "); break;
+				case 1:printf("¡ð"); break;
+				case 2:printf("¡î"); break;
+				case 9:printf("¡Á"); break;
+				}
+			}
+			printf("\n");
+		}
 	}
 }
 
-void sale_ticket(Plan *p, int judge) {//ÊÛÆ±   //½áÊøºóË¢ÐÂkey  judge  ÓÃÓÚ²»Í¬µÄ¶Ë 0ÊÛÆ±Ô± 1¹Ë¿Í
+void sale_ticket(Plan *p) {//ÊÛÆ±   //½áÊøºóË¢ÐÂkey
 	system("cls"); int flag = 0;
 	char ID[15]; sprintf(ID, "%d", p->element.studio_ID);
 	Studio *s = search_studio(ID, 0); Ticket *t = p->element.ticket_head->next; Account *a = search_account(PRESENT.UID, 0);
@@ -774,37 +802,39 @@ void sale_ticket(Plan *p, int judge) {//ÊÛÆ±   //½áÊøºóË¢ÐÂkey  judge  ÓÃÓÚ²»Í¬µ
 	}
 	//printf("%d  %d,%d %d\n",x,y, t->seatx, t->seaty);
 	if(t){
-		judge == 1 ? printf("ÊÇ·ñÈ·ÈÏ¹ºÂò(0/1)?:") : printf("ÊÇ·ñÈ·ÈÏÊÛ³ö(0/1)?:");
+		PRESENT.user_type == USER_conductor ? printf("ÊÇ·ñÈ·ÈÏÊÛ³ö(0/1)?:"): printf("ÊÇ·ñÈ·ÈÏ¹ºÂò(0/1)?:") ;
+		//·Ö½ÇÉ«´¦Àí
 	if (get_num(0, 1, 1, 1)) {
 		if (t->ticket_status == TICKET_available) {
 			t->ticket_status = TICKET_sold;
-			save_record(add_record(p, t, search_account(PRESENT.UID, 0), SALE_sold));
+			save_record(add_record(p, t, atol(PRESENT.UID), SALE_sold));
 			rewrite_ticket(p, t);
 			draw_ticket(p, t);
 		}
-	}else {
-		judge == 1 ? printf("¹ºÂòÒÑÈ¡Ïû\n"): printf("½»Ò×ÒÑ¹Ø±Õ\n");
+			else {
+				printf("ÇëÑ¡ÔñÓÐÐ§µÄÎ»ÖÃ£¡\n");
+		}
+	}
+	else {
+		PRESENT.user_type == USER_conductor ? printf("¹ºÂòÒÑÈ¡Ïû\n"): printf("½»Ò×ÒÑ¹Ø±Õ\n");
 	}
 		/*else if (t->ticket_status == TICKET_sold) {
 			t->ticket_status = TICKET_available;
 			save_record(add_record(p, t, search_account(PRESENT.UID, 0), SALE_return));
 		}*/
 	}
-	else {
-		printf("ÇëÑ¡ÔñÓÐÐ§µÄÎ»ÖÃ£¡\n");
-	}
 	printf("ÊÇ·ñ¼ÌÐø¹ºÆ±(0/1)?:");
 	if (get_num(0, 1, 1, 1)) {
-		sale_ticket(p, 0);
+		sale_ticket(p);
 	}
 }
 
-void return_ticket(Ticket *t, int judge) {//ÍËÆ±    ²¢²úÉúÏúÊÛ¼ÇÂ¼ judge¿ØÖÆ¶Ë¿Ú  0ÊÛÆ±Ô± 1¹Ë¿Í
+void return_ticket(Ticket *t) {//ÍËÆ±    ²¢²úÉúÏúÊÛ¼ÇÂ¼  //ÍËÆ±Ê±¼ÇÂ¼ÊÛÆ±ÕßµÄID
 	if (t) {
-		if (judge) {//ÅÐ¶ÏÆ±µÄ³ÖÓÐÕß
-			Record *r = search_record(t->ticket_ID);
+		if (PRESENT.user_type == USER_customer) {//ÅÐ¶ÏÆ±µÄ³ÖÓÐÕß
+			Record *r = search_record(t->ticket_ID);//µ¹Ðò²éÕÒ
 			long owner = r->conductor_ID;
-			if (atol(PRESENT.UID) != owner || r->sale_type != SALE_sold) {
+			if (atol(PRESENT.UID) != owner || r->sale_type != SALE_sold) {//·Ö½ÇÉ«´¦Àí
 				printf("ÄãÉÐÎ´³ÖÓÐÕâÕÅÆ±Å¶\n"); return;
 			}
 		}
@@ -817,12 +847,20 @@ void return_ticket(Ticket *t, int judge) {//ÍËÆ±    ²¢²úÉúÏúÊÛ¼ÇÂ¼ judge¿ØÖÆ¶Ë¿Ú
 				timer(); char date[25];
 				sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
 				if (strcmp(date, p->element.date) < 0) {//¿ÉÍË
+					long objID = atol(PRESENT.UID);
+					Record *r = search_record(t->ticket_ID); Account *a = NULL;//ÍËÆ±Ê±¼ÇÂ¼ÊÛ³ö´ËÆ±ÕßµÄID
+					t->ticket_status = TICKET_available;
 					rewrite_ticket(p, t);
-					save_record(add_record(p, t, search_account(PRESENT.UID, 0), SALE_return));
+					if ((r->conductor_ID) != atol(PRESENT.UID)) { //Æ±ÎªËûÈËÂô³ö
+						char ID[10]; sprintf(ID, "%ld", r->conductor_ID);
+						a = search_account(ID,0); 
+						objID = atol(a->element.UID);//¼ÇÂ¼ËûÈËUID
+					}
+					save_record(add_record(p, t, objID, SALE_return));
 					print_ok();
 				}
 				else {
-					if (judge)printf("±§Ç¸£¬");
+					if (PRESENT.user_type == USER_customer)printf("±§Ç¸£¬");//·Ö½ÇÉ«´¦Àí
 					printf("ÍËÆ±½ØÖ¹Ê±¼äÔÚÑÝ³öÇ°Ò»ÈÕ\n");
 				}
 			}
@@ -857,39 +895,50 @@ void draw_ticket(Plan *p,Ticket *t) {//»­Ò»ÕÅÆ±
 		printf("	=============================================================\n\n");
 	}
 	else {
-		printf("Ã»ÓÐÕâÕÅÆ±£¬»òÕßÆ±ÒÑ¾­¹ýÆÚ\n");
+		PRESENT.user_type == USER_conductor ? printf("Ã»ÓÐÕâÕÅÆ±£¬»òÕßÆ±ÒÑ¾­¹ýÆÚ\n") : printf("Ã»ÓÐÕâÕÅÆ±Ó´\n");
 	}
 }
 
-void draw_ticket(Ticket *t, int judge) {//»­Ò»ÕÅÆ±//  0 ÊÛÆ±Ô± 1¾çÔº¾­Àí
-	Plan *p = search_plan(t->plan_ID, 0, list.plan_head);
-	if(judge && p==NULL)p= search_plan(t->plan_ID, 0, list.plan_tem_head);
-	draw_ticket(p, t);
+void draw_ticket(Ticket *t) {//»­Ò»ÕÅÆ±
+	if (t) {
+		Plan *p = search_plan(t->plan_ID, 0, list.plan_head);
+		if (p == NULL)p = search_plan(t->plan_ID, 0, list.plan_tem_head);
+		//ÊÛÆ±Ô±¿´²»µ½¹ýÆÚÆ±
+		draw_ticket(p, t);
+	}
+	else {
+		PRESENT.user_type == USER_conductor ? printf("Ã»ÓÐÕâÕÅÆ±£¬»òÕßÆ±ÒÑ¾­¹ýÆÚ\n") : printf("Ã»ÓÐÕâÕÅÆ±Ó´\n");
+	}
 }
 
-Ticket *search_ticket(long ID ,Plan *head) {//¸ù¾ÝID²éÕÒÆ±  head ²éÕÒ·¶Î§ judge¿ØÖÆÏàËÆ·´À¡
-	Plan *p = head->next; int flag  = 0;
-	while (p->element.ticket_tail->ticket_ID < ID)p = p->next;//¶¨Î»µ½ÑÝ³ö¼Æ»®
+Ticket *search_ticket(long ID ,Plan *head) {//¸ù¾ÝID²éÕÒÆ±  head ²éÕÒ·¶Î§
+	Plan *p = head->next; int flag  = 0;// head   //ÊÛÆ±Ô±¿´²»µ½¹ýÆÚÆ±
+	for (p; p; p = p->next) {//¶¨Î»µ½ÑÝ³ö¼Æ»®
+		if (p->element.ticket_tail->ticket_ID >= ID&&p->element.ticket_head->next->ticket_ID<=ID)
+			break;
+	}
+	if (p == NULL) return NULL;
 	Ticket *t = p->element.ticket_head->next;
 	for (t; t; t = t->next) {
-		if (t->ticket_ID == ID)
+		if (t->ticket_ID == ID) {
 			flag = 1; break;
+		}
 	}
 	if (flag)
 		return t;
-	else if (flag == 0)
+	else
 		return NULL;
 }
 
 /////////////////////////////////////////record
 
-Record  *add_record(Plan *p, Ticket *t,Account *a, sale_types type) {//²úÉúÒ»ÌõÏúÊÛ¼ÇÂ¼¼Óµ½¼ÇÂ¼Á´±íÎ²  ¸üÐÂÖ÷¼ü²¢Ë¢ÐÂÒµ¼¨
+Record  *add_record(Plan *p, Ticket *t,long UID, sale_types type) {//²úÉúÒ»ÌõÏúÊÛ¼ÇÂ¼¼Óµ½¼ÇÂ¼Á´±íÎ²  ¸üÐÂÖ÷¼ü²¢Ë¢ÐÂÒµ¼¨
 	timer();
 	Record *r = (Record *)malloc(sizeof(Record)); exam_NULL(r, 0);
-	r->conductor_ID = atol(PRESENT.UID);
+	r->conductor_ID = UID;
 	r->plan_ID = p->element.plan_ID; r->record_ID = get_newkey(RECORD_KEY); save_key();
 	sprintf(r->datetime, "%d-%02d-%02d-%02d:%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min);
-	r->ticket_ID = t->ticket_ID; r->sale_type = type; r->price = t->price;
+	r->ticket_ID = t->ticket_ID; r->sale_type = type; type == SALE_return ? r->price = t->price *-1 : r->price = t->price;
 	//r->next = a->element.record_tail->next; r->pre = a->element.record_tail;
 	//a->element.record_tail->next = r; a->element.record_tail = r;
 	//if (type == SALE_sold)a->element.contributions += t->price;ÎÞºÏÊÊÒâÒå
@@ -899,9 +948,9 @@ Record  *add_record(Plan *p, Ticket *t,Account *a, sale_types type) {//²úÉúÒ»ÌõÏ
 }
 
 Record *search_record(long obj) {//¸ù¾ÝTicket_IDµ¹Ðò²éÕÒÏúÊÛ¼ÇÂ¼
-	Record *r = list.record_tail; int flag;
+	Record *r = list.record_tail; int flag = 0;
 	for (r; r!=list.record_head; r = r->pre) {
-		if (r->record_ID == obj) {
+		if (r->ticket_ID == obj) {
 			flag = 1; break;
 		}
 	}
@@ -911,7 +960,7 @@ Record *search_record(long obj) {//¸ù¾ÝTicket_IDµ¹Ðò²éÕÒÏúÊÛ¼ÇÂ¼
 		return NULL;
 }
 
-///////////////////////////////////////account
+/////////////////////////////////////////account
 
 void add_account(int choice){
 	int flag = 0, tag = 0;
@@ -935,12 +984,12 @@ void add_account(int choice){
 
 	free(str);
 	do {
-		printf("\nÇëÊäÈëÐèÒªÌí¼ÓµÄÃÜÂë: \n");
+		printf("ÇëÊäÈëÐèÒªÌí¼ÓµÄÃÜÂë: \n");
 		str = password_get(1);
 		printf("\nÇëÈ·ÈÏÃÜÂë£º\n");
 		str2 = password_get(1);
 		if (!strcmp(str, str2)) {
-			printf("ÃÜÂëÉèÖÃ³É¹¦£¡\n");
+			printf("\nÃÜÂëÉèÖÃ³É¹¦£¡\n");
 			strcpy(p->element.password, str);
 		}
 		else {
@@ -955,7 +1004,6 @@ void add_account(int choice){
 	//p->element.record_head->pre = p->element.record_head->next = NULL;//´ÎÁ´±í³õÊ¼»¯
 	//p->element.record_tail = p->element.record_head;
 	if (enquiry(1)) {
-		printf("¾ßÌåÐÅÏ¢ÒÑÖÃÎªÄ¬ÈÏÖµ\nÈçÓÐÐèÒªÇë¼ÇµÃÐÞ¸Ä\n");
 		p->next = list.account_tail->next;
 		p->pre = list.account_tail;
 		list.account_tail->next = p;
@@ -972,7 +1020,6 @@ void add_account(int choice){
 }
 
 void modify_account(Account *p){
-	catch_cursor();
 	int flag = 0, tag = 0, count = 1, count1 = 1, flagnum = 1;
 	char *str = NULL, *str2 = NULL;
 	if (p) {
@@ -1096,9 +1143,7 @@ void  delete_account(Account *p){//É¾³ýÕËºÅÐÅÏ¢
 
 void print_account(Account *p){//´òÓ¡ÕË»§ÐÅÏ¢
 	if (p) {
-		printf("\t\t|-------------------ÕËºÅÐÅÏ¢-----------------|\n");
-		printf("\t\t ID          ÓÃ»§Ãû         ÃÜÂë      ÕËºÅÀàÐÍ\n");
-		printf("\t\t %s      %s       %s      ", p->element.UID, p->element.username, p->element.password);
+		printf("\t\t%-12s%-15s%-14s", p->element.UID, p->element.username, p->element.password);
 		switch (p->element.user_type) {
 		case 1: printf("ÏµÍ³¹ÜÀíÔ±\n"); break;
 		case 2: printf("¾çÔº¾­Àí\n"); break;
@@ -1106,8 +1151,188 @@ void print_account(Account *p){//´òÓ¡ÕË»§ÐÅÏ¢
 		case 4: printf("¹Ë¿Í\n"); break;
 		case 5: printf("¶³½á×´Ì¬\n"); break;
 		}
+		printf("\n");
 	}
 	/*else {
 		printf("Ã»ÓÐÕâÑùµÄÕËºÅÅ¶\n");
 	}*/
+}
+
+/////////////////////////////////////////////¹Ë¿Í¶Ë
+
+void search_plan_name(char *obj, int judge, Plan *head, int choose)//¸ù¾Ý1¾çÄ¿Ãû»ò2ÑÝ³öÈÕÆÚ²éÕÒÑÝ³ö¼Æ»®²¢´òÓ¡ÐÅÏ¢
+{
+	Plan *p = head->next;
+	char type[26];
+	int flagnum2 = 0;
+	Program *q = list.program_head->next;
+	int flag = 0;
+	if (choose == 1) {
+		for (p; p; p = p->next) {
+			//flag = 0;
+			if (!strcmp(p->element.program_name, obj)) {
+				Program *t = search_program3(p->element.program_name, 1, 0);
+				if (flagnum2 == 0) {
+					print_planhead2();
+					switch (t->element.program_type) {
+					case 1:strcpy(type, "µçÓ°");  break;
+					case 2:strcpy(type, "¸è¾ç");  break;
+					case 3:strcpy(type, "ÒôÀÖ»á"); break;
+					}
+				}
+				if (t) {
+					printf("%-30s %s %s %s   %d  %s  %d   %d\n", p->element.program_name, type, p->element.date, p->element.time, t->element.duration, t->element.label, t->element.price, p->element.ticketnum);
+				}
+				flagnum2++;
+			}
+		}
+	}
+	else {
+		flagnum2 = 0;
+		for (p; p; p = p->next) {
+			if (!strcmp(p->element.date, obj)) {
+				Program *t = search_program3(p->element.program_name, 1, 0);
+				if (flagnum2 == 0) {
+					print_planhead2();
+					switch (t->element.program_type) {
+					case 1:strcpy(type, "µçÓ°");  break;
+					case 2:strcpy(type, "¸è¾ç");  break;
+					case 3:strcpy(type, "ÒôÀÖ»á"); break;
+					}
+				}
+				if (t) {
+					printf("%-30s  %s  %s  %s   %d  %s  %d  %d\n", p->element.program_name, type, p->element.date, p->element.time, t->element.duration, t->element.label, t->element.price, p->element.ticketnum);
+				}
+				flagnum2++;
+			}
+		}
+	}
+	if (judge && flagnum2 == 0) {
+		printf("Ã»ÓÐÕâÑùµÄÑÝ³öÓ´\n");
+		int flagnum = 0;
+		//printf("%ld", obj);
+		for (p = head->next; p; p = p->next) {
+			//int flagnum = 0; char tem[10], objstr[10];
+			//printf("%s\n", p->element.program_name);
+			if (strstr(p->element.program_name, obj) != NULL || strstr(p->element.date, obj) != NULL) {
+				if (flagnum == 0) { printf("àÅ  "); Sleep(500); printf("ÄãÒ²ÐíÒªÕÒµÄÊÇ\n"); Sleep(1000); flagnum = 1; }
+				printf("%s\n", p->element.program_name);
+			}
+		}if (flagnum) {
+			printf("ÇëÈ·ÈÏºóÖØÐÂ²éÕÒ\n"); rewind(stdin);
+		}
+	}
+}
+
+Program *search_program3(char *obj, int choose, int judge) {//°´±êÇ©»ò¾çÄ¿²éÕÒ¾çÄ¿  judge ¿ØÖÆÊÇ·ñ½øÐÐÏàËÆ·´À¡
+	int flag = 0;
+	Program *p = list.program_head->next;
+	if (choose == 1) {
+		for (p; p; p = p->next) {
+			if (strcmp(p->element.label, obj) == 0 || !strcmp(p->element.program_name, obj)) {
+				flag = 1;//ÕÒµ½
+				break;
+			}
+		}
+	}
+	if (flag)
+		return p;
+	if (judge&&flag == 0) {
+		printf("Ã»ÓÐÕâ¸ö¾çÄ¿Å¶\n");
+		for (p = list.program_head->next; p; p = p->next) {
+			if (strstr(p->element.label, obj) != NULL || strstr(p->element.program_name, obj) != NULL) {
+				if (flag == 0) {
+					Sleep(500); printf("àÅ  "); printf("Ò²ÐíÄãÏëÕÒµÄÊÇ£º\n"); Sleep(1000);
+					flag = 1;
+				}
+				printf("%s  %s\n", p->element.label, p->element.program_name);
+			}
+		}
+		if (flag == 1)printf("ÇëÈ·ÈÏºóÖØÐÂ²éÕÒ\n");
+	}return NULL;
+}
+
+Plan *search_plan3(char *obj, int judge, Plan *head) {//°´¾çÄ¿²éÕÒÑÝ³ö¼Æ»® judge ¿ØÖÆÊÇ·ñ½øÐÐÏàËÆ·´À¡
+	int flag = 0;
+	Plan *p = head->next;
+	for (p; p; p = p->next) {
+		if (strcmp(p->element.program_name, obj) == 0) {
+			flag = 1;//ÕÒµ½
+			break;
+		}
+	}
+	if (flag)
+		return p;
+	if (judge&&flag == 0) {
+		printf("Ã»ÓÐÕâ¸ö¾çÄ¿Å¶\n");
+		for (p = head->next; p; p = p->next) {
+			if (strstr(p->element.program_name, obj) != NULL) {
+				if (flag == 0) {
+					Sleep(500); printf("àÅ  "); printf("Ò²ÐíÄãÏëÕÒµÄÊÇ£º\n"); Sleep(1000);
+					flag = 1;
+				}
+				printf("%s\n", p->element.program_name);
+			}
+		}
+		if (flag == 1)printf("ÇëÈ·ÈÏºóÖØÐÂ²éÕÒ\n");
+	}return NULL;
+}
+
+void search_pragram_type(char *obj, int judge){//°´¾çÄ¿±êÇ©²éÕÒ´òÓ¡
+	Program *p = list.program_head->next;
+	char type[26];
+	int flagnum2 = 0;
+	for (p; p; p = p->next) {
+		//flag = 0;
+		if (!strcmp(p->element.label, obj)) {
+			Plan *t = search_plan3(p->element.program_name, 0, list.plan_head);
+			if (flagnum2 == 0) {
+				print_planhead2();
+				switch (p->element.program_type) {
+				case 1:strcpy(type, "µçÓ°");  break;
+				case 2:strcpy(type, "¸è¾ç");  break;
+				case 3:strcpy(type, "ÒôÀÖ»á"); break;
+				}
+				/*if (t) {
+				printf("%s %s %s %s %d %s %d %d\n", p->element.program_name, type, p->element.date, p->element.time, t->element.duration, t->element.label, t->element.price, p->element.ticketnum);
+				}*/
+			}
+			if (t) {
+				printf("%-29s%6s %s %s   %d  %s  %d   %d\n", p->element.program_name, type, t->element.date, t->element.time, p->element.duration, p->element.label, p->element.price, t->element.ticketnum);
+			}
+			flagnum2++;
+		}
+	}
+	if (judge && flagnum2 == 0) {
+		printf("Ã»ÓÐÕâÑùµÄÑÝ³öÓ´\n");
+		int flagnum = 0;
+		//printf("%ld", obj);
+		for (p = list.program_head->next; p; p = p->next) {
+			//printf("%s\n", p->element.program_name);
+			if (strstr(p->element.label, obj) != NULL) {
+				if (flagnum == 0) { printf("àÅ  "); Sleep(500); printf("ÄãÒ²ÐíÒªÕÒµÄÊÇ\n"); Sleep(1000); flagnum = 1; }
+				printf("%s\n", p->element.label);
+			}
+		}if (flagnum) {
+			printf("ÇëÈ·ÈÏºóÖØÐÂ²éÕÒ\n"); rewind(stdin);
+		}
+	}
+}
+
+void advice(){
+	system("cls");
+	int count = 0;
+	char date[15];
+	sprintf(date, "%d-%02d-%02d", now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+	Program *p = list.program_head->next;
+	for (p; p; p = p->next) {
+		if (strcmp(p->element.start_date, date) <= 0 && strcmp(p->element.end_date, date) >= 0) {
+			count++;
+			print_program(p, 0);
+			if (count == 2)break;
+		}
+	}
+	if (count == 0) {
+		printf("±§Ç¸£¬×î½üÃ»ÓÐÓ°Æ¬ÉÏÓ³£¡\n");
+	}
 }

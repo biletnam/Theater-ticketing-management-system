@@ -54,7 +54,6 @@ void show_bye() {
 }
 
 void show_main() {//主界面
-	hide_cursor();
 	WCHAR title[40] = TEXT("嘉禾天橙");
 	SetConsoleTitle(title);
 	system("color 08");
@@ -81,14 +80,16 @@ void show_sign() {//登录界面
 	set_position(30, 10);
 	printf("登录口令:");
 	SetColor(13, 0);
-	catch_cursor();//显示光标
+	//catch_cursor();//显示光标
 }
 
-void show_customer() {//顾客主界面
-	system("cls");
-
+void show_register() {//注册界面
+	system("CLS");
+	printf("\n\n");
+	printf("\t\t* * * * * * * * * * * * * * * * * * * * * * * * * \n");
+	printf("\t\t                     账号注册                     \n");
+	printf("\t\t* * * * * * * * * * * * * * * * * * * * * * * * * \n");
 }
-
 
 void abandon() {//弃用
 	system("color f8");
@@ -118,7 +119,6 @@ void abandon() {//弃用
 void show_manager() {//剧院经理主界面
 	system("cls");
 	rewind(stdin);
-	hide_cursor();
 	set_position(36,4);
 	SetColor(10,0);
 	printf("查询与管理");
@@ -138,7 +138,6 @@ void show_manager() {//剧院经理主界面
 
 void show_program() {//剧目查询及管理界面
 	rewind(stdin);
-	hide_cursor();
 	system("cls");
 	set_position(35, 4);
 	SetColor(10, 0);
@@ -159,7 +158,6 @@ void show_program() {//剧目查询及管理界面
 
 void show_studio(){//影厅查询及管理界面
 	rewind(stdin);
-	hide_cursor();
 	system("cls");
 	set_position(35, 4);
 	SetColor(10, 0);
@@ -180,7 +178,6 @@ void show_studio(){//影厅查询及管理界面
 
 void show_plan() {//演出计划查询及管理界面
 	rewind(stdin);
-	hide_cursor();
 	system("cls");
 	set_position(35, 4);
 	SetColor(10, 0);printf("演出查询及管理");
@@ -191,12 +188,21 @@ void show_plan() {//演出计划查询及管理界面
 	set_position(36, 14);printf("浏览所有计划");
 }
 
+void show_record() {//销售统计与管理
+	rewind(stdin);
+	system("cls");
+	SetColor(11, 0); set_position(36, 6); printf("查询票务信息");//查询交易记录
+	SetColor(7, 0); set_position(36, 8); printf("查询售票情况");
+	set_position(36, 10); printf("查询销售业绩");//统计销售员业绩
+	set_position(36, 12); printf("查询剧目票房\n");//统计票房   从票统计
+	//set_position(36, 14); printf("");//
+}
+
 ///////////////////////////////////admin
 
 void show_admin() {//系统管理员主界面
 	system("cls");
 	rewind(stdin);
-	hide_cursor();
 	set_position(35, 4);
 	SetColor(10, 0);
 	printf("查询与管理");
@@ -207,12 +213,11 @@ void show_admin() {//系统管理员主界面
 	set_position(34, 8);
 	printf("登录记录查询");
 	set_position(34, 10); 
-	printf("管理我的信息");
+	printf("管理我的信息\n");
 }
 
 void show_account() {//账户查询及管理界面
 	rewind(stdin);
-	hide_cursor();
 	system("cls");
 	set_position(38, 4);
 	SetColor(10, 0);
@@ -246,7 +251,6 @@ void show_account_type(){//账户类型选择界面
 void show_conducter() {//售票员主界面
 	system("cls");
 	rewind(stdin);
-	hide_cursor();
 	set_position(36, 4);
 	SetColor(10, 0);
 	printf("售票与统计");
@@ -261,13 +265,12 @@ void show_conducter() {//售票员主界面
 	set_position(34, 12);
 	printf("演出计划浏览器");
 	set_position(34, 14);
-	printf("我的账号及密码");
+	printf("我的账号及密码\n\n");
 }
 
 void show_ticket() {//售票 退票 查票
 	system("cls");
 	rewind(stdin);
-	hide_cursor();
 	SetColor(11, 0);
 	set_position(36, 8);
 	printf("查询演出票");
@@ -288,3 +291,36 @@ void show_ticket() {//售票 退票 查票
 //}*/
 
 
+///////////////////////////////////////////customer
+
+void show_customer() {//顾客主界面
+	system("cls");
+	rewind(stdin);
+	hide_cursor();
+	set_position(36, 6);
+	SetColor(11, 0);
+	printf("推荐影片");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("查找心中的影片");
+	set_position(36, 10);
+	printf("近期上映一览");
+	set_position(36, 12);
+	printf("购票与退票");
+	set_position(36, 14);
+	printf("我的账号信息");
+}
+
+void show_customer_find(){
+	system("cls");
+	rewind(stdin);
+	hide_cursor();
+	set_position(36, 6);
+	SetColor(11, 0);
+	printf("剧名搜索");
+	SetColor(7, 0);
+	set_position(36, 8);
+	printf("演出时间查找");
+	set_position(36, 10);
+	printf("标签查找\n\n");
+}

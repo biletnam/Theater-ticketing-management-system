@@ -54,7 +54,8 @@ int choice_judge(int i) {//∂¡»°º¸≈Ã ¬º˛          i  // ΩÁ√Ê—°‘Ò   ≤Œº˚screen_cle
 	}
 }
 
-int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—°œÓ ƒ¨»œŒ™1
+int screen_clear(int order,int i,int change) {
+	/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—°œÓ ƒ¨»œŒ™1
 									   ≤Œ ˝change±Ì∏ƒ±‰¡ø  order±Ì æΩÁ√Êµƒ—°‘Ò  ∫Ø ˝∑µªÿµ±«∞—°œÓ±‡∫≈*/
 	i += change;
 	if (order == 1) {//÷˜ΩÁ√Ê
@@ -112,7 +113,7 @@ int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 8); printf("µ«¬ºº«¬º≤È—Ø");
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 10); printf("π‹¿ÌŒ“µƒ–≈œ¢");
+		set_position(34, 10); printf("π‹¿ÌŒ“µƒ–≈œ¢\n");
 	}
 	else if (order == 12) {
 		i == 0 ? i = 5 : i = i;
@@ -146,7 +147,7 @@ int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 12); printf("—›≥ˆº∆ªÆ‰Ø¿¿∆˜");
 		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 14); printf("Œ“µƒ’À∫≈º∞√‹¬Î");
+		set_position(34, 14); printf("Œ“µƒ’À∫≈º∞√‹¬Î\n\n");
 	}
 	else if (order == 14) {
 		i == 0 ? i = 3 : i = i;//∏ﬂ¡¡øÿ÷∆
@@ -158,9 +159,50 @@ int screen_clear(int order,int i,int change) {/*÷˜ΩÁ√Êµƒ∏ﬂ¡¡øÿ÷∆  i±Ì æµ±«∞∏ﬂ¡¡—
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(36, 12); printf("ÕÀªπ—›≥ˆ∆±\n");
 	}
+	else if (order == 15) {
+		i == 0 ? i = 4 : i = i;
+		i > 4 ? i = 1 : i = i;
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 6); printf("≤È—Ø∆±ŒÒ–≈œ¢");//∑œ∆˙   ≤È—ØΩª“◊º«¬º
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("≤È—Ø €∆±«Èøˆ");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10); printf("≤È—Øœ˙ €“µº®");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("≤È—ØæÁƒø∆±∑ø\n");
+	}
+	else if (order == 30) {
+		i == 0 ? i = 5 : i = i;
+		i > 5 ? i = 1 : i = i;
+		set_position(35, 4);
+		SetColor(10, 0);
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 6); printf("Õ∆ºˆ”∞∆¨");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("≤È’“–ƒ÷–µƒ”∞∆¨");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10); printf("Ω¸∆⁄…œ”≥“ª¿¿");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 12); printf("π∫∆±”ÎÕÀ∆±");
+		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 14); printf("Œ“µƒ’À∫≈–≈œ¢");
+	}
+	else if (order == 31) {
+		i == 0 ? i = 3 : i = i;
+		i > 3 ? i = 1 : i = i;
+		set_position(35, 4);
+		SetColor(10, 0);
+		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 6); printf("æÁ√˚À—À˜");
+		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 8); printf("—›≥ˆ ±º‰≤È’“");
+		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(36, 10); printf("±Í«©≤È’“\n\n");
+	}
 	else {
 		print_re();
 	}
+	SetColor(7, 0);
 	return i;
 }
 

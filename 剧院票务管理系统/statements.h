@@ -121,6 +121,7 @@ typedef struct em{//¾çÄ¿Êı¾İÓò
 	char language[NAME];//ÓïÑÔ
 	int price;//Æ±¼Û   [5,100]
 	int cost;//·ÅÓ³³É±¾    £¨ÍòÔª)
+	long contributions;//Æ±·¿
 }data_program;
 
 typedef struct emm {
@@ -139,6 +140,7 @@ typedef struct emmm {//Ñİ³ö¼Æ»®Êı¾İÓò
 	char date[11]; //Ñİ³öÈÕÆÚ   ¸ñÊ½2018-05-12 ³¤¶ÈÎª10
 	char time[6];//¿ªÊ¼Ê±¼ä    ¸ñÊ½hh:mm  ³¤¶ÈÎª5 24Ğ¡Ê±ÖÆ
 	int ticketnum;//¼Æ»®ÖĞµ±Ç°µÄÆ±Êı
+	long contributions;//ÏúÊÛ¶î
 	int button;//¼Æ»®µÄÓĞĞ§ĞÔ   É¾³ıºó´ËÖµ±äÎª0    ÔØÈëÊ±Îª0µÄÖµÌø¹ı
 	Ticket *ticket_head, *ticket_tail;//´ÎÁ´±í
 }data_plan;
@@ -211,17 +213,20 @@ int select_seat(Plan *p, int limit);//ÊÛÆ±Ñ¡ÔñÎ»ÖÃ  ESC 0   »Ø³µ3  ·µ»ØÖµ±íÊ¾Ëù¹
 void clear_seat(COORD position, char status);//¸Ä±ä×ùÎ»ÏÔÊ¾  COORD  µ±Ç°Î»ÖÃ   status ×ùÎ»×´Ì¬
 void clear_ticket(COORD position, char status);//COORD  µ±Ç°Î»ÖÃ   status Æ±×´Ì¬
 
-//window.cpp
+/////////////////////////////////////////////////window.cpp
 
 void show_welcome();//»¶Ó­½çÃæ
 void show_main();//Ö÷½çÃæ
 void show_sign();//µÇÂ¼½çÃæ
 void show_bye();//ÔÙ¼û½çÃæ
+void show_register();//×¢²á½çÃæ
+
 void show_customer();//¹Ë¿ÍÖ÷½çÃæ
 void show_manager();//¾çÔº¾­ÀíÖ÷½çÃæ
 void show_program();//¾çÄ¿²éÑ¯¼°¹ÜÀí½çÃæ
 void show_studio();//Ó°Ìü²éÑ¯¼°¹ÜÀí½çÃæ
 void show_plan();//Ñİ³ö¼Æ»®²éÑ¯¼°¹ÜÀí
+void show_record();//ÏúÊÛÍ³¼ÆÓë²éÑ¯
 
 void show_admin();//ÏµÍ³¹ÜÀíÔ±Ö÷½çÃæ
 void show_account();//ÕË»§¹ÜÀí½çÃæ
@@ -229,6 +234,7 @@ void show_account_type();//ÕË»§ÀàĞÍÑ¡Ôñ½çÃæ
 
 void show_conducter();//ÊÛÆ±Ô±¹ÜÀí½çÃæ
 void show_ticket();//ÊÛÆ±Ô±Æ±Îñ¹ÜÀí½çÃæ
+
 //////////////////////////////////////////////////welcom.cpp
 
 void print_re();//»ñµÃ·´À¡
@@ -239,10 +245,16 @@ int enquiry(int i);//ÅĞ¶ÏÊÇ·ñ½øĞĞ±¾´Î²Ù×÷   i==1   enquiry   i==2 warnning
 void print_ok(); //ÌáÊ¾²Ù×÷³É¹¦
 void print_instruction(int i);//ÏÔÊ¾²Ù×÷ËµÃ÷
 void print_planhead();//´òÓ¡Ñİ³ö¼Æ»®±íÍ·
-//friendly.cpp
+void print_planhead2();//´òÓ¡Ñİ³ö¼Æ»®¹Ë¿Í¶Ë±íÍ·
+void print_programhead();//´òÓ¡¾çÄ¿ÅÅĞĞ°ñ±íÍ·
+void print_accounthead();//´òÓ¡ÕËºÅ±íÍ·
+
+/////////////////////////////////////////////////friendly.cpp
 
 void process_all();//³ÌĞòÈë¿Ú
 void process_sign();//µÇÂ¼¹ı³Ì
+void process_register();//×¢²á¹ı³Ì
+
 void process_admin();//¹ÜÀíÔ±¹ı³Ì
 void process_account();//ÕË»§¹ÜÀí¹ı³Ì
 
@@ -250,15 +262,17 @@ void process_manager();//¾çÔº¾­Àí¹ı³Ì
 void process_program();//¾çÄ¿²éÑ¯¼°¹ÜÀí¹ı³Ì
 void process_studio();//Ó°Ìü²éÑ¯¼°¹ÜÀí¹ı³Ì
 void process_plan();//·ÅÓ³¼Æ»®²éÑ¯¼°¹ÜÀí¹ı³Ì
+void process_record();//ÏúÊÛÍ³¼ÆÓë²éÑ¯   
 void process_plan_inquiry(Plan *head); //²éÑ¯Ñİ³ö¼Æ»®¹ı³Ì
 
 void process_conducter();//ÊÛÆ±Ô±¹ı³Ì
 void process_ticket();//ÊÛÆ±Ô±Æ±Îñ¹ÜÀí¹ı³Ì
+void process_count(Account *a);//Òµ¼¨Í³¼Æ²éÑ¯¹ı³Ì
 
 void process_customer();//¹Ë¿Í¹ı³Ì
 
-void account_appeal();//ÕËºÅÉêËß¹ı³Ì
-//process.cpp
+void process_appeal();//ÕËºÅÉêËß¹ı³Ì
+////////////////////////////////////////////////process.cpp
 
 char *username_get(int judge);//ÓÃ»§ÃûµÄ»ñÈ¡
 int sign_judge();//µÇÂ½³É¹¦¼°ÕË»§ÀàĞÍµÄÅĞ¶Ï
@@ -268,18 +282,27 @@ int get_num(int down, int up, int ndown, int nup);//¶ÁÈ¡Êı×Ö    ²¢¼ì²éÊäÈë   ·¶Î
 char *get_date();//ÈÕÆÚµÄ»ñÈ¡¼°ÅĞ¶Ï
 char *get_time();//Ê±¼äµÄ»ñÈ¡¼°ÅĞ¶Ï
 data_program get_program_infomation();//»ñÈ¡¾çÄ¿Ö÷ÒªĞÅÏ¢  ²¢½øĞĞ³õÊ¼»¯
-void program_viewer();//¾çÄ¿ä¯ÀÀÆ÷
+void program_viewer(Program *head);//¾çÄ¿ä¯ÀÀÆ÷
 void studio_viewer();//·ÅÓ³Ìü²é¿´Æ÷
 void seat_changer(Studio *p);//¿ÉÊÓ»¯×ùÎ»ĞŞ¸ÄÆ÷
 void plan_viewer(Plan *head);//Ñİ³ö¼Æ»®ä¯ÀÀÆ÷
 void ticket_changer(Plan *p);//ÊÛÆ±ä¯ÀÀÆ÷
+void account_viewer(Account *head);//ÕËºÅä¯ÀÀÆ÷
+void log_viewer();//¼ÇÂ¼ä¯ÀÀÆ÷
+
+void account_count(Account *a);//Í³¼ÆÊÛÆ±Ô±ÏúÊÛ¶î
+void account_count(Account *a, char *begin,char *end);//°´ÈÕÆÚÇø¼äÍ³¼ÆÏúÊÛ¶î
+void program_count(Program *pro);//Í³¼ÆÆ±·¿   °´ÊÛ³öµÄÆ±
+void count_program();//Í³¼ÆËùÓĞ¾çÄ¿Æ±·¿
+
 
 void timer();//¶ÁÈ¡ÏµÍ³Ê±¼ä
 void clean_plan();//¼ì²é²¢´¦Àí¹ıÆÚÑİ³ö¼Æ»®
 
 void password_change(char *obj, int i);//ÃÜÂëµÄ¼ÓÃÜ½âÃÜ´¦Àí£¬1 :  ¼ÓÃÜ     2:½âÃÜ
 void play_bgm();
-//sonfunction.cpp
+void log(int choice);//µÇÂ¼¼ÇÂ¼  1 success    0 fail
+//////////////////////////////////////////////sonfunction.cpp
 
 void import_key();//µ¼ÈëÖ÷¼üĞÅÏ¢µ½Á´±í
 void import_account();//µ¼ÈëÕËºÅĞÅÏ¢µ½Á´±í
@@ -315,7 +338,9 @@ Program *search_program(char *obj, int judge);//°´ID»òÃû³Æ²éÕÒ¾çÄ¿ judge ¿ØÖÆÊÇ·
 void add_program();//Ôö¼Ó¾çÄ¿
 void delete_program(Program *p);//°´ÕÕID»òÃû×ÖÉ¾³ı¾çÄ¿
 void print_program(Program *p , int i);////Êä³öÄ³¸öÓ°Æ¬ĞÅÏ¢
+void print_program_cnt(Program *p);//´òÓ¡Æ±·¿
 void modify_program(Program *p);//ĞŞ¸ÄÓ°Æ¬ĞÅÏ¢
+void sort_program();//°´Æ±·¿ÅÅĞò
 
 Studio *search_studio(char *obj, int judge);//°´ID»òÃû³Æ²éÕÒ·ÅÓ³Ìü    judge ¿ØÖÆÊÇ·ñ½øĞĞÏàËÆ·´À¡
 void add_studio();//Ôö¼Ó·ÅÓ³Ìü
@@ -340,10 +365,10 @@ void sort_plan(Plan *head);//Á´±íÃ°Åİ¡£¡£ÅÅĞò
 void delete_ticket(Plan *p);//É¾³ıÑİ³ö¼Æ»®ÏÂµÄÆ±
 void print_ticket(Plan *p);//´òÓ¡Ñİ³ö¼Æ»®ÏÂÆ±µÄÇé¿ö
 Ticket *search_ticket(long ID, Plan *head);//¸ù¾İID²éÕÒÆ±  head ²éÕÒ·¶Î§ judge¿ØÖÆÏàËÆ·´À¡
-void sale_ticket(Plan *p, int judge);//ÊÛÆ±ÍËÆ±
-void return_ticket(Ticket *t, int judge);//ÍËÆ±    ²úÉúÏúÊÛ¼ÇÂ¼  ²¢¸üĞÂÖ÷¼ü
+void sale_ticket(Plan *p);//ÊÛÆ±ÍËÆ±
+void return_ticket(Ticket *t);//ÍËÆ±    ²úÉúÏúÊÛ¼ÇÂ¼  ²¢¸üĞÂÖ÷¼ü
 void draw_ticket(Plan *p, Ticket *t);//»­Ò»ÕÅÆ±
-void draw_ticket(Ticket *t, int judge);//»­Ò»ÕÅÆ±  0ÊÛÆ±Ô±   1¾çÔº½±Àø
+void draw_ticket(Ticket *t);//»­Ò»ÕÅÆ±  0ÊÛÆ±Ô±   1¾çÔº¾­Àí
 
 void print_account(Account *p);//´òÓ¡ÕËºÅĞÅÏ¢
 void add_account(int choice);//Ôö¼ÓÕË»§ĞÅÏ¢
@@ -351,7 +376,7 @@ void modify_account(Account *p);//ĞŞ¸ÄÕË»§ĞÅÏ¢
 void delete_account(Account *p);//É¾³ıÕË»§ĞÅÏ¢
 Account* search_account(char *obj, int judge);//²éÕÒÕË»§ĞÅÏ¢
 
-Record *add_record(Plan *p, Ticket *t, Account *a, sale_types type);//²úÉúÒ»ÌõÏúÊÛ¼ÇÂ¼¼Óµ½¼ÇÂ¼Á´±í  ²¢Ë¢ĞÂÒµ¼¨
+Record *add_record(Plan *p, Ticket *t, long UID, sale_types type);//²úÉúÒ»ÌõÏúÊÛ¼ÇÂ¼¼Óµ½¼ÇÂ¼Á´±í  ²¢Ë¢ĞÂÒµ¼¨
 Record *search_record(long obj);//¸ù¾İTicket_IDµ¹Ğò²éÕÒÏúÊÛ¼ÇÂ¼
 
 ////////////////////////////////////////////////////////Linklist.cpp
@@ -363,9 +388,13 @@ void initialize_window();//³õÊ¼»¯ÏÔÊ¾´°¿Ú
 
 //initialize.cpp
 
+//////////////////////////////¹Ë¿Í¶Ë
+void search_plan_name(char *obj, int judge, Plan *head, int choose);//¸ù¾İ1¾çÄ¿Ãû»ò2Ñİ³öÈÕÆÚ²éÕÒÑİ³ö¼Æ»®²¢´òÓ¡ĞÅÏ¢
+Program *search_program3(char *obj, int choose, int judge);//°´±êÇ©»ò¾çÄ¿²éÕÒ¾çÄ¿  judge ¿ØÖÆÊÇ·ñ½øĞĞÏàËÆ·´À¡
+Plan *search_plan3(char *obj, int judge, Plan *head); //°´¾çÄ¿²éÕÒÑİ³ö¼Æ»® judge ¿ØÖÆÊÇ·ñ½øĞĞÏàËÆ·´À¡
+void search_pragram_type(char *obj, int judge);//°´¾çÄ¿±êÇ©²éÕÒ´òÓ¡
+void advice();
 
+void show_customer_find();
 
-
-//void ShowListByPage(int listSize);
-//int listSize();
-//List.h
+void process_find();

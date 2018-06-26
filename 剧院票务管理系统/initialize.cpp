@@ -7,6 +7,7 @@ void import_all() {//导入所有信息
 	import_program();
 	import_studio_and_seat();
     import_plan_and_ticket();
+	import_record();
 	//import_plan_and_ticket_bin();
 }
 
@@ -30,5 +31,6 @@ void initialize_window() {//初始化窗口大小//与字体大小
 	system("mode 88, 25");
 	HANDLE handle=GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD font = { 12,24 };
+	hide_cursor();
 	//GetConsoleScreenBufferInfo;
 }
