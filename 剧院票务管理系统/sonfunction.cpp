@@ -99,7 +99,7 @@ char *get_string(int down,int up ,int judge) {//字符串获取及检查函数  
 		if (judge) {//进行检查检查
 			if (judge == 1) {
 				for (i = 0; i < strlen(str); i++) {
-					if (isdigit(str[i]) == 0) {//全为数字
+					if (str[i] < '0'||str[i]>'9') {//全为数字
 						flag = 0; break;
 					}
 				}
@@ -263,7 +263,7 @@ data_program get_program_infomation() {//获取剧目主要信息  并进行初�
 	printf("请设置剧目语言(2个汉字):");
 	str = get_string(4, 4, 2);
 	strcpy(tem.language, str);free(str);
-	printf("请输入剧目放映成本(万元):");
+	printf("请输入剧目放映成本(1~1000万元):");
 	choice = get_num(1, 1000, 1, 3);
 	tem.cost = choice;
 	return tem;
@@ -348,7 +348,14 @@ void plan_viewer(Plan *head) {//演出计划浏览器
 	int num = (head->element.ticketnum + 6) / 7, choice = 1, i, cnt = 0, flagend = 1, flaghead = 1;
 	int re = head->element.ticketnum % 7;
 	if (p == NULL) { printf("暂无计划\n"); return; }//flagend    flaghead  标识是否达到链表边界
-	do {
+	if(p->next == NULL){ system("cls"); 
+	printf("\n\n				      演出计划一览\n\n");
+	print_planhead(); print_plan(p);
+	printf("    ===============================================================================\n");
+	printf("				    当前第%d页，共%d页\n", cnt+1, num);
+	}
+	else
+	do {//
 		if (((choice == 1 || choice == 2) && cnt <= num && p->next) || ((choice == -1 || choice == -2) && cnt >= 0 && p->pre) && (flagend || flaghead)) {
 			system("cls");
 			printf("\n\n				      演出计划一览\n\n");
@@ -443,7 +450,7 @@ void seat_changer(Studio *p) {//可视化座位修改器
 }
 
 void ticket_changer(Plan *p) {//售票浏览器     作废
-	int choice;
+	//int choice;
 	/*while (choice == turn_page()) {
 		if()
 	}*/
@@ -552,10 +559,10 @@ void clean_plan() {//检查并处理过期演出计划
 
 void play_bgm() {
 	switch (now->tm_sec % 5) {
-	case 0:PlaySound(_T("C:\\Users\\HP\\source\\repos\\剧院票务管理系统\\剧院票务管理系统\\res\\phaolobeats.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
-	case 1:PlaySound(_T("C:\\Users\\HP\\source\\repos\\剧院票务管理系统\\剧院票务管理系统\\res\\Skip Swing.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
-	case 2:PlaySound(_T("C:\\Users\\HP\\source\\repos\\剧院票务管理系统\\剧院票务管理系统\\res\\银 河 骑 士 李 老 板 - 嘉 禾 天 橙 国 际 大 影 院.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
-	case 3:PlaySound(_T("C:\\Users\\HP\\source\\repos\\剧院票务管理系统\\剧院票务管理系统\\res\\Horsey.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
-	case 4:PlaySound(_T("C:\\Users\\HP\\source\\repos\\剧院票务管理系统\\剧院票务管理系统\\res\\VANTAGE ／／ - 休み.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 0:PlaySound(_T(".\\res\\phaolobeats.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 1:PlaySound(_T(".\\res\\Skip Swing.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 2:PlaySound(_T(".\\res\\银 河 骑 士 李 老 板 - 嘉 禾 天 橙 国 际 大 影 院.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 3:PlaySound(_T(".\\res\\Horsey.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
+	case 4:PlaySound(_T(".\\res\\VANTAGE ／／ - 休み.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NOWAIT); break;
 	}
 }

@@ -133,7 +133,7 @@ void show_manager() {//剧院经理主界面
 	set_position(34,12);
 	printf("销售统计与查询");//按演出计划查询
 	set_position(34, 14);
-	printf("我的账号及密码");
+	printf("我的账号及密码\n");
 }
 
 void show_program() {//剧目查询及管理界面
@@ -212,7 +212,9 @@ void show_admin() {//系统管理员主界面
 	SetColor(7, 0);
 	set_position(34, 8);
 	printf("登录记录查询");
-	set_position(34, 10); 
+	set_position(34, 10);
+	printf("增加新邀请码");
+	set_position(34, 12); 
 	printf("管理我的信息\n");
 }
 
@@ -233,7 +235,7 @@ void show_account() {//账户查询及管理界面
 	set_position(36, 12);
 	printf("删除用户信息");
 	set_position(36, 14);
-	printf("浏览所有用户");
+	printf("浏览所有用户\n");
 }
 
 void show_account_type(){//账户类型选择界面
@@ -308,7 +310,7 @@ void show_customer() {//顾客主界面
 	set_position(36, 12);
 	printf("购票与退票");
 	set_position(36, 14);
-	printf("我的账号信息");
+	printf("我的账号信息\n");
 }
 
 void show_customer_find(){

@@ -14,6 +14,9 @@
 
 // TODO: 在此处引用程序需要的其他头文件
 
+#include<assert.h>
+
+#include<io.h>
 #include<stdlib.h>
 #include<conio.h>
 #include<string.h>

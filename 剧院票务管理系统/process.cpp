@@ -98,7 +98,7 @@ void process_appeal() {//账号申诉过程
 ///////////////////////////////////////系统管理员过程
 
 void process_admin() {//管理员过程
-	int choice;
+	int choice; char *str = NULL;
 	while (1) {
 		show_admin();
 		choice = choice_judge(11);
@@ -106,7 +106,9 @@ void process_admin() {//管理员过程
 		case 0:break;
 		case 1:process_account(); break;
 		case 2:log_viewer(); break;
-		case 3:modify_account(search_account(PRESENT.username, 0));
+		case 3:printf("请输入新的key(12位):"); str = get_string(12, 12, 0);
+			add_invitation_code(str); print_ok(); free(str); break;
+		case 4:modify_account(search_account(PRESENT.username, 0)); break;
 		}if (choice == 0) {
 			printf("\n是否退出登录?(0/1):");
 			choice = get_num(0, 1, 1, 1); if (choice == 1) { go_on(); break; }
@@ -115,13 +117,13 @@ void process_admin() {//管理员过程
 }
 
 void process_account() {//账户管理过程        //在这里调用你写的链表操作
-	int choice;char *str = NULL;
+	int choice; char *str = NULL; Account *a = NULL;
 	while (1) {
 		show_account();
 		choice = choice_judge(5);
 		switch (choice) {
 		case 0: break;
-		case 1: printf("\n\n请输入要查找的账号ID或名称:\n"); print_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
+		case 1: printf("\n\n请输入要查找的账号ID或名称:\n"); a = search_account(str = get_string(1, 14, 0), 1); if (a)print_accounthead(); print_account(a); free(str); break;
 		case 2: printf("\n\n请输入要修改的账号ID或名称:\n");  modify_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
 		case 3: show_account_type(); choice = get_num(1, 4, 1, 1); add_account(choice); break;
 		case 4: printf("\n\n请输入你需要删除的账号信息:\n"); delete_account(search_account(str = get_string(1, 14, 0), 1)); free(str); break;
@@ -241,7 +243,7 @@ void process_record() {//销售统计与查询
 		case 4:count_program();
 			printf("\n1.单个剧目 2.票房排行榜\n请选择:"); choice = get_num(0, 2, 1, 1);
 			switch (choice) {
-			case 1:printf("请输入剧目ID:"); str = get_string(1, 9, 1);
+			case 1:printf("请输入剧目ID/名称:"); str = get_string(1, 9, 0);
 				print_programhead();
 				print_program_cnt(search_program(str, 0)); free(str); break;
 			case 2:	sort_program();

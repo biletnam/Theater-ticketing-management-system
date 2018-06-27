@@ -139,7 +139,7 @@ typedef struct emmm {//演出计划数据域
 	int studio_ID;//放映厅编号
 	char date[11]; //演出日期   格式2018-05-12 长度为10
 	char time[6];//开始时间    格式hh:mm  长度为5 24小时制
-	int ticketnum;//计划中当前的票数
+	int ticketnum;//计划中总票数//余票存在票的头结点
 	long contributions;//销售额
 	int button;//计划的有效性   删除后此值变为0    载入时为0的值跳过
 	Ticket *ticket_head, *ticket_tail;//次链表
@@ -304,6 +304,8 @@ void play_bgm();
 void log(int choice);//登录记录  1 success    0 fail
 //////////////////////////////////////////////sonfunction.cpp
 
+void file_check();//文件检查
+
 void import_key();//导入主键信息到链表
 void import_account();//导入账号信息到链表
 void import_program();//导入剧目信息到链表
@@ -324,6 +326,7 @@ void save_account();//保存账号链表信息到文件
 void save_account(Account *p);//追加账号信息到文件
 void save_record(Record *r);//追加新的记录到文件末尾
 int save_invitation_code(char *obj);//比较 并 局部修改邀请码  //返回值为比对结果
+void add_invitation_code(char *obj);//补充邀请码
 
 void rewrite_ticket(Plan *p, Ticket *t);//局部覆写文件    更改票的状态
 void clean_plan_atFirst();//将过期的演出计划标记过期

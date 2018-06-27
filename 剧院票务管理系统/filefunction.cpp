@@ -2,8 +2,27 @@
 #include"statements.h"
 ///////////////////////////////////////////import
 
+void file_check() {//ÎÄ¼ş¼ì²é
+	if (access(".\\key.txt", 0) != 0) {
+		FILE *fp = fopen(".\\key.txt", "w");
+		fprintf(fp, "111111 1\n666666 2\n888888 3\n111111 4\n111111 5\n111111 6\n12345678 7\n");
+		fclose(fp);
+	}
+	if (access(".\\account.txt", 0) != 0) {
+		FILE *fp = fopen(".\\account.txt", "w"); fclose(fp);
+		printf("ÕıÔÚ³õÊ¼»¯ÏµÍ³\n"); printf("ÕıÔÚÉèÖÃÏµÍ³¹ÜÀíÔ±\n");
+		import_key();
+		add_account(1);
+		initialize_linklist();//ÉÔÉÔÄÚ´æĞ¹Â©   ÊµÔÚ²»ÏëĞ´ÁË
+	}
+	if (access(".\\program.txt", 0) != 0) { FILE *fp = fopen(".\\program.txt", "w"); fclose(fp); }
+	if (access(".\\studio.txt", 0) != 0) { FILE *fp = fopen(".\\studio.txt", "w"); fclose(fp); }
+	if (access(".\\plan.txt", 0) != 0) { FILE *fp = fopen(".\\plan.txt", "w"); fclose(fp); }
+	if (access(".\\record.txt", 0) != 0) { FILE *fp = fopen(".\\record.txt", "w"); fclose(fp); }
+}
+
 void import_key() {//µ¼ÈëÖ÷¼üĞÅÏ¢µ½Á´±í
-	FILE *fp = fopen("key.txt", "r");
+	FILE *fp = fopen(".\\key.txt", "r");
 	exam_NULL(fp, 1);
 	long key;int type;
 	while (fscanf(fp, "%ld %d", &key, &type) != EOF) {
@@ -94,7 +113,7 @@ void import_studio_and_seat() {//µ¼Èë·ÅÓ³Ìü¼°×ùÎ»ĞÅÏ¢µ½Á´±í
 				p->element.seat_tail->next = k;
 				p->element.seat_tail = k;
 			}
-		}if (p->element.seatsum != cnt) { printf("×ùÎ»ÎÄ¼şĞ£Ñé´íÎó\n"); print_re(); }
+		}/*if (p->element.seatsum != cnt) { printf("×ùÎ»ÎÄ¼şĞ£Ñé´íÎó\n"); print_re(); }*/
 	}
 	fclose(fp);
 }
@@ -416,4 +435,11 @@ int save_invitation_code(char *obj) {//±È½Ï ²¢ ¾Ö²¿ĞŞ¸ÄÑûÇëÂë  //·µ»ØÖµÎª±È¶Ô½á¹
 	remove(".\\invitation.txt");
 	rename("invitation_tem.txt", "invitation.txt");
 	return flag;
+}
+
+void add_invitation_code(char *obj) {//²¹³äÑûÇëÂë
+	FILE *fp = fopen(".\\invitation.txt", "a");
+	exam_NULL(fp, 1);
+	fprintf(fp, "%s\n", obj);
+	fclose(fp);
 }

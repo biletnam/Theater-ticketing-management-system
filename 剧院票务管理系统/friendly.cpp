@@ -15,7 +15,7 @@ inline void go_on() {//按任意键继续
 	printf("按任意键继续\n");
 	rewind(stdin);
 	getch();
-	getch();
+	//getch();//仅在VS中运行需要
 }
 
 void exam_NULL(void *p, int choice) {//空指针报错   0 malloc   1文件

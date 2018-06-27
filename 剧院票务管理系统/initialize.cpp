@@ -2,12 +2,13 @@
 #include"statements.h"
 
 void import_all() {//导入所有信息
+	file_check();
 	import_key();
-	import_account();
 	import_program();
 	import_studio_and_seat();
     import_plan_and_ticket();
 	import_record();
+	import_account();
 	//import_plan_and_ticket_bin();
 }
 
@@ -15,7 +16,6 @@ void initialize() {//全部初始化
 	initialize_window();
 	initialize_linklist();
 	initialize_present();
-	clean_plan_atFirst();
 	import_all();
 	sort_plan(list.plan_head);
 	sort_plan(list.plan_tem_head);

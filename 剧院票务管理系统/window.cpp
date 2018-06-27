@@ -80,7 +80,7 @@ int screen_clear(int order,int i,int change) {
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 12); printf("销售统计与查询");
 		i == 5?SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 14); printf("我的账号及密码");
+		set_position(34, 14); printf("我的账号及密码\n");
 	}
 	else if (order >= 3 && order <= 10) {
 		char obj[5];
@@ -103,17 +103,19 @@ int screen_clear(int order,int i,int change) {
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(36, 12); printf("删除%s信息",obj);
 		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 14); printf("浏览所有%s",obj);
+		set_position(36, 14); printf("浏览所有%s\n",obj);
 	}
 	else if (order == 11) {
-		i == 0 ? i = 3 : i = i;
-		i > 3 ? i = 1: i = i;
+		i == 0 ? i = 4 : i = i;
+		i > 4 ? i = 1: i = i;
 		i == 1 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 6); printf("系统用户管理");
 		i == 2 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(34, 8); printf("登录记录查询");
 		i == 3 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(34, 10); printf("管理我的信息\n");
+		set_position(34, 10); printf("增加新邀请码");
+		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
+		set_position(34, 12); printf("管理我的信息\n");
 	}
 	else if (order == 12) {
 		i == 0 ? i = 5 : i = i;
@@ -185,7 +187,7 @@ int screen_clear(int order,int i,int change) {
 		i == 4 ? SetColor(11, 0) : SetColor(7, 0);
 		set_position(36, 12); printf("购票与退票");
 		i == 5 ? SetColor(11, 0) : SetColor(7, 0);
-		set_position(36, 14); printf("我的账号信息");
+		set_position(36, 14); printf("我的账号信息\n");
 	}
 	else if (order == 31) {
 		i == 0 ? i = 3 : i = i;

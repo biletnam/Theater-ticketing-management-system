@@ -201,7 +201,7 @@ void modify_program(Program *p) {//修改电影信息
 }
 
 void sort_program() {//按票房排序
-	Program *p = list.program_head->next; int flag = 0, i, j; data_program t;
+	Program *p = list.program_head->next; int flag = 0, i; data_program t;
 	for (i = 1; i < list.program_head->element.cost; i++) {
 		flag = 0;
 		for (p = list.program_head->next; p->next; p=p->next) {
@@ -331,21 +331,21 @@ void print_studio(Studio *p) {//打印放映厅及座位信息
 				}
 				k = k->next;
 			}printf("\n");
-		}if(cnt == p->element.seatsum )printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
-		else { printf("座位校对出现问题\n"); print_re(); }
+		}/*if(cnt == p->element.seatsum )*/printf("\n\n			本放映厅共有%d张可用座位\n", cnt);
+		//else { printf("座位校对出现问题\n"); print_re(); }
 	}
 }
 
 void modify_studio(Studio *p) {//修改影厅信息及座位情况
 	if (p) {
 		print_studio(p);
-		printf("请选择要修改的：\n");
+		printf("提醒:有演出计划使用该放映厅时时请勿修改座位\n请选择要修改的：\n");
 		printf("1.放映厅名称 2.座位行数 3.座位列数 4.座位设置\n");//2.座位行数 3.座位列数
 		int choice = get_num(1, 4, 1, 1); char *str = NULL; data_studio tem=p->element;
 		switch (choice) {
-		case 1:printf("请输入新的放映厅名称"); str = get_string(1, 14, 0); strcpy(tem.studio_name, str); free(str); break;
-		case 2:printf("请输入新的行数(5~12)："); choice = get_num(5, 12, 1, 2); tem.seatx = choice; break;
-		case 3:printf("请输入新的列数(10~25)："); choice = get_num(10, 25, 2, 2); tem.seaty = choice; break;
+		case 1:printf("请输入新的放映厅名称:"); str = get_string(1, 14, 0); strcpy(tem.studio_name, str); free(str); break;
+		case 2:printf("请输入新的行数(5~12):"); choice = get_num(5, 12, 1, 2); tem.seatx = choice; break;
+		case 3:printf("请输入新的列数(10~25):"); choice = get_num(10, 25, 2, 2); tem.seaty = choice; break;
 		case 4:print_instruction(1); seat_changer(p); break;
 		}if (choice != 4) {
 			if (enquiry(1)) {
@@ -537,8 +537,10 @@ void add_plan() {//新增演出计划
 	tem = get_time(); strcpy(p->element.time, tem); free(tem);
 	if (enquiry(1)) {
 		initialize_ticket(p);
+		p->element.ticket_head->price = p->element.ticketnum;
 		p->next = list.plan_tail->next; p->pre = list.plan_tail;
 		list.plan_tail->next = p; list.plan_tail = p;
+		list.plan_head->element.ticketnum += 1;
 		save_key();
 		save_plan_and_ticket(p);
 		print_ok();
@@ -621,6 +623,7 @@ void delete_plan(Plan *p) {//隐藏放映计划及票
 			printf("删除已取消\n");
 		}
 	}
+	else printf("没有这样的演出计划哟\n");
 }
 
 void print_plan(Plan *p) {//打印演出计划信息
@@ -807,12 +810,13 @@ void sale_ticket(Plan *p) {//售票   //结束后刷新key
 	if (get_num(0, 1, 1, 1)) {
 		if (t->ticket_status == TICKET_available) {
 			t->ticket_status = TICKET_sold;
+			p->element.ticket_head->price--;//刷新余票数
 			save_record(add_record(p, t, atol(PRESENT.UID), SALE_sold));
 			rewrite_ticket(p, t);
 			draw_ticket(p, t);
 		}
 			else {
-				printf("请选择有效的位置！\n");
+				printf("请选择空闲的座位哦\n");
 		}
 	}
 	else {
@@ -822,6 +826,9 @@ void sale_ticket(Plan *p) {//售票   //结束后刷新key
 			t->ticket_status = TICKET_available;
 			save_record(add_record(p, t, search_account(PRESENT.UID, 0), SALE_return));
 		}*/
+	}
+	else {
+		printf("请选择可用的座位哦\n");
 	}
 	printf("是否继续购票(0/1)?:");
 	if (get_num(0, 1, 1, 1)) {
@@ -856,6 +863,7 @@ void return_ticket(Ticket *t) {//退票    并产生销售记录  //退票时记录售票者的ID
 						a = search_account(ID,0); 
 						objID = atol(a->element.UID);//记录他人UID
 					}
+					p->element.ticket_head->price++;//刷新余票数
 					save_record(add_record(p, t, objID, SALE_return));
 					print_ok();
 				}

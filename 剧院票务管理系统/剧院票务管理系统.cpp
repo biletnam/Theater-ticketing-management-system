@@ -7,7 +7,7 @@ List list;
 data_account PRESENT;//当前用户
 struct tm *now;
 int main(){
-	//show_welcome();
+	show_welcome();
 	initialize();
 	//print_instruction(1);
 	//rewrite_ticket(list.plan_head->next->next, list.plan_head->next->next->element.ticket_head->next);
